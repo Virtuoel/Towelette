@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "virtuoel.towelette.mixin",
+	"compatibilityLevel": "JAVA_8",
+	"mixins":
+	[
+		"BlockMixin",
+		"FluidloggableBlockPropertyMixin",
+		"FluidloggableBlockPlacementMixin"
+	],
+	"injectors":
+	{
+		"defaultRequire": 1
+	}
+}

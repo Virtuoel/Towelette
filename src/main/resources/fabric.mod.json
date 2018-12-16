@@ -1,11 +1,11 @@
 {
-  "id": "modid",
-  "name": "Example Mod",
-  "version": "1.0.0",
-  "side": "universal",
-  "initializer": "net.fabricmc.example.ExampleMod",
-  "mixins": {
-    "client": "modid.client.json",
-    "common": "modid.common.json"
-  }
+	"id": "towelette",
+	"name": "Towelette",
+	"version": "1.0.0.0",
+	"side": "universal",
+	"initializer": "virtuoel.towelette.Towelette",
+	"mixins": {
+		"client": "towelette.client.json",
+		"common": "towelette.common.json"
+	}
 }

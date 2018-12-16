@@ -5,17 +5,21 @@ plugins {
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
-archivesBaseName = "modid"
-version = "1.0.0"
+archivesBaseName = "Towelette"
+version = "1.0.0.0"
 
 minecraft {
+	
 }
 
 dependencies {
 	minecraft "com.mojang:minecraft:18w50a"
-	mappings "net.fabricmc:yarn:18w50a.2"
-	modCompile "net.fabricmc:fabric-loader:0.2.0.64"
-
-	// Fabric API. This is technically optional, but you probably want it anyway.
-	modCompile "net.fabricmc:fabric:0.1.1.47"
+	mappings "net.fabricmc:yarn:18w50a.29"
+	
+	compile "com.google.code.findbugs:jsr305:3.0.2"
+	
+	modCompile "net.fabricmc:fabric-loader:0.2.0.70"
+	modCompile "net.fabricmc:fabric:0.1.1.55"
 }
+
+

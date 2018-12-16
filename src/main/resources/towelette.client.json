@@ -1,0 +1,14 @@
+{
+	"required": true,
+	"package": "virtuoel.towelette.mixin",
+	"compatibilityLevel": "JAVA_8",
+	"mixins":
+	[
+		"BlockLiquidRendererMixin",
+		"SpriteAtlasTextureMixin"
+	],
+	"injectors":
+	{
+		"defaultRequire": 1
+	}
+}
