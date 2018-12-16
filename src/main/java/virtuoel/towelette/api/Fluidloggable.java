@@ -1,4 +1,4 @@
-package virtuoel.towelette.block;
+package virtuoel.towelette.api;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
@@ -9,7 +9,6 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
-import virtuoel.towelette.state.property.FluidProperty;
 
 public interface Fluidloggable extends Waterloggable
 {

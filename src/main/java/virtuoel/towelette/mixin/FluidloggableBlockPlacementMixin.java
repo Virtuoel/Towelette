@@ -46,8 +46,8 @@ import net.minecraft.block.WallTorchBlock;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.property.Properties;
-import virtuoel.towelette.block.Fluidloggable;
-import virtuoel.towelette.state.property.FluidProperty;
+import virtuoel.towelette.api.FluidProperty;
+import virtuoel.towelette.api.Fluidloggable;
 
 @Mixin({
 //	PressurePlateBlock.class,

@@ -24,7 +24,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.IWorld;
-import virtuoel.towelette.state.property.FluidProperty;
+import virtuoel.towelette.api.FluidProperty;
 
 @Mixin(Block.class)
 public abstract class BlockMixin

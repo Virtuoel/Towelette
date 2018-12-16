@@ -1,4 +1,4 @@
-package virtuoel.towelette.state.property;
+package virtuoel.towelette.api;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,7 +18,7 @@ import net.minecraft.state.property.AbstractProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.registry.Registry;
-import virtuoel.towelette.state.property.FluidProperty.ComparableFluidWrapper;
+import virtuoel.towelette.api.FluidProperty.ComparableFluidWrapper;
 import virtuoel.towelette.util.ReflectionUtil;
 
 public class FluidProperty extends AbstractProperty<ComparableFluidWrapper>
