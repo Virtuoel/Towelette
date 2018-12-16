@@ -23,11 +23,11 @@ import virtuoel.towelette.util.ReflectionUtil;
 
 public class FluidProperty extends AbstractProperty<ComparableFluidWrapper>
 {
-	public static final FluidProperty FLUID = new FluidProperty();
+	public static final FluidProperty FLUID = new FluidProperty("fluid");
 	
-	private FluidProperty()
+	private FluidProperty(String name)
 	{
-		super("fluid", ComparableFluidWrapper.class);
+		super(name, ComparableFluidWrapper.class);
 	}
 	
 	public ComparableFluidWrapper of(ItemPlacementContext context)
@@ -42,10 +42,7 @@ public class FluidProperty extends AbstractProperty<ComparableFluidWrapper>
 	
 	public ComparableFluidWrapper of(Fluid fluid)
 	{
-		if(valuesByName.isEmpty())
-		{
-			getValues();
-		}
+		recalculateIfNeeded();
 		
 		ComparableFluidWrapper ret = valuesByName.get(new ComparableFluidWrapper(fluid).asString());
 		if(ret == null)
@@ -84,20 +81,8 @@ public class FluidProperty extends AbstractProperty<ComparableFluidWrapper>
 	@Override
 	public Collection<ComparableFluidWrapper> getValues()
 	{
-		if(values.isEmpty())
-		{
-			values.add(new ComparableFluidWrapper(Fluids.EMPTY));
-			values.addAll(Registry.FLUID.keys().stream()
-				.map(Registry.FLUID::get)
-				.filter(f -> f.getDefaultState().isStill())
-				.map(ComparableFluidWrapper::new)
-				.collect(Collectors.toSet()));
-			
-			for(ComparableFluidWrapper f : values)
-			{
-				valuesByName.put(f.asString(), f);
-			}
-		}
+		recalculateIfNeeded();
+		
 		return values;
 	}
 	
@@ -111,6 +96,25 @@ public class FluidProperty extends AbstractProperty<ComparableFluidWrapper>
 	public String getValueAsString(ComparableFluidWrapper value)
 	{
 		return value.asString();
+	}
+	
+	public void recalculateIfNeeded()
+	{
+		if(values.isEmpty() || valuesByName.isEmpty())
+		{
+			values.add(new ComparableFluidWrapper(Fluids.EMPTY));
+			values.addAll(Registry.FLUID.keys().stream()
+				.map(Registry.FLUID::get)
+				.filter(f -> f.getDefaultState().isStill())
+				.map(ComparableFluidWrapper::new)
+				.collect(Collectors.toSet()));
+			
+			valuesByName.clear();
+			for(ComparableFluidWrapper f : values)
+			{
+				valuesByName.put(f.asString(), f);
+			}
+		}
 	}
 	
 	public static class ComparableFluidWrapper implements Comparable<ComparableFluidWrapper>, StringRepresentable
@@ -136,7 +140,19 @@ public class FluidProperty extends AbstractProperty<ComparableFluidWrapper>
 		@Override
 		public String asString()
 		{
-			return Registry.FLUID.getId(wrapped).toString().replace(":", "_f_");
+			return Registry.FLUID.getId(wrapped).toString().replace(":", "_tt_");
+		}
+		
+		@Override
+		public int hashCode()
+		{
+			return Registry.FLUID.getId(wrapped).hashCode();
+		}
+		
+		@Override
+		public boolean equals(Object obj)
+		{
+			return obj instanceof ComparableFluidWrapper && this.hashCode() == obj.hashCode();
 		}
 	}
 }
