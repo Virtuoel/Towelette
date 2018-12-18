@@ -4,8 +4,7 @@
 	"compatibilityLevel": "JAVA_8",
 	"mixins":
 	[
-		"BlockLiquidRendererMixin",
-		"SpriteAtlasTextureMixin"
+		"BlockLiquidRendererMixin"
 	],
 	"injectors":
 	{

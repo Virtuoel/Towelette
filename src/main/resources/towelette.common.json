@@ -5,6 +5,8 @@
 	"mixins":
 	[
 		"BlockMixin",
+		"BlockStateMixin",
+		"FluidloggableMixin",
 		"FluidloggableBlockPropertyMixin",
 		"FluidloggableBlockPlacementMixin"
 	],

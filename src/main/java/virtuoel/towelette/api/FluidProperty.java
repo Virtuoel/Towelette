@@ -1,7 +1,6 @@
 package virtuoel.towelette.api;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Optional;
@@ -9,6 +8,7 @@ import java.util.stream.Collectors;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.fluid.BaseFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -16,53 +16,61 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.AbstractProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.util.StringRepresentable;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import virtuoel.towelette.api.FluidProperty.ComparableFluidWrapper;
 import virtuoel.towelette.util.ReflectionUtil;
 
-public class FluidProperty extends AbstractProperty<ComparableFluidWrapper>
+public class FluidProperty extends AbstractProperty<Identifier>
 {
 	public static final FluidProperty FLUID = new FluidProperty("fluid");
 	
 	private FluidProperty(String name)
 	{
-		super(name, ComparableFluidWrapper.class);
+		super(name, Identifier.class);
 	}
 	
-	public ComparableFluidWrapper of(ItemPlacementContext context)
+	public Identifier of(ItemPlacementContext context)
 	{
 		return of(context.getWorld().getFluidState(context.getPos()));
 	}
 	
-	public ComparableFluidWrapper of(FluidState fluid)
+	public Identifier of(FluidState fluid)
 	{
 		return of(fluid.getFluid());
 	}
 	
-	public ComparableFluidWrapper of(Fluid fluid)
+	public Identifier of(Fluid fluid)
 	{
-		recalculateIfNeeded();
-		
-		ComparableFluidWrapper ret = valuesByName.get(new ComparableFluidWrapper(fluid).asString());
-		if(ret == null)
-		{
-			ret = valuesByName.get(new ComparableFluidWrapper(Fluids.EMPTY).asString());
-		}
-		return ret;
+		return Registry.FLUID.getId(fluid);
 	}
 	
-	public Fluid unwrap(BlockState state)
+	public FluidState getFluidState(BlockState state)
 	{
+		return getFluidState(getFluid(state));
+	}
+	
+	public FluidState getFluidState(Fluid fluid)
+	{
+		if(fluid instanceof BaseFluid)
+		{
+			return ((BaseFluid) fluid).getState(false);
+		}
+		return Fluids.EMPTY.getDefaultState();
+	}
+	
+	public Fluid getFluid(BlockState state)
+	{
+		Fluid ret = Fluids.EMPTY;
 		if(state.contains(this))
 		{
-			return state.get(this).wrapped;
+			ret = Registry.FLUID.get(state.get(this));
 		}
-		else if(state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED))
+		
+		if(ret == Fluids.EMPTY && state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED))
 		{
-			return Fluids.WATER;
+			ret = Fluids.WATER;
 		}
-		return Fluids.EMPTY;
+		return ret;
 	}
 	
 	public boolean tryAppendPropertySafely(StateFactory.Builder<Block, BlockState> var1)
@@ -75,84 +83,49 @@ public class FluidProperty extends AbstractProperty<ComparableFluidWrapper>
 		return false;
 	}
 	
-	private Collection<ComparableFluidWrapper> values = new HashSet<>();
-	private final Map<String, ComparableFluidWrapper> valuesByName = new HashMap<>();
+	private final Collection<Identifier> values = new HashSet<>();
 	
 	@Override
-	public Collection<ComparableFluidWrapper> getValues()
+	public Collection<Identifier> getValues()
 	{
-		recalculateIfNeeded();
+		if(values.isEmpty())
+		{
+			values.add(Registry.FLUID.getId(Fluids.EMPTY));
+			values.addAll(Registry.FLUID.stream()
+				.filter(f -> f.getDefaultState().isStill())
+				.map(Registry.FLUID::getId)
+				.collect(Collectors.toSet()));
+		}
 		
 		return values;
 	}
 	
 	@Override
-	public Optional<ComparableFluidWrapper> getValue(final String name)
+	public Optional<Identifier> getValue(final String name)
 	{
-		return Optional.ofNullable(valuesByName.get(name));
+		Identifier id = of(Fluids.EMPTY);
+		
+		final int underscoreIndex = name.lastIndexOf('_');
+		if(underscoreIndex != -1)
+		{
+			try
+			{
+				final int namespaceLength = Integer.parseInt(name.substring(underscoreIndex + 1));
+				id = new Identifier(name.substring(0, namespaceLength), name.substring(namespaceLength + 1, underscoreIndex));
+				id = Registry.FLUID.getId(Registry.FLUID.get(id));
+			}
+			catch (NumberFormatException e)
+			{
+				
+			}
+		}
+		
+		return Optional.of(id);
 	}
 	
 	@Override
-	public String getValueAsString(ComparableFluidWrapper value)
+	public String getValueAsString(Identifier value)
 	{
-		return value.asString();
-	}
-	
-	public void recalculateIfNeeded()
-	{
-		if(values.isEmpty() || valuesByName.isEmpty())
-		{
-			values.add(new ComparableFluidWrapper(Fluids.EMPTY));
-			values.addAll(Registry.FLUID.keys().stream()
-				.map(Registry.FLUID::get)
-				.filter(f -> f.getDefaultState().isStill())
-				.map(ComparableFluidWrapper::new)
-				.collect(Collectors.toSet()));
-			
-			valuesByName.clear();
-			for(ComparableFluidWrapper f : values)
-			{
-				valuesByName.put(f.asString(), f);
-			}
-		}
-	}
-	
-	public static class ComparableFluidWrapper implements Comparable<ComparableFluidWrapper>, StringRepresentable
-	{
-		public final Fluid wrapped;
-		
-		public ComparableFluidWrapper(Fluid fluid)
-		{
-			this.wrapped = fluid;
-		}
-		
-		public ComparableFluidWrapper(FluidState fluid)
-		{
-			this(fluid.getFluid());
-		}
-		
-		@Override
-		public int compareTo(ComparableFluidWrapper o)
-		{
-			return Registry.FLUID.getId(wrapped).compareTo(Registry.FLUID.getId(o.wrapped));
-		}
-		
-		@Override
-		public String asString()
-		{
-			return Registry.FLUID.getId(wrapped).toString().replace(":", "_tt_");
-		}
-		
-		@Override
-		public int hashCode()
-		{
-			return Registry.FLUID.getId(wrapped).hashCode();
-		}
-		
-		@Override
-		public boolean equals(Object obj)
-		{
-			return obj instanceof ComparableFluidWrapper && this.hashCode() == obj.hashCode();
-		}
+		return value.getNamespace() + "_" + value.getPath() + "_" + value.getNamespace().length();
 	}
 }
