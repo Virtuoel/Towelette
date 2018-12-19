@@ -1,7 +1,8 @@
 package virtuoel.towelette.api;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,6 +45,16 @@ public class FluidProperty extends AbstractProperty<Identifier>
 		return Registry.FLUID.getId(fluid);
 	}
 	
+	public boolean isValid(FluidState fluid)
+	{
+		return isValid(fluid.getFluid());
+	}
+	
+	public boolean isValid(Fluid fluid)
+	{
+		return getValues().contains(Registry.FLUID.getId(fluid));
+	}
+	
 	public FluidState getFluidState(BlockState state)
 	{
 		return getFluidState(getFluid(state));
@@ -83,7 +94,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 		return false;
 	}
 	
-	private final Collection<Identifier> values = new HashSet<>();
+	private final List<Identifier> values = new ArrayList<>();
 	
 	@Override
 	public Collection<Identifier> getValues()
@@ -94,7 +105,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 			values.addAll(Registry.FLUID.stream()
 				.filter(f -> f.getDefaultState().isStill())
 				.map(Registry.FLUID::getId)
-				.collect(Collectors.toSet()));
+				.collect(Collectors.toList()));
 		}
 		
 		return values;

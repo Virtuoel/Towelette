@@ -17,13 +17,13 @@ public interface Fluidloggable extends Waterloggable
 	@Override
 	default boolean method_10310(BlockView var1, BlockPos var2, BlockState var3, Fluid var4)
 	{
-		return FLUID.getFluidState(var3).isEmpty() && var4.getDefaultState().isStill();
+		return FLUID.getFluidState(var3).isEmpty() && var4.getDefaultState().isStill() && FLUID.isValid(var4);
 	}
 	
 	@Override
 	default boolean method_10311(IWorld var1, BlockPos var2, BlockState var3, FluidState var4)
 	{
-		if(var4.isStill() && FLUID.getFluidState(var3).isEmpty())
+		if(var4.isStill() && FLUID.getFluidState(var3).isEmpty() && FLUID.isValid(var4))
 		{
 			if(!var1.isClient())
 			{

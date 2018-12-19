@@ -8,7 +8,8 @@
 		"BlockStateMixin",
 		"FluidloggableMixin",
 		"FluidloggableBlockPropertyMixin",
-		"FluidloggableBlockPlacementMixin"
+		"FluidloggableBlockPlacementMixin",
+		"TagHelperMixin"
 	],
 	"injectors":
 	{
