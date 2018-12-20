@@ -4,12 +4,15 @@
 	"compatibilityLevel": "JAVA_8",
 	"mixins":
 	[
+		"BedBlockMixin",
 		"BlockMixin",
 		"BlockStateMixin",
+		"DoorBlockMixin",
 		"FluidloggableMixin",
 		"FluidloggableBlockPropertyMixin",
 		"FluidloggableBlockPlacementMixin",
-		"TagHelperMixin"
+		"TagHelperMixin",
+		"TallBlockItemMixin"
 	],
 	"injectors":
 	{

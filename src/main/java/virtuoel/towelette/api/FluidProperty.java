@@ -42,7 +42,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	
 	public Identifier of(Fluid fluid)
 	{
-		return Registry.FLUID.getId(fluid);
+		return Registry.FLUID.getId(isValid(fluid) ? fluid : Fluids.EMPTY);
 	}
 	
 	public boolean isValid(FluidState fluid)
@@ -72,14 +72,17 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	public Fluid getFluid(BlockState state)
 	{
 		Fluid ret = Fluids.EMPTY;
-		if(state.contains(this))
+		if(state != null)
 		{
-			ret = Registry.FLUID.get(state.get(this));
-		}
-		
-		if(ret == Fluids.EMPTY && state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED))
-		{
-			ret = Fluids.WATER;
+			if(state.contains(this))
+			{
+				ret = Registry.FLUID.get(state.get(this));
+			}
+			
+			if(ret == Fluids.EMPTY && state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED))
+			{
+				ret = Fluids.WATER;
+			}
 		}
 		return ret;
 	}

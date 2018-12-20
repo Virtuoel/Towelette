@@ -66,7 +66,6 @@ import net.minecraft.block.WallSkullBlock;
 import net.minecraft.block.WallTorchBlock;
 import net.minecraft.block.WeightedPressurePlateBlock;
 import net.minecraft.state.StateFactory;
-import virtuoel.towelette.hooks.FluidloggableHooks;
 
 @Mixin({
 	PressurePlateBlock.class,
@@ -137,11 +136,12 @@ import virtuoel.towelette.hooks.FluidloggableHooks;
 	TurtleEggBlock.class,
 	VineBlock.class,
 })
-public abstract class FluidloggableBlockPropertyMixin
+public abstract class FluidloggableBlockPropertyMixin extends BlockMixin
 {
+	@Override
 	@Inject(at = @At("RETURN"), method = "appendProperties(Lnet/minecraft/state/StateFactory$Builder;)V", cancellable = true)
-	private void onAppendProperties(StateFactory.Builder<Block, BlockState> var1, CallbackInfo info)
+	public void onAppendProperties(StateFactory.Builder<Block, BlockState> var1, CallbackInfo info)
 	{
-		FluidloggableHooks.hookOnAppendProperties((Block) (Object) this, var1, info);
+		super.onAppendProperties(var1, info);
 	}
 }

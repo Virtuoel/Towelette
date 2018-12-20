@@ -10,7 +10,6 @@ import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.BambooBlock;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.BellBlock;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ChorusPlantBlock;
@@ -50,7 +49,6 @@ import net.minecraft.block.WallSignBlock;
 import net.minecraft.block.WallSkullBlock;
 import net.minecraft.block.WallTorchBlock;
 import net.minecraft.item.ItemPlacementContext;
-import virtuoel.towelette.hooks.FluidloggableHooks;
 
 @Mixin({
 	BambooBlock.class,
@@ -99,11 +97,12 @@ import virtuoel.towelette.hooks.FluidloggableHooks;
 	TurtleEggBlock.class,
 	VineBlock.class,
 })
-public abstract class FluidloggableBlockPlacementMixin
+public abstract class FluidloggableBlockPlacementMixin extends BlockMixin
 {
+	@Override
 	@Inject(at = @At("RETURN"), method = "getPlacementState", cancellable = true)
-	private void getPlacementState(ItemPlacementContext context, CallbackInfoReturnable<BlockState> info)
+	public void onGetPlacementState(ItemPlacementContext context, CallbackInfoReturnable<BlockState> info)
 	{
-		FluidloggableHooks.hookGetPlacementState((Block) (Object) this, context, info);
+		super.onGetPlacementState(context, info);
 	}
 }
