@@ -23,6 +23,27 @@ public interface Fluidloggable extends Waterloggable
 	@Override
 	default boolean method_10311(IWorld var1, BlockPos var2, BlockState var3, FluidState var4)
 	{
+		return fillImpl(var1, var2, var3, var4);
+	}
+	
+	@Override
+	default Fluid method_9700(IWorld var1, BlockPos var2, BlockState var3)
+	{
+		FluidState fluidState = FLUID.getFluidState(var3);
+		if(!fluidState.isEmpty())
+		{
+			var3 = var3.with(FLUID, FLUID.of(Fluids.EMPTY));
+			if(var3.contains(Properties.WATERLOGGED))
+			{
+				var3 = var3.with(Properties.WATERLOGGED, false);
+			}
+			var1.setBlockState(var2, var3, 3);
+		}
+		return fluidState.getFluid();
+	}
+	
+	public static boolean fillImpl(IWorld var1, BlockPos var2, BlockState var3, FluidState var4)
+	{
 		if(var4.isStill() && FLUID.getFluidState(var3).isEmpty() && FLUID.isValid(var4))
 		{
 			if(!var1.isClient())
@@ -42,21 +63,5 @@ public interface Fluidloggable extends Waterloggable
 		{
 			return false;
 		}
-	}
-	
-	@Override
-	default Fluid method_9700(IWorld var1, BlockPos var2, BlockState var3)
-	{
-		FluidState fluidState = FLUID.getFluidState(var3);
-		if(!fluidState.isEmpty())
-		{
-			var3 = var3.with(FLUID, FLUID.of(Fluids.EMPTY));
-			if(var3.contains(Properties.WATERLOGGED))
-			{
-				var3 = var3.with(Properties.WATERLOGGED, false);
-			}
-			var1.setBlockState(var2, var3, 3);
-		}
-		return fluidState.getFluid();
 	}
 }
