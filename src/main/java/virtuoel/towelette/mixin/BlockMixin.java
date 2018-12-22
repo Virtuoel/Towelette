@@ -2,6 +2,7 @@ package virtuoel.towelette.mixin;
 
 import javax.annotation.Nullable;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
@@ -12,9 +13,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
@@ -31,6 +32,7 @@ import virtuoel.towelette.hooks.FluidloggableHooks;
 public abstract class BlockMixin
 {
 	@Shadow StateFactory<Block, BlockState> stateFactory;
+	@Shadow @Final Material material;
 	@Shadow abstract BlockState getDefaultState();
 	@Shadow abstract void setDefaultState(BlockState state);
 	@Shadow void onPlaced(World var1, BlockPos var2, BlockState var3, @Nullable LivingEntity var4, ItemStack var5)
@@ -53,11 +55,7 @@ public abstract class BlockMixin
 	@Inject(at = @At("HEAD"), method = "getStateForNeighborUpdate", cancellable = true)
 	public void onGetStateForNeighborUpdate(BlockState state, Direction dir, BlockState var3, IWorld world, BlockPos var5, BlockPos var6, CallbackInfoReturnable<BlockState> info)
 	{
-		Fluid fluid = FluidProperty.FLUID.getFluid(state);
-		if(fluid != Fluids.EMPTY)
-		{
-			world.getFluidTickScheduler().schedule(var5, fluid, fluid.method_15789(world));
-		}
+		FluidloggableHooks.hookScheduleFluidTick(state, world, var5);
 	}
 	
 	@Overwrite

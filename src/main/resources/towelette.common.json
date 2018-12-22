@@ -8,12 +8,14 @@
 		"BlockMixin",
 		"BlockStateMixin",
 		"DoorBlockMixin",
-		"FluidloggableMixin",
 		"FluidloggableBlockPropertyMixin",
 		"FluidloggableBlockPlacementMixin",
+		"FluidloggableMixin",
+		"FluidloggableNeighborUpdateMixin",
 		"SlabBlockMixin",
 		"TagHelperMixin",
-		"TallBlockItemMixin"
+		"TallBlockItemMixin",
+		"TrapdoorBlockMixin"
 	],
 	"injectors":
 	{

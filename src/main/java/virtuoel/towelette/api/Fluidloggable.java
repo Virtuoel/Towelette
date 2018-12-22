@@ -15,19 +15,19 @@ public interface Fluidloggable extends Waterloggable
 	public static final FluidProperty FLUID = FluidProperty.FLUID;
 	
 	@Override
-	default boolean method_10310(BlockView var1, BlockPos var2, BlockState var3, Fluid var4)
+	default boolean canFillWithFluid(BlockView var1, BlockPos var2, BlockState var3, Fluid var4)
 	{
 		return FLUID.getFluidState(var3).isEmpty() && var4.getDefaultState().isStill() && FLUID.isValid(var4);
 	}
 	
 	@Override
-	default boolean method_10311(IWorld var1, BlockPos var2, BlockState var3, FluidState var4)
+	default boolean tryFillWithFluid(IWorld var1, BlockPos var2, BlockState var3, FluidState var4)
 	{
 		return fillImpl(var1, var2, var3, var4);
 	}
 	
 	@Override
-	default Fluid method_9700(IWorld var1, BlockPos var2, BlockState var3)
+	default Fluid tryDrainFluid(IWorld var1, BlockPos var2, BlockState var3)
 	{
 		FluidState fluidState = FLUID.getFluidState(var3);
 		if(!fluidState.isEmpty())

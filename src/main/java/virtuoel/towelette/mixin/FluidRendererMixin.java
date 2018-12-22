@@ -12,7 +12,7 @@ import net.minecraft.block.GlassBlock;
 import net.minecraft.block.StainedGlassBlock;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
-import net.minecraft.client.render.block.BlockLiquidRenderer;
+import net.minecraft.client.render.block.FluidRenderer;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.Fluid;
@@ -26,8 +26,8 @@ import net.minecraft.world.ExtendedBlockView;
 import virtuoel.towelette.hooks.BlockLiquidRendererHooks;
 import virtuoel.towelette.util.FluidUtils;
 
-@Mixin(BlockLiquidRenderer.class)
-public abstract class BlockLiquidRendererMixin
+@Mixin(FluidRenderer.class)
+public abstract class FluidRendererMixin
 {
 	@Inject(method = "onResourceReload()V", at = @At("HEAD"))
 	protected void onOnResourceReload(CallbackInfo ci)
@@ -39,8 +39,8 @@ public abstract class BlockLiquidRendererMixin
 		}
 	}
 	
-	@Inject(method = "method_3347", at = @At("HEAD"), cancellable = true)
-	public void method_3347(ExtendedBlockView var1, BlockPos var2, BufferBuilder var3, FluidState var4, CallbackInfoReturnable<Boolean> cir)
+	@Inject(method = "tesselate", at = @At("HEAD"), cancellable = true)
+	public void onTesselate(ExtendedBlockView var1, BlockPos var2, BufferBuilder var3, FluidState var4, CallbackInfoReturnable<Boolean> cir)
 	{
 		Triple<Sprite, Sprite, Sprite> spriteData = BlockLiquidRendererHooks.FLUID_SPRITE_MAP.get(Registry.FLUID.getId(var4.getFluid()));
 		Sprite stillSprite = spriteData.getLeft(); // var6[0]
