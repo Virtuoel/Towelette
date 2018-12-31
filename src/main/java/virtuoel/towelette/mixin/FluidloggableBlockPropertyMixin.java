@@ -54,6 +54,7 @@ import net.minecraft.block.StandingBannerBlock;
 import net.minecraft.block.StandingSignBlock;
 import net.minecraft.block.SugarCaneBlock;
 import net.minecraft.block.SweetBerryBushBlock;
+import net.minecraft.block.TallPlantBlock;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.TripwireBlock;
 import net.minecraft.block.TripwireHookBlock;
@@ -121,7 +122,7 @@ import net.minecraft.state.StateFactory;
 //	StemAttachedBlock.class,
 //	StemBlock.class,
 	SweetBerryBushBlock.class,
-//	TallPlantBlock.class,
+	TallPlantBlock.class,
 //	RedstoneWireBlock.class,
 	ScaffoldingBlock.class,
 	SlabBlock.class,

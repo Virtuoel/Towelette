@@ -12,9 +12,11 @@
 		"FluidloggableBlockPlacementMixin",
 		"FluidloggableMixin",
 		"FluidloggableNeighborUpdateMixin",
+		"PistonBlockEntityMixin",
 		"SlabBlockMixin",
 		"TagHelperMixin",
 		"TallBlockItemMixin",
+		"TallPlantMixin",
 		"TrapdoorBlockMixin"
 	],
 	"injectors":
