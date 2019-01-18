@@ -16,6 +16,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.BlockHitResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
@@ -26,7 +27,7 @@ import virtuoel.towelette.hooks.FluidloggableHooks;
 public abstract class DoorBlockMixin extends BlockMixin
 {
 	@Inject(at = @At("HEAD"), method = "activate", cancellable = true)
-	public void onActivate(BlockState blockState_1, World world_1, BlockPos blockPos_1, PlayerEntity playerEntity_1, Hand hand_1, Direction direction_1, float float_1, float float_2, float float_3, CallbackInfoReturnable<Boolean> info)
+	public void onActivate(BlockState blockState_1, World world_1, BlockPos blockPos_1, PlayerEntity playerEntity_1, Hand hand_1, BlockHitResult blockHitResult_1, CallbackInfoReturnable<Boolean> info)
 	{
 		if(material != Material.METAL)
 		{

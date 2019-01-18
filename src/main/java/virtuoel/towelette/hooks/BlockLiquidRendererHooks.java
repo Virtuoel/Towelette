@@ -24,22 +24,22 @@ public class BlockLiquidRendererHooks
 	// private static methods from BlockLiquidRenderer
 	// TODO make proper names
 	
-	public static boolean doesFluidMatch(BlockView view, BlockPos pos, Direction dir, FluidState fluid)
+	public static boolean doesFluidMatch(BlockView blockView_1, BlockPos blockPos_1, Direction direction_1, FluidState fluidState_1)
 	{
-		BlockPos offset = pos.offset(dir);
-		FluidState other = view.getFluidState(offset);
-		return other.getFluid().matchesType(fluid.getFluid());
+		BlockPos offset = blockPos_1.offset(direction_1);
+		FluidState other = blockView_1.getFluidState(offset);
+		return other.getFluid().matchesType(fluidState_1.getFluid());
 	}
 	
-	public static boolean voxelCullingMaybe(BlockView view, BlockPos pos, Direction dir, float height)
+	public static boolean voxelCullingMaybe(BlockView blockView_1, BlockPos blockPos_1, Direction direction_1, float height)
 	{
-		BlockPos offset = pos.offset(dir);
-		BlockState block = view.getBlockState(offset);
-		if(block.isFullBoundsCubeForCulling())
+		BlockPos blockPos_2 = blockPos_1.offset(direction_1);
+		BlockState blockState_1 = blockView_1.getBlockState(blockPos_2);
+		if(blockState_1.isFullBoundsCubeForCulling())
 		{
-			VoxelShape heightCube = VoxelShapes.cube(0.0D, 0.0D, 0.0D, 1.0D, height, 1.0D);
-			VoxelShape boundsMaybe = block.method_11615(view, offset);
-			return VoxelShapes.method_1083(heightCube, boundsMaybe, dir);
+			VoxelShape voxelShape_1 = VoxelShapes.cube(0.0D, 0.0D, 0.0D, 1.0D, height, 1.0D);
+			VoxelShape voxelShape_2 = blockState_1.method_11615(blockView_1, blockPos_2);
+			return VoxelShapes.method_1083(voxelShape_1, voxelShape_2, direction_1);
 		}
 		else
 		{
@@ -47,50 +47,51 @@ public class BlockLiquidRendererHooks
 		}
 	}
 	
-	public static int packedLightMaybe(ExtendedBlockView var1, BlockPos var2)
+	public static int packedLightMaybe(ExtendedBlockView extendedBlockView_1, BlockPos blockPos_1)
 	{
-		int var3 = var1.getLightmapIndex(var2, 0);
-		int var4 = var1.getLightmapIndex(var2.up(), 0);
-		int var5 = var3 & 255;
-		int var6 = var4 & 255;
-		int var7 = var3 >> 16 & 255;
-		int var8 = var4 >> 16 & 255;
-		return (var5 > var6 ? var5 : var6) | (var7 > var8 ? var7 : var8) << 16;
+		int int_1 = extendedBlockView_1.getLightmapIndex(blockPos_1, 0);
+		int int_2 = extendedBlockView_1.getLightmapIndex(blockPos_1.up(), 0);
+		int int_3 = int_1 & 255;
+		int int_4 = int_2 & 255;
+		int int_5 = int_1 >> 16 & 255;
+		int int_6 = int_2 >> 16 & 255;
+		return (int_3 > int_4 ? int_3 : int_4) | (int_5 > int_6 ? int_5 : int_6) << 16;
 	}
 	
-	public static float fluidHeightMaybe(BlockView var1, BlockPos var2, Fluid var3)
+	public static float fluidHeightMaybe(BlockView blockView_1, BlockPos blockPos_1, Fluid fluid_1)
 	{
-		int var4 = 0;
-		float var5 = 0.0F;
+		int int_1 = 0;
+		float float_1 = 0.0F;
 		
-		for(int var6 = 0; var6 < 4; ++var6)
+		for(int int_2 = 0; int_2 < 4; ++int_2)
 		{
-			BlockPos var7 = var2.add(-(var6 & 1), 0, -(var6 >> 1 & 1));
-			if(var1.getFluidState(var7.up()).getFluid().matchesType(var3))
+			BlockPos blockPos_2 = blockPos_1.add(-(int_2 & 1), 0, -(int_2 >> 1 & 1));
+			if(blockView_1.getFluidState(blockPos_2.up()).getFluid().matchesType(fluid_1))
 			{
 				return 1.0F;
 			}
 			
-			FluidState var8 = var1.getFluidState(var7);
-			if(var8.getFluid().matchesType(var3))
+			FluidState fluidState_1 = blockView_1.getFluidState(blockPos_2);
+			if(fluidState_1.getFluid().matchesType(fluid_1))
 			{
-				if(var8.method_15763() >= 0.8F)
+				float float_2 = fluidState_1.method_15763(blockView_1, blockPos_2);
+				if(float_2 >= 0.8F)
 				{
-					var5 += var8.method_15763() * 10.0F;
-					var4 += 10;
+					float_1 += float_2 * 10.0F;
+					int_1 += 10;
 				}
 				else
 				{
-					var5 += var8.method_15763();
-					++var4;
+					float_1 += float_2;
+					++int_1;
 				}
 			}
-			else if(!var1.getBlockState(var7).getMaterial().method_15799())
+			else if(!blockView_1.getBlockState(blockPos_2).getMaterial().method_15799())
 			{
-				++var4;
+				++int_1;
 			}
 		}
 		
-		return var5 / (float) var4;
+		return float_1 / (float) int_1;
 	}
 }
