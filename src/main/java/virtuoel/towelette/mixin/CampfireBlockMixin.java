@@ -9,6 +9,8 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.CampfireBlock;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
@@ -25,9 +27,24 @@ public class CampfireBlockMixin
 		{
 			iWorld_1.setBlockState(blockPos_1, blockState_1.with(Properties.WATERLOGGED, true).with(Properties.LIT, false).with(FluidProperty.FLUID, FluidProperty.FLUID.of(Fluids.WATER)), 3);
 		}
-		else
+		else if(Fluidloggable.fillImpl(iWorld_1, blockPos_1, blockState_1.with(Properties.LIT, false), fluidState_1))
 		{
-			info.setReturnValue(Fluidloggable.fillImpl(iWorld_1, blockPos_1, blockState_1, fluidState_1));
+			if(blockState_1.get(Properties.LIT))
+			{
+				if(iWorld_1.isClient())
+				{
+					boolean signal = blockState_1.get(Properties.SIGNAL_FIRE);
+					for(int int_1 = 0; int_1 < 20; ++int_1)
+					{
+						CampfireBlock.spawnSmokeParticle(iWorld_1.getWorld(), blockPos_1, signal, true);
+					}
+				}
+				else
+				{
+					iWorld_1.playSound(null, blockPos_1, SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.BLOCK, 1.0F, 1.0F);
+				}
+			}
+			info.setReturnValue(true);
 		}
 	}
 }
