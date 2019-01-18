@@ -15,6 +15,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.BrewingStandBlock;
 import net.minecraft.block.CactusBlock;
 import net.minecraft.block.CakeBlock;
+import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ChorusFlowerBlock;
 import net.minecraft.block.ChorusPlantBlock;
@@ -81,6 +82,7 @@ import net.minecraft.state.StateFactory;
 	WallSkullBlock.class,
 	BellBlock.class,
 	BrewingStandBlock.class,
+	CampfireBlock.class,
 	ChestBlock.class,
 	ConduitBlock.class,
 	DaylightDetectorBlock.class,

@@ -16,6 +16,7 @@ import net.minecraft.block.BellBlock;
 import net.minecraft.block.BrewingStandBlock;
 import net.minecraft.block.CactusBlock;
 import net.minecraft.block.CakeBlock;
+import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.CarpetBlock;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ChorusFlowerBlock;
@@ -71,6 +72,7 @@ import virtuoel.towelette.api.Fluidloggable;
 	AbstractSkullBlock.class,
 	BellBlock.class,
 	BrewingStandBlock.class,
+	CampfireBlock.class,
 	ChestBlock.class,
 	ConduitBlock.class,
 	DaylightDetectorBlock.class,

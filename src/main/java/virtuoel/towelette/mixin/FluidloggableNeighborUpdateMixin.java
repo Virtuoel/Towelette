@@ -6,11 +6,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.AbstractPressurePlateBlock;
+import net.minecraft.block.AttachedStemBlock;
 import net.minecraft.block.BambooBlock;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.BellBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CakeBlock;
+import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.CarpetBlock;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ChorusPlantBlock;
@@ -35,7 +37,6 @@ import net.minecraft.block.SnowBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.StandingBannerBlock;
 import net.minecraft.block.StandingSignBlock;
-import net.minecraft.block.StemAttachedBlock;
 import net.minecraft.block.SugarCaneBlock;
 import net.minecraft.block.TallPlantBlock;
 import net.minecraft.block.TorchBlock;
@@ -58,6 +59,7 @@ import net.minecraft.world.IWorld;
 	StandingBannerBlock.class,
 	WallBannerBlock.class,
 	BellBlock.class,
+	CampfireBlock.class,
 	ChestBlock.class,
 	StandingSignBlock.class,
 	WallSignBlock.class,
@@ -82,7 +84,7 @@ import net.minecraft.world.IWorld;
 	LanternBlock.class,
 	PlantBlock.class,
 	SeaPickleBlock.class,
-	StemAttachedBlock.class,
+	AttachedStemBlock.class,
 	TallPlantBlock.class,
 	SaplingBambooBlock.class,
 	ScaffoldingBlock.class,

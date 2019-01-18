@@ -11,6 +11,7 @@ import net.minecraft.block.BambooBlock;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.BellBlock;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ChorusPlantBlock;
 import net.minecraft.block.CocoaBlock;
@@ -57,6 +58,7 @@ import net.minecraft.item.ItemPlacementContext;
 	SkullBlock.class,
 	WallSkullBlock.class,
 	BellBlock.class,
+	CampfireBlock.class,
 	ChestBlock.class,
 	ConduitBlock.class,
 	EnderChestBlock.class,
