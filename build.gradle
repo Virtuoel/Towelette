@@ -1,6 +1,19 @@
 plugins {
 	id "fabric-loom" version "0.2.0-SNAPSHOT"
 	id "com.matthewprenger.cursegradle" version "1.1.2"
+	id "maven-publish"
+}
+
+repositories {
+	mavenLocal()
+	maven {
+		name = "CurseForge"
+		url = "https://minecraft.curseforge.com/api/maven"
+	}
+	maven {
+		name = "JitPack"
+		url = "https://jitpack.io"
+	}
 }
 
 sourceCompatibility = 1.8
@@ -13,12 +26,22 @@ minecraft {
 	
 }
 
+dependencies {
+	minecraft "com.mojang:minecraft:${mc_version}"
+	mappings "net.fabricmc:yarn:${yarn_mappings}"
+	
+	modCompile "net.fabricmc:fabric-loader:${loader_version}"
+	modCompile "net.fabricmc:fabric:${fabric_version}"
+	
+	compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
+}
+
 jar {
 	manifest
 	{
 		attributes "Implementation-Title": project.archivesBaseName
 		attributes "Implementation-Version": project.version
-		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}".toLowerCase(Locale.ROOT)
+		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}"
 		attributes "Built-On-Minecraft": "${project.mc_version}"
 		attributes "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
 	}
@@ -30,21 +53,11 @@ task devJar(type: Jar) {
 	{
 		attributes "Implementation-Title": project.archivesBaseName + "-dev"
 		attributes "Implementation-Version": project.version
-		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}:dev".toLowerCase(Locale.ROOT)
+		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}:dev"
 		attributes "Built-On-Minecraft": "${project.mc_version}"
 		attributes "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
 	}
 	classifier = "dev"
-}
-
-dependencies {
-	minecraft "com.mojang:minecraft:${mc_version}"
-	mappings "net.fabricmc:yarn:${yarn_mappings}"
-	
-	modCompile "net.fabricmc:fabric-loader:${loader_version}"
-	modCompile "net.fabricmc:fabric:${fabric_version}"
-	
-	compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -53,11 +66,26 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 	{
 		attributes "Implementation-Title": project.archivesBaseName + "-sources"
 		attributes "Implementation-Version": project.version
-		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}:sources".toLowerCase(Locale.ROOT)
+		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}:sources"
 		attributes "Built-On-Minecraft": "${project.mc_version}"
 		attributes "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
 	}
 	classifier = "sources"
+}
+
+publishing {
+	tasks.publish.dependsOn build
+	publications {
+		mavenJava(MavenPublication) {
+			artifact jar
+			artifact devJar
+			artifact sourcesJar
+		}
+	}
+	
+	repositories {
+		mavenLocal()
+	}
 }
 
 curseforge {
