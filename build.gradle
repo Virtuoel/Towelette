@@ -24,17 +24,17 @@ jar {
 	}
 }
 
-task deobfJar(type: Jar) {
+task devJar(type: Jar) {
 	from sourceSets.main.output
 	manifest
 	{
-		attributes "Implementation-Title": project.archivesBaseName + "-deobf"
+		attributes "Implementation-Title": project.archivesBaseName + "-dev"
 		attributes "Implementation-Version": project.version
-		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}:deobf".toLowerCase(Locale.ROOT)
+		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}:dev".toLowerCase(Locale.ROOT)
 		attributes "Built-On-Minecraft": "${project.mc_version}"
 		attributes "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
 	}
-	classifier = "deobf"
+	classifier = "dev"
 }
 
 dependencies {
@@ -44,11 +44,19 @@ dependencies {
 	modCompile "net.fabricmc:fabric-loader:${loader_version}"
 	modCompile "net.fabricmc:fabric:${fabric_version}"
 	
-	compile "com.google.code.findbugs:jsr305:${findbugs_version}"
+	compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
 	from sourceSets.main.allSource
+	manifest
+	{
+		attributes "Implementation-Title": project.archivesBaseName + "-sources"
+		attributes "Implementation-Version": project.version
+		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}:sources".toLowerCase(Locale.ROOT)
+		attributes "Built-On-Minecraft": "${project.mc_version}"
+		attributes "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
+	}
 	classifier = "sources"
 }
 
@@ -71,8 +79,12 @@ curseforge {
 			releaseType = project.release_type
 			addGameVersion project.release_version
 			
-			addArtifact(deobfJar) {
+			addArtifact(devJar) {
 				displayName = "${mod_name}-${mc_version}-${mod_version}-dev.jar"
+			}
+			
+			addArtifact(sourcesJar) {
+				displayName = "${mod_name}-${mc_version}-${mod_version}-sources.jar"
 			}
 		}
 		options {
