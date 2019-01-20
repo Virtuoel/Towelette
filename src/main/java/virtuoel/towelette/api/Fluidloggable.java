@@ -15,46 +15,46 @@ public interface Fluidloggable extends Waterloggable
 	public static final FluidProperty FLUID = FluidProperty.FLUID;
 	
 	@Override
-	default boolean canFillWithFluid(BlockView var1, BlockPos var2, BlockState var3, Fluid var4)
+	default boolean canFillWithFluid(BlockView blockView_1, BlockPos blockPos_1, BlockState blockState_1, Fluid fluid_1)
 	{
-		return FLUID.getFluidState(var3).isEmpty() && var4.getDefaultState().isStill() && FLUID.isValid(var4);
+		return FLUID.getFluidState(blockState_1).isEmpty() && fluid_1.getDefaultState().isStill() && FLUID.isValid(fluid_1);
 	}
 	
 	@Override
-	default boolean tryFillWithFluid(IWorld var1, BlockPos var2, BlockState var3, FluidState var4)
+	default boolean tryFillWithFluid(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, FluidState fluidState_1)
 	{
-		return fillImpl(var1, var2, var3, var4);
+		return fillImpl(iWorld_1, blockPos_1, blockState_1, fluidState_1);
 	}
 	
 	@Override
-	default Fluid tryDrainFluid(IWorld var1, BlockPos var2, BlockState var3)
+	default Fluid tryDrainFluid(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1)
 	{
-		FluidState fluidState = FLUID.getFluidState(var3);
+		FluidState fluidState = FLUID.getFluidState(blockState_1);
 		if(!fluidState.isEmpty())
 		{
-			var3 = var3.with(FLUID, FLUID.of(Fluids.EMPTY));
-			if(var3.contains(Properties.WATERLOGGED))
+			blockState_1 = blockState_1.with(FLUID, FLUID.of(Fluids.EMPTY));
+			if(blockState_1.contains(Properties.WATERLOGGED))
 			{
-				var3 = var3.with(Properties.WATERLOGGED, false);
+				blockState_1 = blockState_1.with(Properties.WATERLOGGED, false);
 			}
-			var1.setBlockState(var2, var3, 3);
+			iWorld_1.setBlockState(blockPos_1, blockState_1, 3);
 		}
 		return fluidState.getFluid();
 	}
 	
-	public static boolean fillImpl(IWorld var1, BlockPos var2, BlockState var3, FluidState var4)
+	public static boolean fillImpl(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, FluidState fluidState_1)
 	{
-		if(var4.isStill() && FLUID.getFluidState(var3).isEmpty() && FLUID.isValid(var4))
+		if(fluidState_1.isStill() && FLUID.getFluidState(blockState_1).isEmpty() && FLUID.isValid(fluidState_1))
 		{
-			if(!var1.isClient())
+			if(!iWorld_1.isClient())
 			{
-				final Fluid fluid = var4.getFluid();
-				if(fluid == Fluids.WATER && var3.contains(Properties.WATERLOGGED))
+				final Fluid fluid = fluidState_1.getFluid();
+				if(fluid == Fluids.WATER && blockState_1.contains(Properties.WATERLOGGED))
 				{
-					var3 = var3.with(Properties.WATERLOGGED, true);
+					blockState_1 = blockState_1.with(Properties.WATERLOGGED, true);
 				}
-				var1.setBlockState(var2, var3.with(FLUID, FLUID.of(var4)), 3);
-				var1.getFluidTickScheduler().schedule(var2, fluid, fluid.method_15789(var1));
+				iWorld_1.setBlockState(blockPos_1, blockState_1.with(FLUID, FLUID.of(fluidState_1)), 3);
+				iWorld_1.getFluidTickScheduler().schedule(blockPos_1, fluid, fluid.method_15789(iWorld_1));
 			}
 			
 			return true;

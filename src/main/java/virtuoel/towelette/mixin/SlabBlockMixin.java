@@ -44,8 +44,8 @@ public abstract class SlabBlockMixin
 	}
 	
 	@Redirect(method = "tryFillWithFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Waterloggable;tryFillWithFluid(Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)Z"))
-	public boolean tryFillWithFluidProxy(Waterloggable obj, IWorld var1, BlockPos var2, BlockState var3, FluidState var4)
+	public boolean tryFillWithFluidProxy(Waterloggable obj, IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, FluidState fluidState_1)
 	{
-		return Fluidloggable.fillImpl(var1, var2, var3, var4);
+		return Fluidloggable.fillImpl(iWorld_1, blockPos_1, blockState_1, fluidState_1);
 	}
 }

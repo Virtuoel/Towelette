@@ -24,39 +24,39 @@ public abstract class BedBlockMixin extends BlockMixin
 {
 	@Override
 	@Overwrite
-	public void onBreak(World var1, BlockPos var2, BlockState var3, PlayerEntity var4)
+	public void onBreak(World world_1, BlockPos blockPos_1, BlockState blockState_1, PlayerEntity playerEntity_1)
 	{
-		BedPart var5 = var3.get(Properties.BED_PART);
-		BlockPos var6 = var2.offset(var3.get(Properties.FACING_HORIZONTAL), var5 == BedPart.FOOT ? 1 : -1);
-		BlockState var7 = var1.getBlockState(var6);
-		if(var7.getBlock() == (BedBlock) (Object) this && var7.get(Properties.BED_PART) != var5)
+		BedPart bedPart_1 = blockState_1.get(Properties.BED_PART);
+		BlockPos blockPos_2 = blockPos_1.offset(blockState_1.get(Properties.FACING_HORIZONTAL), bedPart_1 == BedPart.FOOT ? 1 : -1);
+		BlockState blockState_2 = world_1.getBlockState(blockPos_2);
+		if(blockState_2.getBlock() == (BedBlock) (Object) this && blockState_2.get(Properties.BED_PART) != bedPart_1)
 		{
-			var1.setBlockState(var6, var1.getFluidState(var6).getBlockState(), 35);
-			var1.fireWorldEvent(var4, 2001, var6, Block.getRawIdFromState(var7));
-			if(!var1.isClient && !var4.isCreative())
+			world_1.setBlockState(blockPos_2, world_1.getFluidState(blockPos_2).getBlockState(), 35);
+			world_1.fireWorldEvent(playerEntity_1, 2001, blockPos_2, Block.getRawIdFromState(blockState_2));
+			if(!world_1.isClient && !playerEntity_1.isCreative())
 			{
-				ItemStack var8 = var4.getMainHandStack();
-				Block.dropStacks(var3, var1, var2, null, var4, var8);
-				Block.dropStacks(var7, var1, var6, null, var4, var8);
+				ItemStack itemStack_1 = playerEntity_1.getMainHandStack();
+				Block.dropStacks(blockState_1, world_1, blockPos_1, null, playerEntity_1, itemStack_1);
+				Block.dropStacks(blockState_2, world_1, blockPos_2, null, playerEntity_1, itemStack_1);
 			}
 			
-			var4.incrementStat(Stats.MINED.method_14956((BedBlock) (Object) this));
+			playerEntity_1.incrementStat(Stats.MINED.method_14956((BedBlock) (Object) this));
 		}
 		
-		super.onBreak(var1, var2, var3, var4);
+		super.onBreak(world_1, blockPos_1, blockState_1, playerEntity_1);
 	}
 	
 	@Override
 	@Overwrite
-	public void onPlaced(World var1, BlockPos var2, BlockState var3, @Nullable LivingEntity var4, ItemStack var5)
+	public void onPlaced(World world_1, BlockPos blockPos_1, BlockState blockState_1, @Nullable LivingEntity livingEntity_1, ItemStack itemStack_1)
 	{
-		super.onPlaced(var1, var2, var3, var4, var5);
-		if(!var1.isClient)
+		super.onPlaced(world_1, blockPos_1, blockState_1, livingEntity_1, itemStack_1);
+		if(!world_1.isClient)
 		{
-			BlockPos var6 = var2.offset(var3.get(Properties.FACING_HORIZONTAL));
-			var1.setBlockState(var6, var3.with(Properties.BED_PART, BedPart.HEAD).with(FluidProperty.FLUID, FluidProperty.FLUID.of(var1.getFluidState(var6))), 3);
-			var1.updateNeighbors(var2, Blocks.AIR);
-			var3.updateNeighborStates(var1, var2, 3);
+			BlockPos blockPos_2 = blockPos_1.offset(blockState_1.get(Properties.FACING_HORIZONTAL));
+			world_1.setBlockState(blockPos_2, blockState_1.with(Properties.BED_PART, BedPart.HEAD).with(FluidProperty.FLUID, FluidProperty.FLUID.of(world_1.getFluidState(blockPos_2))), 3);
+			world_1.updateNeighbors(blockPos_1, Blocks.AIR);
+			blockState_1.updateNeighborStates(world_1, blockPos_1, 3);
 		}
 	}
 }

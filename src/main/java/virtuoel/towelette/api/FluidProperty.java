@@ -87,11 +87,11 @@ public class FluidProperty extends AbstractProperty<Identifier>
 		return ret;
 	}
 	
-	public boolean tryAppendPropertySafely(StateFactory.Builder<Block, BlockState> var1)
+	public boolean tryAppendPropertySafely(StateFactory.Builder<Block, BlockState> builder)
 	{
-		if(ReflectionUtil.<Map<String, ?>, Boolean>test(map -> !map.containsKey(getName()), var1, ReflectionUtil.stateFactory$Builder$propertyMap, false))
+		if(ReflectionUtil.<Map<String, ?>, Boolean>test(map -> !map.containsKey(getName()), builder, ReflectionUtil.stateFactory$Builder$propertyMap, false))
 		{
-			var1.with(this);
+			builder.with(this);
 			return true;
 		}
 		return false;

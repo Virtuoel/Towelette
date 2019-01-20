@@ -35,15 +35,15 @@ public abstract class BlockMixin
 	@Shadow @Final Material material;
 	@Shadow abstract BlockState getDefaultState();
 	@Shadow abstract void setDefaultState(BlockState state);
-	@Shadow void onPlaced(World var1, BlockPos var2, BlockState var3, @Nullable LivingEntity var4, ItemStack var5)
+	@Shadow void onPlaced(World world_1, BlockPos blockPos_1, BlockState blockState_1, @Nullable LivingEntity livingEntity_1, ItemStack itemStack_1)
 	{}
-	@Shadow void onBreak(World var1, BlockPos var2, BlockState var3, PlayerEntity var4)
+	@Shadow void onBreak(World world_1, BlockPos blockPos_1, BlockState blockState_1, PlayerEntity playerEntity_1)
 	{}
-	@Shadow BlockState getStateForNeighborUpdate(BlockState var1, Direction var2, BlockState var3, IWorld var4, BlockPos var5, BlockPos var6)
-	{ return var1; }
+	@Shadow BlockState getStateForNeighborUpdate(BlockState blockState_1, Direction direction_1, BlockState blockState_2, IWorld iWorld_1, BlockPos blockPos_1, BlockPos blockPos_2)
+	{ return blockState_1; }
 	
 	@Inject(at = @At("RETURN"), method = "<init>")
-	private void onConstruct(Block.Settings var1, CallbackInfo info)
+	private void onConstruct(Block.Settings block$Settings_1, CallbackInfo info)
 	{
 		BlockState defaultState = getDefaultState();
 		if(defaultState.contains(FluidProperty.FLUID))
@@ -53,9 +53,9 @@ public abstract class BlockMixin
 	}
 	
 	@Inject(at = @At("HEAD"), method = "getStateForNeighborUpdate", cancellable = true)
-	public void onGetStateForNeighborUpdate(BlockState state, Direction dir, BlockState var3, IWorld world, BlockPos var5, BlockPos var6, CallbackInfoReturnable<BlockState> info)
+	public void onGetStateForNeighborUpdate(BlockState blockState_1, Direction direction_1, BlockState blockState_2, IWorld iWorld_1, BlockPos blockPos_1, BlockPos blockPos_2, CallbackInfoReturnable<BlockState> info)
 	{
-		FluidloggableHooks.hookScheduleFluidTick(state, world, var5);
+		FluidloggableHooks.hookScheduleFluidTick(blockState_1, iWorld_1, blockPos_1);
 	}
 	
 	@Overwrite
@@ -71,8 +71,8 @@ public abstract class BlockMixin
 	}
 	
 	@Inject(at = @At("RETURN"), method = "appendProperties", cancellable = true)
-	public void onAppendProperties(StateFactory.Builder<Block, BlockState> var1, CallbackInfo info)
+	public void onAppendProperties(StateFactory.Builder<Block, BlockState> builder, CallbackInfo info)
 	{
-		FluidloggableHooks.hookOnAppendProperties((Block) (Object) this, var1, info);
+		FluidloggableHooks.hookOnAppendProperties((Block) (Object) this, builder, info);
 	}
 }

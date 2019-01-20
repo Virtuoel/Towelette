@@ -113,8 +113,8 @@ public abstract class FluidloggableNeighborUpdateMixin extends BlockMixin
 {
 	@Override
 	@Inject(at = @At("HEAD"), method = "getStateForNeighborUpdate", cancellable = true)
-	public void onGetStateForNeighborUpdate(BlockState state, Direction dir, BlockState var3, IWorld world, BlockPos var5, BlockPos var6, CallbackInfoReturnable<BlockState> info)
+	public void onGetStateForNeighborUpdate(BlockState blockState_1, Direction direction_1, BlockState blockState_2, IWorld iWorld_1, BlockPos blockPos_1, BlockPos blockPos_2, CallbackInfoReturnable<BlockState> info)
 	{
-		super.onGetStateForNeighborUpdate(state, dir, var3, world, var5, var6, info);
+		super.onGetStateForNeighborUpdate(blockState_1, direction_1, blockState_2, iWorld_1, blockPos_1, blockPos_2, info);
 	}
 }

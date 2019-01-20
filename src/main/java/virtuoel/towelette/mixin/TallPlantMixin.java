@@ -26,9 +26,9 @@ public abstract class TallPlantMixin extends BlockMixin
 	
 	@Override
 	@Overwrite
-	public void onPlaced(World var1, BlockPos var2, BlockState var3, LivingEntity var4, ItemStack var5)
+	public void onPlaced(World world_1, BlockPos blockPos_1, BlockState blockState_1, LivingEntity livingEntity_1, ItemStack itemStack_1)
 	{
-		super.onPlaced(var1, var2, var3, var4, var5);
-		FluidloggableHooks.hookTallBlockOnPlaced(var1, var2, var3, var4, var5);
+		super.onPlaced(world_1, blockPos_1, blockState_1, livingEntity_1, itemStack_1);
+		FluidloggableHooks.hookTallBlockOnPlaced(world_1, blockPos_1, blockState_1, livingEntity_1, itemStack_1);
 	}
 }

@@ -43,11 +43,11 @@ public class FluidloggableHooks
 		}
 	}
 	
-	public static void hookOnAppendProperties(Block self, StateFactory.Builder<Block, BlockState> var1, CallbackInfo info)
+	public static void hookOnAppendProperties(Block self, StateFactory.Builder<Block, BlockState> builder, CallbackInfo info)
 	{
 		if(self instanceof Fluidloggable)
 		{
-			FluidProperty.FLUID.tryAppendPropertySafely(var1);
+			FluidProperty.FLUID.tryAppendPropertySafely(builder);
 		}
 	}
 	
@@ -62,29 +62,28 @@ public class FluidloggableHooks
 	
 	public static void hookTallBlockOnBreak(Block self, World world_1, BlockPos blockPos_1, BlockState blockState_1, PlayerEntity playerEntity_1)
 	{
-		DoubleBlockHalf var5 = blockState_1.get(Properties.DOUBLE_BLOCK_HALF);
-		BlockPos var6 = var5 == DoubleBlockHalf.LOWER ? blockPos_1.up() : blockPos_1.down();
-		BlockState var7 = world_1.getBlockState(var6);
-		if(var7.getBlock() ==  self && var7.get(Properties.DOUBLE_BLOCK_HALF) != var5)
+		DoubleBlockHalf doubleBlockHalf_1 = (DoubleBlockHalf) blockState_1.get(Properties.DOUBLE_BLOCK_HALF);
+		BlockPos blockPos_2 = doubleBlockHalf_1 == DoubleBlockHalf.LOWER ? blockPos_1.up() : blockPos_1.down();
+		BlockState blockState_2 = world_1.getBlockState(blockPos_2);
+		if(blockState_2.getBlock() == self && blockState_2.get(Properties.DOUBLE_BLOCK_HALF) != doubleBlockHalf_1)
 		{
-			world_1.setBlockState(var6, world_1.getFluidState(var6).getBlockState(), 35);
-			world_1.fireWorldEvent(playerEntity_1, 2001, var6, Block.getRawIdFromState(var7));
+			world_1.setBlockState(blockPos_2, world_1.getFluidState(blockPos_2).getBlockState(), 35);
+			world_1.fireWorldEvent(playerEntity_1, 2001, blockPos_2, Block.getRawIdFromState(blockState_2));
 			if(!world_1.isClient && !playerEntity_1.isCreative())
 			{
-				ItemStack var8 = playerEntity_1.getMainHandStack();
-				Block.dropStacks(blockState_1, world_1, blockPos_1, null, playerEntity_1, var8);
-				Block.dropStacks(var7, world_1, var6, null, playerEntity_1, var8);
+				Block.dropStacks(blockState_1, world_1, blockPos_1, null, playerEntity_1, playerEntity_1.getMainHandStack());
+				Block.dropStacks(blockState_2, world_1, blockPos_2, null, playerEntity_1, playerEntity_1.getMainHandStack());
 			}
 		}
 	}
 	
-	public static void hookTallBlockOnPlaced(World var1, BlockPos var2, BlockState var3, LivingEntity var4, ItemStack var5)
+	public static void hookTallBlockOnPlaced(World world_1, BlockPos blockPos_1, BlockState blockState_1, LivingEntity livingEntity_1, ItemStack itemStack_1)
 	{
-		if(!var1.isClient)
+		if(!world_1.isClient)
 		{
-			var1.setBlockState(var2.up(), var3.with(Properties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER).with(FluidProperty.FLUID, FluidProperty.FLUID.of(var1.getFluidState(var2.up()))), 3);
-			var1.updateNeighbors(var2, Blocks.AIR);
-			var3.updateNeighborStates(var1, var2, 3);
+			world_1.setBlockState(blockPos_1.up(), blockState_1.with(Properties.DOUBLE_BLOCK_HALF, DoubleBlockHalf.UPPER).with(FluidProperty.FLUID, FluidProperty.FLUID.of(world_1.getFluidState(blockPos_1.up()))), 3);
+			world_1.updateNeighbors(blockPos_1, Blocks.AIR);
+			blockState_1.updateNeighborStates(world_1, blockPos_1, 3);
 		}
 	}
 }
