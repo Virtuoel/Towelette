@@ -88,9 +88,26 @@ publishing {
 	}
 }
 
+String generateHTMLChangelog() {
+	String changelog_text = ""
+	File file = file("changelog.txt")
+	if(file.exists())
+	{
+		file.eachLine { String line ->
+			if(!line.isAllWhitespace())
+			{
+				changelog_text += "<p>${line.stripIndent()}</p>\n"
+			}
+		}
+		changelog_text += "<p>&nbsp;</p>\n"
+	}
+	changelog_text += "<p>Last successfully tested on:</p>\n<p>Minecraft version ${mc_version}</p>\n<p>Yarn mappings ${yarn_mappings}</p>\n<p>Fabric-Loader ${loader_version}</p>\n<p><a href=\"https://minecraft.curseforge.com/projects/fabric/files/\" rel=\"nofollow\">Fabric API ${fabric_version}</a></p>\n"
+	return changelog_text
+}
+
 curseforge {
-	if(project.hasProperty("curseforgeAPIKey")) {
-		apiKey = project.properties.curseforgeAPIKey
+	if(project.hasProperty("curseforge_api_key")) {
+		apiKey = project.properties.curseforge_api_key
 	}
 	
 	if(project.hasProperty("curseforge_id")) {
@@ -102,6 +119,9 @@ curseforge {
 				relations {
 					requiredDependency "fabric"
 				}
+				
+				changelogType = "html"
+				changelog = project.generateHTMLChangelog()
 			}
 			
 			releaseType = project.release_type
