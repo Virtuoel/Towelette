@@ -36,6 +36,20 @@ dependencies {
 	compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
 }
 
+processResources {
+	inputs.property "version", project.version
+	
+	from(sourceSets.main.resources.srcDirs) {
+		include "fabric.mod.json"
+		
+		expand "version": project.version
+	}
+	
+	from(sourceSets.main.resources.srcDirs) {
+		exclude "fabric.mod.json"
+	}
+}
+
 jar {
 	manifest
 	{
@@ -45,6 +59,7 @@ jar {
 		attributes "Built-On-Minecraft": "${project.mc_version}"
 		attributes "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
 	}
+	classifier = ""
 }
 
 task devJar(type: Jar) {
