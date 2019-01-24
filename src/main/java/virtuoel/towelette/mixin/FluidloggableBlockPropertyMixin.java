@@ -53,6 +53,7 @@ import net.minecraft.block.SnowBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.StandingBannerBlock;
 import net.minecraft.block.StandingSignBlock;
+import net.minecraft.block.StonecutterBlock;
 import net.minecraft.block.SugarCaneBlock;
 import net.minecraft.block.SweetBerryBushBlock;
 import net.minecraft.block.TallPlantBlock;
@@ -130,6 +131,7 @@ import net.minecraft.state.StateFactory;
 	SlabBlock.class,
 	SnowBlock.class,
 	StairsBlock.class,
+	StonecutterBlock.class,
 	SugarCaneBlock.class,
 	RedstoneTorchBlock.class,
 	RedstoneTorchWallBlock.class,

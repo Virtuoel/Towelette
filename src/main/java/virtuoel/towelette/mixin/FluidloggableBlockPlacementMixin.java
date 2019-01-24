@@ -37,6 +37,7 @@ import net.minecraft.block.SnowBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.StandingBannerBlock;
 import net.minecraft.block.StandingSignBlock;
+import net.minecraft.block.StonecutterBlock;
 import net.minecraft.block.TallPlantBlock;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.TripwireBlock;
@@ -92,6 +93,7 @@ import net.minecraft.item.ItemPlacementContext;
 	SlabBlock.class,
 	SnowBlock.class,
 	StairsBlock.class,
+	StonecutterBlock.class,
 	RedstoneTorchWallBlock.class,
 	WallTorchBlock.class,
 	TripwireBlock.class,
