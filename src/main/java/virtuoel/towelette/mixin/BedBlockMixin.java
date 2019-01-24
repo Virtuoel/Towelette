@@ -40,7 +40,7 @@ public abstract class BedBlockMixin extends BlockMixin
 				Block.dropStacks(blockState_2, world_1, blockPos_2, null, playerEntity_1, itemStack_1);
 			}
 			
-			playerEntity_1.incrementStat(Stats.MINED.method_14956((BedBlock) (Object) this));
+			playerEntity_1.incrementStat(Stats.MINED.getOrCreateStat((BedBlock) (Object) this));
 		}
 		
 		super.onBreak(world_1, blockPos_1, blockState_1, playerEntity_1);

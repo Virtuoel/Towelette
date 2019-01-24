@@ -54,7 +54,7 @@ public interface Fluidloggable extends Waterloggable
 					blockState_1 = blockState_1.with(Properties.WATERLOGGED, true);
 				}
 				iWorld_1.setBlockState(blockPos_1, blockState_1.with(FLUID, FLUID.of(fluidState_1)), 3);
-				iWorld_1.getFluidTickScheduler().schedule(blockPos_1, fluid, fluid.method_15789(iWorld_1));
+				iWorld_1.getFluidTickScheduler().schedule(blockPos_1, fluid, fluid.getTickRate(iWorld_1));
 			}
 			
 			return true;

@@ -32,7 +32,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	
 	public Identifier of(ItemPlacementContext context)
 	{
-		return of(context.getWorld().getFluidState(context.getPos()));
+		return of(context.getWorld().getFluidState(context.getBlockPos()));
 	}
 	
 	public Identifier of(FluidState fluid)

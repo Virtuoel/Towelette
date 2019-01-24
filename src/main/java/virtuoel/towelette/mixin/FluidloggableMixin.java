@@ -11,6 +11,7 @@ import net.minecraft.block.AbstractRedstoneGateBlock;
 import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.BambooBlock;
+import net.minecraft.block.BambooSaplingBlock;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.BellBlock;
 import net.minecraft.block.BrewingStandBlock;
@@ -42,7 +43,6 @@ import net.minecraft.block.LadderBlock;
 import net.minecraft.block.LanternBlock;
 import net.minecraft.block.LecternBlock;
 import net.minecraft.block.MushroomPlantBlock;
-import net.minecraft.block.SaplingBambooBlock;
 import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.block.SeaPickleBlock;
 import net.minecraft.block.SignBlock;
@@ -118,7 +118,7 @@ import virtuoel.towelette.api.Fluidloggable;
 	SweetBerryBushBlock.class,
 	TallPlantBlock.class,
 //	RedstoneWireBlock.class,
-	SaplingBambooBlock.class,
+	BambooSaplingBlock.class,
 	ScaffoldingBlock.class,
 	SlabBlock.class,
 	SnowBlock.class,

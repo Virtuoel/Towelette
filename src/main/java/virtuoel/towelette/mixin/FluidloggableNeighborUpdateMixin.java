@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.AbstractPressurePlateBlock;
 import net.minecraft.block.AttachedStemBlock;
 import net.minecraft.block.BambooBlock;
+import net.minecraft.block.BambooSaplingBlock;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.BellBlock;
 import net.minecraft.block.BlockState;
@@ -17,9 +18,9 @@ import net.minecraft.block.CarpetBlock;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ChorusPlantBlock;
 import net.minecraft.block.CocoaBlock;
-import net.minecraft.block.CoralDeadWallFanBlock;
 import net.minecraft.block.CoralTubeFanBlock;
 import net.minecraft.block.CoralWallFanBlock;
+import net.minecraft.block.DeadCoralWallFanBlock;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.FenceBlock;
 import net.minecraft.block.FenceGateBlock;
@@ -29,7 +30,6 @@ import net.minecraft.block.LanternBlock;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.block.PlantBlock;
 import net.minecraft.block.RepeaterBlock;
-import net.minecraft.block.SaplingBambooBlock;
 import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.block.SeaPickleBlock;
 import net.minecraft.block.SlabBlock;
@@ -66,7 +66,7 @@ import net.minecraft.world.IWorld;
 	CakeBlock.class,
 	CarpetBlock.class,
 	ChorusPlantBlock.class,
-	CoralDeadWallFanBlock.class,
+	DeadCoralWallFanBlock.class,
 	CoralWallFanBlock.class,
 	CoralTubeFanBlock.class,
 	DoorBlock.class,
@@ -86,7 +86,7 @@ import net.minecraft.world.IWorld;
 	SeaPickleBlock.class,
 	AttachedStemBlock.class,
 	TallPlantBlock.class,
-	SaplingBambooBlock.class,
+	BambooSaplingBlock.class,
 	ScaffoldingBlock.class,
 	SlabBlock.class,
 	SnowBlock.class,

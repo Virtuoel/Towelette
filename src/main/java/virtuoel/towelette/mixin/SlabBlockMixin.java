@@ -24,7 +24,7 @@ public abstract class SlabBlockMixin
 	@Inject(at = @At("RETURN"), method = "getPlacementState", cancellable = true)
 	public void onGetPlacementState(ItemPlacementContext context, CallbackInfoReturnable<BlockState> info)
 	{
-		if(context.getWorld().getBlockState(context.getPos()).getBlock() == (SlabBlock) (Object) this)
+		if(context.getWorld().getBlockState(context.getBlockPos()).getBlock() == (SlabBlock) (Object) this)
 		{
 			BlockState state = info.getReturnValue();
 			if(state != null)

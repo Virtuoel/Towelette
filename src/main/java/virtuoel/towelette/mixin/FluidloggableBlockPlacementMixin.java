@@ -16,7 +16,7 @@ import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ChorusPlantBlock;
 import net.minecraft.block.CocoaBlock;
 import net.minecraft.block.ConduitBlock;
-import net.minecraft.block.CoralDeadWallFanBlock;
+import net.minecraft.block.DeadCoralWallFanBlock;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.EndPortalFrameBlock;
 import net.minecraft.block.EndRodBlock;
@@ -67,7 +67,7 @@ import net.minecraft.item.ItemPlacementContext;
 	StandingSignBlock.class,
 	WallSignBlock.class,
 	ChorusPlantBlock.class,
-	CoralDeadWallFanBlock.class,
+	DeadCoralWallFanBlock.class,
 	DoorBlock.class,
 	EndPortalFrameBlock.class,
 	EndRodBlock.class,

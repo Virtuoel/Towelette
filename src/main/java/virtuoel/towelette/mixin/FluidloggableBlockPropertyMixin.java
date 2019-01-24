@@ -22,9 +22,9 @@ import net.minecraft.block.ChorusPlantBlock;
 import net.minecraft.block.CocoaBlock;
 import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.ConduitBlock;
-import net.minecraft.block.CoralDeadWallFanBlock;
 import net.minecraft.block.CoralParentBlock;
 import net.minecraft.block.DaylightDetectorBlock;
+import net.minecraft.block.DeadCoralWallFanBlock;
 import net.minecraft.block.DetectorRailBlock;
 import net.minecraft.block.DoorBlock;
 import net.minecraft.block.EndPortalFrameBlock;
@@ -97,7 +97,7 @@ import net.minecraft.state.StateFactory;
 	ChorusFlowerBlock.class,
 	ChorusPlantBlock.class,
 	CoralParentBlock.class,
-	CoralDeadWallFanBlock.class,
+	DeadCoralWallFanBlock.class,
 	DoorBlock.class,
 	EndPortalFrameBlock.class,
 	EndRodBlock.class,

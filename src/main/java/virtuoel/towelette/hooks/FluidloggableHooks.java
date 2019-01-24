@@ -31,7 +31,7 @@ public class FluidloggableHooks
 		{
 			if(state.contains(FluidProperty.FLUID))
 			{
-				FluidState fluid = context.getWorld().getFluidState(context.getPos());
+				FluidState fluid = context.getWorld().getFluidState(context.getBlockPos());
 				if(state.contains(Properties.WATERLOGGED) && fluid.getFluid() != Fluids.WATER)
 				{
 					state = state.with(Properties.WATERLOGGED, false);
@@ -56,7 +56,7 @@ public class FluidloggableHooks
 		Fluid fluid = FluidProperty.FLUID.getFluid(state);
 		if(fluid != Fluids.EMPTY)
 		{
-			world.getFluidTickScheduler().schedule(pos, fluid, fluid.method_15789(world));
+			world.getFluidTickScheduler().schedule(pos, fluid, fluid.getTickRate(world));
 		}
 	}
 	
