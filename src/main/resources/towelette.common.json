@@ -10,6 +10,7 @@
 		"BlockStateMixin",
 		"CampfireBlockMixin",
 		"DoorBlockMixin",
+		"EntityMixin",
 		"FluidloggableBlockPropertyMixin",
 		"FluidloggableBlockPlacementMixin",
 		"FluidloggableMixin",
