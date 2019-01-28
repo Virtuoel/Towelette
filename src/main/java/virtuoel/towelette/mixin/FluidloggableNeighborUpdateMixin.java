@@ -29,6 +29,7 @@ import net.minecraft.block.LadderBlock;
 import net.minecraft.block.LanternBlock;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.block.PlantBlock;
+import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.block.RepeaterBlock;
 import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.block.SeaPickleBlock;
@@ -56,6 +57,7 @@ import net.minecraft.world.IWorld;
 @Mixin({
 	AbstractPressurePlateBlock.class,
 	BambooBlock.class,
+	BambooSaplingBlock.class,
 	StandingBannerBlock.class,
 	WallBannerBlock.class,
 	BellBlock.class,
@@ -86,7 +88,7 @@ import net.minecraft.world.IWorld;
 	SeaPickleBlock.class,
 	AttachedStemBlock.class,
 	TallPlantBlock.class,
-	BambooSaplingBlock.class,
+	RedstoneWireBlock.class,
 	ScaffoldingBlock.class,
 	SlabBlock.class,
 	SnowBlock.class,

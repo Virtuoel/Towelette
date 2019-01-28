@@ -44,6 +44,7 @@ import net.minecraft.block.PressurePlateBlock;
 import net.minecraft.block.RailBlock;
 import net.minecraft.block.RedstoneTorchBlock;
 import net.minecraft.block.RedstoneTorchWallBlock;
+import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.block.RepeaterBlock;
 import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.block.SeaPickleBlock;
@@ -126,7 +127,7 @@ import net.minecraft.state.StateFactory;
 //	StemBlock.class,
 	SweetBerryBushBlock.class,
 	TallPlantBlock.class,
-//	RedstoneWireBlock.class,
+	RedstoneWireBlock.class,
 	ScaffoldingBlock.class,
 	SlabBlock.class,
 	SnowBlock.class,
