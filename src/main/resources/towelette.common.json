@@ -4,11 +4,13 @@
 	"compatibilityLevel": "JAVA_8",
 	"mixins":
 	[
+		"AttachedStemBlockMixin",
 		"BaseFluidMixin",
 		"BedBlockMixin",
 		"BlockMixin",
 		"BlockStateMixin",
 		"CampfireBlockMixin",
+		"CropBlockMixin",
 		"DoorBlockMixin",
 		"EntityMixin",
 		"FluidloggableBlockPropertyMixin",
@@ -17,6 +19,7 @@
 		"FluidloggableNeighborUpdateMixin",
 		"PistonBlockEntityMixin",
 		"SlabBlockMixin",
+		"StemBlockMixin",
 		"TagHelperMixin",
 		"TallBlockItemMixin",
 		"TallPlantMixin",

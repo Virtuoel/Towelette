@@ -7,8 +7,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import net.minecraft.block.AbstractButtonBlock;
 import net.minecraft.block.AnvilBlock;
+import net.minecraft.block.AttachedStemBlock;
 import net.minecraft.block.BambooBlock;
 import net.minecraft.block.BedBlock;
+import net.minecraft.block.BeetrootsBlock;
 import net.minecraft.block.BellBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -23,6 +25,7 @@ import net.minecraft.block.CocoaBlock;
 import net.minecraft.block.ComparatorBlock;
 import net.minecraft.block.ConduitBlock;
 import net.minecraft.block.CoralParentBlock;
+import net.minecraft.block.CropBlock;
 import net.minecraft.block.DaylightDetectorBlock;
 import net.minecraft.block.DeadCoralWallFanBlock;
 import net.minecraft.block.DetectorRailBlock;
@@ -38,6 +41,7 @@ import net.minecraft.block.LadderBlock;
 import net.minecraft.block.LanternBlock;
 import net.minecraft.block.LecternBlock;
 import net.minecraft.block.LeverBlock;
+import net.minecraft.block.NetherWartBlock;
 import net.minecraft.block.PaneBlock;
 import net.minecraft.block.PoweredRailBlock;
 import net.minecraft.block.PressurePlateBlock;
@@ -46,6 +50,7 @@ import net.minecraft.block.RedstoneTorchBlock;
 import net.minecraft.block.RedstoneTorchWallBlock;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.block.RepeaterBlock;
+import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.block.SeaPickleBlock;
 import net.minecraft.block.SkullBlock;
@@ -54,6 +59,7 @@ import net.minecraft.block.SnowBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.StandingBannerBlock;
 import net.minecraft.block.StandingSignBlock;
+import net.minecraft.block.StemBlock;
 import net.minecraft.block.StonecutterBlock;
 import net.minecraft.block.SugarCaneBlock;
 import net.minecraft.block.SweetBerryBushBlock;
@@ -118,13 +124,13 @@ import net.minecraft.state.StateFactory;
 	LeverBlock.class,
 	LadderBlock.class,
 	LanternBlock.class,
-//	CropBlock.class,
-//	BeetrootsBlock.class,
-//	NetherWartBlock.class,
-//	SaplingBlock.class,
+	AttachedStemBlock.class,
+	StemBlock.class,
+	CropBlock.class,
+	BeetrootsBlock.class,
+	NetherWartBlock.class,
+	SaplingBlock.class,
 	SeaPickleBlock.class,
-//	StemAttachedBlock.class,
-//	StemBlock.class,
 	SweetBerryBushBlock.class,
 	TallPlantBlock.class,
 	RedstoneWireBlock.class,

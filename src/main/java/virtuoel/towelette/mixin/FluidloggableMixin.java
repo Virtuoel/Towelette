@@ -10,9 +10,11 @@ import net.minecraft.block.AbstractRailBlock;
 import net.minecraft.block.AbstractRedstoneGateBlock;
 import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.AnvilBlock;
+import net.minecraft.block.AttachedStemBlock;
 import net.minecraft.block.BambooBlock;
 import net.minecraft.block.BambooSaplingBlock;
 import net.minecraft.block.BedBlock;
+import net.minecraft.block.BeetrootsBlock;
 import net.minecraft.block.BellBlock;
 import net.minecraft.block.BrewingStandBlock;
 import net.minecraft.block.CactusBlock;
@@ -25,6 +27,7 @@ import net.minecraft.block.CocoaBlock;
 import net.minecraft.block.ConduitBlock;
 import net.minecraft.block.ConnectedPlantBlock;
 import net.minecraft.block.CoralParentBlock;
+import net.minecraft.block.CropBlock;
 import net.minecraft.block.DaylightDetectorBlock;
 import net.minecraft.block.DeadBushBlock;
 import net.minecraft.block.DoorBlock;
@@ -43,7 +46,9 @@ import net.minecraft.block.LadderBlock;
 import net.minecraft.block.LanternBlock;
 import net.minecraft.block.LecternBlock;
 import net.minecraft.block.MushroomPlantBlock;
+import net.minecraft.block.NetherWartBlock;
 import net.minecraft.block.RedstoneWireBlock;
+import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.block.SeaPickleBlock;
 import net.minecraft.block.SignBlock;
@@ -51,6 +56,7 @@ import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SnowBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.StandingSignBlock;
+import net.minecraft.block.StemBlock;
 import net.minecraft.block.StonecutterBlock;
 import net.minecraft.block.SugarCaneBlock;
 import net.minecraft.block.SweetBerryBushBlock;
@@ -106,17 +112,17 @@ import virtuoel.towelette.api.Fluidloggable;
 	WallMountedBlock.class,
 	LadderBlock.class,
 	LanternBlock.class,
-//	CropBlock.class,
-//	BeetrootsBlock.class,
-//	NetherWartBlock.class,
+	CropBlock.class,
+	BeetrootsBlock.class,
+	NetherWartBlock.class,
 	DeadBushBlock.class,
 	FernBlock.class,
 	FlowerBlock.class,
 	MushroomPlantBlock.class,
-//	SaplingBlock.class,
+	SaplingBlock.class,
 	SeaPickleBlock.class,
-//	StemAttachedBlock.class,
-//	StemBlock.class,
+	AttachedStemBlock.class,
+	StemBlock.class,
 	SweetBerryBushBlock.class,
 	TallPlantBlock.class,
 	RedstoneWireBlock.class,
