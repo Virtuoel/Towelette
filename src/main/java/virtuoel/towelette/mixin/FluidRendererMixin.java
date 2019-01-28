@@ -35,7 +35,7 @@ public abstract class FluidRendererMixin
 		BlockLiquidRendererHooks.FLUID_SPRITE_MAP.clear();
 		for(Fluid f : Registry.FLUID)
 		{
-			BlockLiquidRendererHooks.FLUID_SPRITE_MAP.put(Registry.FLUID.getId(f), Triple.of(FluidUtils.getSpriteForFluid(f, true), FluidUtils.getSpriteForFluid(f, false), FluidUtils.getOverlaySpriteForFluid(f)));
+			BlockLiquidRendererHooks.FLUID_SPRITE_MAP.put(Registry.FLUID.getId(f), Triple.of(FluidUtils.Client.getSpriteForFluid(f, true), FluidUtils.Client.getSpriteForFluid(f, false), FluidUtils.Client.getOverlaySpriteForFluid(f)));
 		}
 	}
 	

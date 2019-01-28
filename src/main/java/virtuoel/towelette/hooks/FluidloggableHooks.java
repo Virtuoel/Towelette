@@ -10,7 +10,6 @@ import net.minecraft.block.enums.DoubleBlockHalf;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
@@ -21,6 +20,7 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.api.Fluidloggable;
+import virtuoel.towelette.util.FluidUtils;
 
 public class FluidloggableHooks
 {
@@ -29,17 +29,7 @@ public class FluidloggableHooks
 		BlockState state = info.getReturnValue();
 		if(state != null)
 		{
-			if(state.contains(FluidProperty.FLUID))
-			{
-				FluidState fluid = context.getWorld().getFluidState(context.getBlockPos());
-				if(state.contains(Properties.WATERLOGGED) && fluid.getFluid() != Fluids.WATER)
-				{
-					state = state.with(Properties.WATERLOGGED, false);
-				}
-				state = state.with(FluidProperty.FLUID, FluidProperty.FLUID.of(fluid));
-			}
-			
-			info.setReturnValue(state);
+			info.setReturnValue(FluidUtils.getStateWithFluid(state, context.getWorld().getFluidState(context.getBlockPos())));
 		}
 	}
 	

@@ -23,8 +23,8 @@ public class ToweletteClient implements ClientModInitializer
 	
 	public static void registerFluidSprites(SpriteRegistry registry, Fluid fluid)
 	{
-		FluidUtils.getSpriteIdForFluid(fluid, true).ifPresent(registry::register);
-		FluidUtils.getSpriteIdForFluid(fluid, false).ifPresent(registry::register);
-		FluidUtils.getOverlaySpriteIdForFluid(fluid).ifPresent(registry::register);
+		FluidUtils.Client.getSpriteIdForFluid(fluid, true).ifPresent(registry::register);
+		FluidUtils.Client.getSpriteIdForFluid(fluid, false).ifPresent(registry::register);
+		FluidUtils.Client.getOverlaySpriteIdForFluid(fluid).ifPresent(registry::register);
 	}
 }
