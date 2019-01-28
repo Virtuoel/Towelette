@@ -20,7 +20,8 @@
 		"TagHelperMixin",
 		"TallBlockItemMixin",
 		"TallPlantMixin",
-		"TrapdoorBlockMixin"
+		"TrapdoorBlockMixin",
+		"TripwireHookBlockMixin"
 	],
 	"injectors":
 	{
