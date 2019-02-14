@@ -1,8 +1,7 @@
 package virtuoel.towelette;
 
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.client.texture.SpriteRegistry;
-import net.fabricmc.fabric.events.client.SpriteEvent;
+import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.Fluids;
 import virtuoel.towelette.util.FluidUtils;
@@ -12,7 +11,7 @@ public class ToweletteClient implements ClientModInitializer
 	@Override
 	public void onInitializeClient()
 	{
-		SpriteEvent.PROVIDE.register(registry ->
+		ClientSpriteRegistryCallback.registerBlockAtlas((atlasTexture, registry) ->
 		{
 			registerFluidSprites(registry, Fluids.WATER);
 			registerFluidSprites(registry, Fluids.FLOWING_WATER);
@@ -21,7 +20,7 @@ public class ToweletteClient implements ClientModInitializer
 		});
 	}
 	
-	public static void registerFluidSprites(SpriteRegistry registry, Fluid fluid)
+	public static void registerFluidSprites(ClientSpriteRegistryCallback.Registry registry, Fluid fluid)
 	{
 		FluidUtils.Client.getSpriteIdForFluid(fluid, true).ifPresent(registry::register);
 		FluidUtils.Client.getSpriteIdForFluid(fluid, false).ifPresent(registry::register);

@@ -32,7 +32,7 @@ public abstract class BedBlockMixin extends BlockMixin
 		if(blockState_2.getBlock() == (BedBlock) (Object) this && blockState_2.get(Properties.BED_PART) != bedPart_1)
 		{
 			world_1.setBlockState(blockPos_2, world_1.getFluidState(blockPos_2).getBlockState(), 35);
-			world_1.fireWorldEvent(playerEntity_1, 2001, blockPos_2, Block.getRawIdFromState(blockState_2));
+			world_1.playEvent(playerEntity_1, 2001, blockPos_2, Block.getRawIdFromState(blockState_2));
 			if(!world_1.isClient && !playerEntity_1.isCreative())
 			{
 				ItemStack itemStack_1 = playerEntity_1.getMainHandStack();

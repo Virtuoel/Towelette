@@ -22,6 +22,13 @@ import virtuoel.towelette.api.FluidProperty;
 
 public class FluidUtils
 {
+	@Nullable
+	public static BlockState getStateWithFluid(@Nullable BlockState state, Fluid fluid)
+	{
+		return getStateWithFluid(state, fluid.getDefaultState());
+	}
+	
+	@Nullable
 	public static BlockState getStateWithFluid(@Nullable BlockState state, FluidState fluid)
 	{
 		if(state != null && state.contains(FluidProperty.FLUID))

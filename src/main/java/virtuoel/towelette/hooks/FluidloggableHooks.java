@@ -58,7 +58,7 @@ public class FluidloggableHooks
 		if(blockState_2.getBlock() == self && blockState_2.get(Properties.DOUBLE_BLOCK_HALF) != doubleBlockHalf_1)
 		{
 			world_1.setBlockState(blockPos_2, world_1.getFluidState(blockPos_2).getBlockState(), 35);
-			world_1.fireWorldEvent(playerEntity_1, 2001, blockPos_2, Block.getRawIdFromState(blockState_2));
+			world_1.playEvent(playerEntity_1, 2001, blockPos_2, Block.getRawIdFromState(blockState_2));
 			if(!world_1.isClient && !playerEntity_1.isCreative())
 			{
 				Block.dropStacks(blockState_1, world_1, blockPos_1, null, playerEntity_1, playerEntity_1.getMainHandStack());
