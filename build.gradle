@@ -1,7 +1,7 @@
 plugins {
 	id "fabric-loom" version "0.2.0-SNAPSHOT"
-	id "com.matthewprenger.cursegradle" version "1.1.2"
 	id "maven-publish"
+	id "com.matthewprenger.cursegradle" version "1.1.2"
 }
 
 repositories {
@@ -16,24 +16,27 @@ repositories {
 	}
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
-archivesBaseName = "${mod_name}"
-version = "${mod_version}"
+archivesBaseName = project.archives_base_name
+version = project.mod_version
+group = project.maven_group
 
 minecraft {
 	
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${mc_version}"
+	minecraft "com.mojang:minecraft:${minecraft_version}"
 	mappings "net.fabricmc:yarn:${yarn_mappings}"
 	
 	modCompile "net.fabricmc:fabric-loader:${loader_version}"
 	modCompile "net.fabricmc:fabric:${fabric_version}"
 	
-	compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
+	implementation "com.google.code.findbugs:jsr305:${findbugs_version}"
+	
+	modCompile "io.github.prospector.modmenu:ModMenu:${modmenu_version}"
 }
 
 processResources {
@@ -50,51 +53,44 @@ processResources {
 	}
 }
 
+tasks.withType(JavaCompile) {
+	options.encoding = "UTF-8"
+}
+
 jar {
+	from "LICENSE"
 	manifest
 	{
 		attributes "Implementation-Title": project.archivesBaseName
 		attributes "Implementation-Version": project.version
 		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}"
-		attributes "Built-On-Minecraft": "${project.mc_version}"
+		attributes "Built-On-Minecraft": "${project.minecraft_version}"
 		attributes "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
 	}
-	classifier = ""
-}
-
-task devJar(type: Jar) {
-	from sourceSets.main.output
-	manifest
-	{
-		attributes "Implementation-Title": project.archivesBaseName + "-dev"
-		attributes "Implementation-Version": project.version
-		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}:dev"
-		attributes "Built-On-Minecraft": "${project.mc_version}"
-		attributes "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
-	}
-	classifier = "dev"
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
+	classifier = "sources"
 	from sourceSets.main.allSource
 	manifest
 	{
 		attributes "Implementation-Title": project.archivesBaseName + "-sources"
 		attributes "Implementation-Version": project.version
 		attributes "Maven-Artifact": "${project.group}:${project.archivesBaseName}:${project.version}:sources"
-		attributes "Built-On-Minecraft": "${project.mc_version}"
+		attributes "Built-On-Minecraft": "${project.minecraft_version}"
 		attributes "Built-On-Java": "${System.getProperty("java.vm.version")} (${System.getProperty("java.vm.vendor")})"
 	}
-	classifier = "sources"
 }
 
 publishing {
-	tasks.publish.dependsOn build
 	publications {
 		mavenJava(MavenPublication) {
-			artifact jar
-			artifact devJar
-			artifact sourcesJar
+			artifact(jar) {
+				builtBy remapJar
+			}
+			artifact(sourcesJar) {
+				builtBy remapSourcesJar
+			}
 		}
 	}
 	
@@ -116,7 +112,7 @@ String generateHTMLChangelog() {
 		}
 		changelog_text += "<p>&nbsp;</p>\n"
 	}
-	changelog_text += "<p>Last successfully tested on:</p>\n<p>Minecraft version ${mc_version}</p>\n<p>Yarn mappings ${yarn_mappings}</p>\n<p>Fabric-Loader ${loader_version}</p>\n<p><a href=\"https://minecraft.curseforge.com/projects/fabric/files/\" rel=\"nofollow\">Fabric API ${fabric_version}</a></p>\n"
+	changelog_text += "<p>Last successfully tested on:</p>\n<p>Minecraft version ${minecraft_version}</p>\n<p>Yarn mappings ${yarn_mappings}</p>\n<p>Fabric-Loader ${loader_version}</p>\n<p><a href=\"https://minecraft.curseforge.com/projects/fabric/files/\" rel=\"nofollow\">Fabric API ${fabric_version}</a></p>\n"
 	return changelog_text
 }
 
@@ -130,7 +126,7 @@ curseforge {
 			id = project.properties.curseforge_id
 			addGameVersion "${release_version}"
 			mainArtifact(jar) {
-				displayName = "${mod_name}-${mc_version}-${mod_version}.jar"
+				displayName = "${mod_name}-${minecraft_version}-${mod_version}.jar"
 				relations {
 					requiredDependency "fabric"
 				}
@@ -142,12 +138,8 @@ curseforge {
 			releaseType = project.release_type
 			addGameVersion project.release_version
 			
-			addArtifact(devJar) {
-				displayName = "${mod_name}-${mc_version}-${mod_version}-dev.jar"
-			}
-			
 			addArtifact(sourcesJar) {
-				displayName = "${mod_name}-${mc_version}-${mod_version}-sources.jar"
+				displayName = "${mod_name}-${minecraft_version}-${mod_version}-sources.jar"
 			}
 		}
 		options {
@@ -160,8 +152,8 @@ afterEvaluate {
 	if(project.hasProperty("curseforge_id")) {
 		tasks.each {
 			if(it.name == "curseforge${curseforge_id}") {
-				it.dependsOn build
-				it.mustRunAfter build
+				it.dependsOn remapJar, remapSourcesJar
+				it.mustRunAfter remapJar, remapSourcesJar
 			}
 		}
 	}
