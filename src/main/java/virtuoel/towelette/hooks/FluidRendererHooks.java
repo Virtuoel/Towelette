@@ -17,11 +17,11 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.ExtendedBlockView;
 
-public class BlockLiquidRendererHooks
+public class FluidRendererHooks
 {
 	public static final Map<Identifier, Triple<Sprite, Sprite, Sprite>> FLUID_SPRITE_MAP = new HashMap<>();
 	
-	// private static methods from BlockLiquidRenderer
+	// private static methods from FluidRenderer
 	// TODO make proper names
 	
 	public static boolean doesFluidMatch(BlockView blockView_1, BlockPos blockPos_1, Direction direction_1, FluidState fluidState_1)
@@ -74,7 +74,7 @@ public class BlockLiquidRendererHooks
 			FluidState fluidState_1 = blockView_1.getFluidState(blockPos_2);
 			if(fluidState_1.getFluid().matchesType(fluid_1))
 			{
-				float float_2 = fluidState_1.method_15763(blockView_1, blockPos_2);
+				float float_2 = fluidState_1.getHeight(blockView_1, blockPos_2);
 				if(float_2 >= 0.8F)
 				{
 					float_1 += float_2 * 10.0F;
