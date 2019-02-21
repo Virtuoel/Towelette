@@ -3,6 +3,7 @@ package virtuoel.towelette.util;
 import java.io.IOException;
 import java.util.Optional;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
@@ -13,19 +14,49 @@ import net.minecraft.fluid.BaseFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.resource.Resource;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.BlockView;
 import virtuoel.towelette.Towelette;
 import virtuoel.towelette.api.FluidProperty;
 
 public class FluidUtils
 {
 	@Nullable
+	public static BlockState getStateWithFluid(@Nullable BlockState state, ItemUsageContext context)
+	{
+		if(state != null && state.contains(FluidProperty.FLUID))
+		{
+			return getStateWithFluidImpl(state, context.getWorld().getFluidState(context.getBlockPos()));
+		}
+		
+		return state;
+	}
+	
+	@Nullable
+	public static BlockState getStateWithFluid(@Nullable BlockState state, BlockView world, BlockPos pos)
+	{
+		if(state != null && state.contains(FluidProperty.FLUID))
+		{
+			return getStateWithFluidImpl(state, world.getFluidState(pos));
+		}
+		
+		return state;
+	}
+	
+	@Nullable
 	public static BlockState getStateWithFluid(@Nullable BlockState state, Fluid fluid)
 	{
-		return getStateWithFluid(state, fluid.getDefaultState());
+		if(state != null && state.contains(FluidProperty.FLUID))
+		{
+			return getStateWithFluidImpl(state, fluid.getDefaultState());
+		}
+		
+		return state;
 	}
 	
 	@Nullable
@@ -33,14 +64,19 @@ public class FluidUtils
 	{
 		if(state != null && state.contains(FluidProperty.FLUID))
 		{
-			if(state.contains(Properties.WATERLOGGED) && fluid.getFluid() != Fluids.WATER)
-			{
-				state = state.with(Properties.WATERLOGGED, false);
-			}
-			state = state.with(FluidProperty.FLUID, FluidProperty.FLUID.of(fluid));
+			return getStateWithFluidImpl(state, fluid);
 		}
 		
 		return state;
+	}
+	
+	private static BlockState getStateWithFluidImpl(@Nonnull BlockState state, FluidState fluid)
+	{
+		if(state.contains(Properties.WATERLOGGED) && fluid.getFluid() != Fluids.WATER)
+		{
+			state = state.with(Properties.WATERLOGGED, false);
+		}
+		return state.with(FluidProperty.FLUID, FluidProperty.FLUID.of(fluid));
 	}
 	
 	public static Identifier getIdForStillFluid(Fluid fluid)

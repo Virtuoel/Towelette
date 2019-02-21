@@ -16,6 +16,6 @@ public class TripwireHookBlockMixin
 	@Redirect(method = "method_10776", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	public boolean method_10776SetBlockStateProxy(World obj, BlockPos blockPos_1, BlockState blockState_1, int int_1)
 	{
-		return obj.setBlockState(blockPos_1, FluidUtils.getStateWithFluid(blockState_1, obj.getFluidState(blockPos_1)), int_1);
+		return obj.setBlockState(blockPos_1, FluidUtils.getStateWithFluid(blockState_1, obj, blockPos_1), int_1);
 	}
 }

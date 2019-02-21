@@ -29,7 +29,7 @@ public class FluidloggableHooks
 		BlockState state = info.getReturnValue();
 		if(state != null)
 		{
-			info.setReturnValue(FluidUtils.getStateWithFluid(state, context.getWorld().getFluidState(context.getBlockPos())));
+			info.setReturnValue(FluidUtils.getStateWithFluid(state, context));
 		}
 	}
 	
