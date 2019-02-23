@@ -1,7 +1,11 @@
 package virtuoel.towelette.mixin;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang3.tuple.Triple;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -17,32 +21,35 @@ import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.ExtendedBlockView;
-import virtuoel.towelette.hooks.FluidRendererHooks;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(FluidRenderer.class)
 public abstract class FluidRendererMixin
 {
+	private static final Map<Identifier, Triple<Sprite, Sprite, Sprite>> FLUID_SPRITE_MAP = new HashMap<>();
+	
 	@Inject(method = "onResourceReload()V", at = @At("HEAD"))
 	protected void onOnResourceReload(CallbackInfo info)
 	{
-		FluidRendererHooks.FLUID_SPRITE_MAP.clear();
+		FLUID_SPRITE_MAP.clear();
 		for(Fluid f : Registry.FLUID)
 		{
-			FluidRendererHooks.FLUID_SPRITE_MAP.put(Registry.FLUID.getId(f), Triple.of(FluidUtils.Client.getSpriteForFluid(f, true), FluidUtils.Client.getSpriteForFluid(f, false), FluidUtils.Client.getOverlaySpriteForFluid(f)));
+			FLUID_SPRITE_MAP.put(Registry.FLUID.getId(f), Triple.of(FluidUtils.Client.getSpriteForFluid(f, true), FluidUtils.Client.getSpriteForFluid(f, false), FluidUtils.Client.getOverlaySpriteForFluid(f)));
 		}
 	}
 	
 	@Inject(method = "tesselate", at = @At("HEAD"), cancellable = true)
 	public void onTesselate(ExtendedBlockView extendedBlockView_1, BlockPos blockPos_1, BufferBuilder bufferBuilder_1, FluidState fluidState_1, CallbackInfoReturnable<Boolean> info)
 	{
-		Triple<Sprite, Sprite, Sprite> spriteData = FluidRendererHooks.FLUID_SPRITE_MAP.get(Registry.FLUID.getId(fluidState_1.getFluid()));
+		Triple<Sprite, Sprite, Sprite> spriteData = FLUID_SPRITE_MAP.get(Registry.FLUID.getId(fluidState_1.getFluid()));
 		Sprite stillSprite = spriteData.getLeft(); // sprites_1[0]
 		Sprite flowSprite = spriteData.getMiddle(); // sprites_1[1]
 		Sprite overlaySprite = spriteData.getRight(); // waterOverlaySprite
@@ -52,12 +59,12 @@ public abstract class FluidRendererMixin
 		float float_1 = (float) (int_1 >> 16 & 255) / 255.0F;
 		float float_2 = (float) (int_1 >> 8 & 255) / 255.0F;
 		float float_3 = (float) (int_1 & 255) / 255.0F;
-		boolean boolean_2 = !FluidRendererHooks.doesFluidMatch(extendedBlockView_1, blockPos_1, Direction.UP, fluidState_1);
-		boolean boolean_3 = !FluidRendererHooks.doesFluidMatch(extendedBlockView_1, blockPos_1, Direction.DOWN, fluidState_1) && !FluidRendererHooks.voxelCullingMaybe(extendedBlockView_1, blockPos_1, Direction.DOWN, 0.8888889F);
-		boolean boolean_4 = !FluidRendererHooks.doesFluidMatch(extendedBlockView_1, blockPos_1, Direction.NORTH, fluidState_1);
-		boolean boolean_5 = !FluidRendererHooks.doesFluidMatch(extendedBlockView_1, blockPos_1, Direction.SOUTH, fluidState_1);
-		boolean boolean_6 = !FluidRendererHooks.doesFluidMatch(extendedBlockView_1, blockPos_1, Direction.WEST, fluidState_1);
-		boolean boolean_7 = !FluidRendererHooks.doesFluidMatch(extendedBlockView_1, blockPos_1, Direction.EAST, fluidState_1);
+		boolean boolean_2 = !method_3348(extendedBlockView_1, blockPos_1, Direction.UP, fluidState_1);
+		boolean boolean_3 = !method_3348(extendedBlockView_1, blockPos_1, Direction.DOWN, fluidState_1) && !method_3344(extendedBlockView_1, blockPos_1, Direction.DOWN, 0.8888889F);
+		boolean boolean_4 = !method_3348(extendedBlockView_1, blockPos_1, Direction.NORTH, fluidState_1);
+		boolean boolean_5 = !method_3348(extendedBlockView_1, blockPos_1, Direction.SOUTH, fluidState_1);
+		boolean boolean_6 = !method_3348(extendedBlockView_1, blockPos_1, Direction.WEST, fluidState_1);
+		boolean boolean_7 = !method_3348(extendedBlockView_1, blockPos_1, Direction.EAST, fluidState_1);
 		if(!boolean_2 && !boolean_3 && !boolean_7 && !boolean_6 && !boolean_4 && !boolean_5)
 		{
 			info.setReturnValue(false);
@@ -66,10 +73,10 @@ public abstract class FluidRendererMixin
 		else
 		{
 			boolean boolean_8 = false;
-			float float_8 = FluidRendererHooks.fluidHeightMaybe(extendedBlockView_1, blockPos_1, fluidState_1.getFluid());
-			float float_9 = FluidRendererHooks.fluidHeightMaybe(extendedBlockView_1, blockPos_1.south(), fluidState_1.getFluid());
-			float float_10 = FluidRendererHooks.fluidHeightMaybe(extendedBlockView_1, blockPos_1.east().south(), fluidState_1.getFluid());
-			float float_11 = FluidRendererHooks.fluidHeightMaybe(extendedBlockView_1, blockPos_1.east(), fluidState_1.getFluid());
+			float float_8 = method_3346(extendedBlockView_1, blockPos_1, fluidState_1.getFluid());
+			float float_9 = method_3346(extendedBlockView_1, blockPos_1.south(), fluidState_1.getFluid());
+			float float_10 = method_3346(extendedBlockView_1, blockPos_1.east().south(), fluidState_1.getFluid());
+			float float_11 = method_3346(extendedBlockView_1, blockPos_1.east(), fluidState_1.getFluid());
 			double double_1 = (double) blockPos_1.getX();
 			double double_2 = (double) blockPos_1.getY();
 			double double_3 = (double) blockPos_1.getZ();
@@ -82,7 +89,7 @@ public abstract class FluidRendererMixin
 			float float_59;
 			float float_60;
 			float float_33;
-			if(boolean_2 && !FluidRendererHooks.voxelCullingMaybe(extendedBlockView_1, blockPos_1, Direction.UP, Math.min(Math.min(float_8, float_9), Math.min(float_10, float_11))))
+			if(boolean_2 && !method_3344(extendedBlockView_1, blockPos_1, Direction.UP, Math.min(Math.min(float_8, float_9), Math.min(float_10, float_11))))
 			{
 				boolean_8 = true;
 				float_8 -= 0.001F;
@@ -140,7 +147,7 @@ public abstract class FluidRendererMixin
 				float_28 = MathHelper.lerp(float_37, float_28, float_34);
 				float_30 = MathHelper.lerp(float_37, float_30, float_34);
 				float_32 = MathHelper.lerp(float_37, float_32, float_34);
-				int int_2 = FluidRendererHooks.packedLightMaybe(extendedBlockView_1, blockPos_1);
+				int int_2 = method_3343(extendedBlockView_1, blockPos_1);
 				int int_3 = int_2 >> 16 & '\uffff';
 				int int_4 = int_2 & '\uffff';
 				float_58 = 1.0F * float_1;
@@ -165,7 +172,7 @@ public abstract class FluidRendererMixin
 				float_54 = stillSprite.getMaxU();
 				float_55 = stillSprite.getMinV();
 				float_31 = stillSprite.getMaxV();
-				int int_5 = FluidRendererHooks.packedLightMaybe(extendedBlockView_1, blockPos_1.down());
+				int int_5 = method_3343(extendedBlockView_1, blockPos_1.down());
 				int int_6 = int_5 >> 16 & '\uffff';
 				int int_7 = int_5 & '\uffff';
 				float_32 = 0.5F * float_1;
@@ -231,7 +238,7 @@ public abstract class FluidRendererMixin
 					boolean_12 = boolean_7;
 				}
 				
-				if(boolean_12 && !FluidRendererHooks.voxelCullingMaybe(extendedBlockView_1, blockPos_1, direction_3, Math.max(float_54, float_55)))
+				if(boolean_12 && !method_3344(extendedBlockView_1, blockPos_1, direction_3, Math.max(float_54, float_55)))
 				{
 					boolean_8 = true;
 					BlockPos blockPos_2 = blockPos_1.offset(direction_3);
@@ -250,7 +257,7 @@ public abstract class FluidRendererMixin
 					float_58 = sprite_3.getV((double) ((1.0F - float_54) * 16.0F * 0.5F));
 					float_59 = sprite_3.getV((double) ((1.0F - float_55) * 16.0F * 0.5F));
 					float_60 = sprite_3.getV(8.0D);
-					int int_9 = FluidRendererHooks.packedLightMaybe(extendedBlockView_1, blockPos_2);
+					int int_9 = method_3343(extendedBlockView_1, blockPos_2);
 					int int_10 = int_9 >> 16 & '\uffff';
 					int int_11 = int_9 & '\uffff';
 					float float_61 = int_8 < 2 ? 0.8F : 0.6F;
@@ -275,4 +282,26 @@ public abstract class FluidRendererMixin
 			return;
 		}
 	}
+	
+	// fluid matching
+	@Shadow
+	private static boolean method_3348(BlockView blockView_1, BlockPos blockPos_1, Direction direction_1, FluidState fluidState_1)
+	{
+		return false;
+	}
+	
+	// culling
+	@Shadow
+	private static boolean method_3344(BlockView blockView_1, BlockPos blockPos_1, Direction direction_1, float float_1)
+	{
+		return false;
+	}
+	
+	// combined light
+	@Shadow
+	abstract int method_3343(ExtendedBlockView extendedBlockView_1, BlockPos blockPos_1);
+	
+	// fluid height
+	@Shadow
+	abstract float method_3346(BlockView blockView_1, BlockPos blockPos_1, Fluid fluid_1);
 }
