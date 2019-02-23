@@ -151,7 +151,7 @@ import net.minecraft.state.StateFactory;
 public abstract class FluidloggableBlockPropertyMixin extends BlockMixin
 {
 	@Override
-	@Inject(at = @At("RETURN"), method = "appendProperties(Lnet/minecraft/state/StateFactory$Builder;)V", cancellable = true)
+	@Inject(at = @At("RETURN"), method = "appendProperties", cancellable = true)
 	public void onAppendProperties(StateFactory.Builder<Block, BlockState> builder, CallbackInfo info)
 	{
 		super.onAppendProperties(builder, info);
