@@ -11,7 +11,7 @@ import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(BedBlock.class)
-public abstract class BedBlockMixin extends BlockMixin
+public abstract class BedBlockMixin
 {
 	@Redirect(method = "onBreak", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	public boolean onBreakSetBlockStateProxy(World obj, BlockPos blockPos_1, BlockState blockState_1, int int_1)
