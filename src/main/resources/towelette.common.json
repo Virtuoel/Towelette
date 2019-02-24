@@ -4,6 +4,7 @@
 	"compatibilityLevel": "JAVA_8",
 	"mixins":
 	[
+		"AnvilBlockMixin",
 		"AttachedStemBlockMixin",
 		"BaseFluidMixin",
 		"BedBlockMixin",
@@ -16,6 +17,7 @@
 		"EntityMixin",
 		"FallingBlockEntityMixin",
 		"FallingBlockMixin",
+		"FlowerPotBlockMixin",
 		"FluidloggableBlockPlacementMixin",
 		"FluidloggableMixin",
 		"PistonBlockEntityMixin",
