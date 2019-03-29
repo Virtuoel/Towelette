@@ -23,6 +23,7 @@ import net.minecraft.block.CampfireBlock;
 import net.minecraft.block.CarpetBlock;
 import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ChorusFlowerBlock;
+import net.minecraft.block.CobwebBlock;
 import net.minecraft.block.CocoaBlock;
 import net.minecraft.block.ConduitBlock;
 import net.minecraft.block.ConnectedPlantBlock;
@@ -55,7 +56,6 @@ import net.minecraft.block.SignBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SnowBlock;
 import net.minecraft.block.StairsBlock;
-import net.minecraft.block.StandingSignBlock;
 import net.minecraft.block.StemBlock;
 import net.minecraft.block.StonecutterBlock;
 import net.minecraft.block.SugarCaneBlock;
@@ -68,7 +68,7 @@ import net.minecraft.block.TripwireHookBlock;
 import net.minecraft.block.TurtleEggBlock;
 import net.minecraft.block.VineBlock;
 import net.minecraft.block.WallMountedBlock;
-import net.minecraft.block.WebBlock;
+import net.minecraft.block.WallSignBlock;
 import virtuoel.towelette.api.Fluidloggable;
 
 @Mixin({
@@ -88,8 +88,8 @@ import virtuoel.towelette.api.Fluidloggable;
 	EnderChestBlock.class,
 	HopperBlock.class,
 	LecternBlock.class,
-	StandingSignBlock.class,
 	SignBlock.class,
+	WallSignBlock.class,
 	CactusBlock.class,
 	CakeBlock.class,
 	CarpetBlock.class,
@@ -137,7 +137,7 @@ import virtuoel.towelette.api.Fluidloggable;
 	TripwireHookBlock.class,
 	TurtleEggBlock.class,
 	VineBlock.class,
-	WebBlock.class,
+	CobwebBlock.class,
 })
 @Implements(@Interface(iface = Fluidloggable.class, prefix = "fluidloggable$"))
 public abstract class FluidloggableMixin

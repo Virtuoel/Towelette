@@ -16,7 +16,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import virtuoel.towelette.hooks.FluidloggableHooks;
+import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(TrapdoorBlock.class)
 public abstract class TrapdoorBlockMixin extends BlockMixin
@@ -26,7 +26,7 @@ public abstract class TrapdoorBlockMixin extends BlockMixin
 	{
 		if(material != Material.METAL)
 		{
-			FluidloggableHooks.hookScheduleFluidTick(blockState_1, world_1, blockPos_1);
+			FluidUtils.scheduleFluidTick(blockState_1, world_1, blockPos_1);
 		}
 	}
 	
@@ -35,7 +35,7 @@ public abstract class TrapdoorBlockMixin extends BlockMixin
 	{
 		if(!world_1.isClient && world_1.isReceivingRedstonePower(blockPos_1) != blockState_1.get(Properties.POWERED))
 		{
-			FluidloggableHooks.hookScheduleFluidTick(blockState_1, world_1, blockPos_1);
+			FluidUtils.scheduleFluidTick(blockState_1, world_1, blockPos_1);
 		}
 	}
 }

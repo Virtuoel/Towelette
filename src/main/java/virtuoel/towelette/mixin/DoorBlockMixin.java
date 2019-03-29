@@ -19,7 +19,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import virtuoel.towelette.hooks.FluidloggableHooks;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(DoorBlock.class)
@@ -30,7 +29,7 @@ public abstract class DoorBlockMixin extends BlockMixin
 	{
 		if(material != Material.METAL)
 		{
-			FluidloggableHooks.hookScheduleFluidTick(blockState_1, world_1, blockPos_1);
+			FluidUtils.scheduleFluidTick(blockState_1, world_1, blockPos_1);
 		}
 	}
 	
@@ -40,7 +39,7 @@ public abstract class DoorBlockMixin extends BlockMixin
 		boolean powered = world_1.isReceivingRedstonePower(blockPos_1) || world_1.isReceivingRedstonePower(blockPos_1.offset(blockState_1.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN));
 		if(!world_1.isClient && powered != blockState_1.get(Properties.POWERED))
 		{
-			FluidloggableHooks.hookScheduleFluidTick(blockState_1, world_1, blockPos_1);
+			FluidUtils.scheduleFluidTick(blockState_1, world_1, blockPos_1);
 		}
 	}
 	

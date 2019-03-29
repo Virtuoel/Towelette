@@ -12,7 +12,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.IWorld;
-import virtuoel.towelette.hooks.FluidloggableHooks;
+import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(BlockState.class)
 public abstract class BlockStateMixin
@@ -36,6 +36,6 @@ public abstract class BlockStateMixin
 	@Inject(at = @At("HEAD"), method = "getStateForNeighborUpdate")
 	public void onGetStateForNeighborUpdate(Direction direction_1, BlockState blockState_1, IWorld iWorld_1, BlockPos blockPos_1, BlockPos blockPos_2, CallbackInfoReturnable<BlockState> info)
 	{
-		FluidloggableHooks.hookScheduleFluidTick((BlockState) (Object) this, iWorld_1, blockPos_1);
+		FluidUtils.scheduleFluidTick((BlockState) (Object) this, iWorld_1, blockPos_1);
 	}
 }

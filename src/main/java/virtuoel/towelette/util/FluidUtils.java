@@ -21,6 +21,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.IWorld;
 import virtuoel.towelette.Towelette;
 import virtuoel.towelette.api.FluidProperty;
 
@@ -72,11 +73,41 @@ public class FluidUtils
 	
 	private static BlockState getStateWithFluidImpl(@Nonnull BlockState state, FluidState fluid)
 	{
-		if(state.contains(Properties.WATERLOGGED) && fluid.getFluid() != Fluids.WATER)
+		if(state.contains(Properties.WATERLOGGED))
 		{
-			state = state.with(Properties.WATERLOGGED, false);
+			state = state.with(Properties.WATERLOGGED, fluid.getFluid() == Fluids.WATER);
 		}
 		return state.with(FluidProperty.FLUID, FluidProperty.FLUID.of(fluid));
+	}
+	
+	public static boolean scheduleFluidTick(BlockState state, IWorld world, BlockPos pos)
+	{
+		return scheduleFluidTick(FluidProperty.FLUID.getFluid(state), world, pos);
+	}
+	
+	public static boolean scheduleFluidTick(FluidState state, IWorld world, BlockPos pos)
+	{
+		if(!state.isEmpty())
+		{
+			scheduleFluidTickImpl(state.getFluid(), world, pos);
+			return true;
+		}
+		return false;
+	}
+	
+	public static boolean scheduleFluidTick(Fluid fluid, IWorld world, BlockPos pos)
+	{
+		if(!fluid.getDefaultState().isEmpty())
+		{
+			scheduleFluidTickImpl(fluid, world, pos);
+			return true;
+		}
+		return false;
+	}
+	
+	private static void scheduleFluidTickImpl(Fluid fluid, IWorld world, BlockPos pos)
+	{
+		world.getFluidTickScheduler().schedule(pos, fluid, fluid.getTickRate(world));
 	}
 	
 	public static Identifier getIdForStillFluid(Fluid fluid)
