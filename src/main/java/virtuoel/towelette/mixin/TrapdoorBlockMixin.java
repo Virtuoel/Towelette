@@ -21,7 +21,7 @@ import virtuoel.towelette.util.FluidUtils;
 @Mixin(TrapdoorBlock.class)
 public abstract class TrapdoorBlockMixin extends BlockMixin
 {
-	@Inject(at = @At("HEAD"), method = "activate", cancellable = true)
+	@Inject(at = @At("HEAD"), method = "activate")
 	public void onActivate(BlockState blockState_1, World world_1, BlockPos blockPos_1, PlayerEntity playerEntity_1, Hand hand_1, BlockHitResult blockHitResult_1, CallbackInfoReturnable<Boolean> info)
 	{
 		if(material != Material.METAL)
@@ -30,8 +30,8 @@ public abstract class TrapdoorBlockMixin extends BlockMixin
 		}
 	}
 	
-	@Inject(at = @At("HEAD"), method = "neighborUpdate", cancellable = true)
-	public void onNeighborUpdate(BlockState blockState_1, World world_1, BlockPos blockPos_1, Block block_1, BlockPos blockPos_2, CallbackInfo info)
+	@Inject(at = @At("HEAD"), method = "neighborUpdate")
+	public void onNeighborUpdate(BlockState blockState_1, World world_1, BlockPos blockPos_1, Block block_1, BlockPos blockPos_2, boolean boolean_1, CallbackInfo info)
 	{
 		if(!world_1.isClient && world_1.isReceivingRedstonePower(blockPos_1) != blockState_1.get(Properties.POWERED))
 		{
