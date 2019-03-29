@@ -9,6 +9,7 @@
 		"BaseFluidMixin",
 		"BedBlockMixin",
 		"BlockMixin",
+		"BlockItemMixin",
 		"BlockStateMixin",
 		"CampfireBlockMixin",
 		"CropBlockMixin",
@@ -18,7 +19,6 @@
 		"FallingBlockEntityMixin",
 		"FallingBlockMixin",
 		"FlowerPotBlockMixin",
-		"FluidloggableBlockPlacementMixin",
 		"FluidloggableMixin",
 		"PistonBlockEntityMixin",
 		"SlabBlockMixin",
@@ -27,7 +27,8 @@
 		"TallBlockItemMixin",
 		"TallPlantMixin",
 		"TrapdoorBlockMixin",
-		"TripwireHookBlockMixin"
+		"TripwireHookBlockMixin",
+		"WallStandingBlockItemMixin"
 	],
 	"injectors":
 	{
