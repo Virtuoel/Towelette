@@ -41,7 +41,7 @@ public class CampfireBlockMixin
 				}
 				else
 				{
-					iWorld_1.playSound(null, blockPos_1, SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.BLOCK, 1.0F, 1.0F);
+					iWorld_1.playSound(null, blockPos_1, SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.BLOCKS, 1.0F, 1.0F);
 				}
 			}
 			info.setReturnValue(true);
