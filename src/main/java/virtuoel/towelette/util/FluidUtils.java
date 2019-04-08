@@ -7,6 +7,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import net.minecraft.block.BlockState;
+import net.minecraft.block.enums.SlabType;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
@@ -73,11 +74,12 @@ public class FluidUtils
 	
 	private static BlockState getStateWithFluidImpl(@Nonnull BlockState state, FluidState fluid)
 	{
+		final boolean isDoubleSlab = state.contains(Properties.SLAB_TYPE) && state.get(Properties.SLAB_TYPE) == SlabType.DOUBLE;
 		if(state.contains(Properties.WATERLOGGED))
 		{
-			state = state.with(Properties.WATERLOGGED, fluid.getFluid() == Fluids.WATER);
+			state = state.with(Properties.WATERLOGGED, !isDoubleSlab && fluid.getFluid() == Fluids.WATER);
 		}
-		return state.with(FluidProperty.FLUID, FluidProperty.FLUID.of(fluid));
+		return state.with(FluidProperty.FLUID, isDoubleSlab ? FluidProperty.FLUID.of(Fluids.EMPTY) : FluidProperty.FLUID.of(fluid));
 	}
 	
 	public static boolean scheduleFluidTick(BlockState state, IWorld world, BlockPos pos)

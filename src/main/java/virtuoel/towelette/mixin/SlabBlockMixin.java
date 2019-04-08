@@ -9,11 +9,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.Waterloggable;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.api.Fluidloggable;
@@ -41,6 +43,12 @@ public abstract class SlabBlockMixin
 				info.setReturnValue(state);
 			}
 		}
+	}
+	
+	@Redirect(method = "canFillWithFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Waterloggable;canFillWithFluid(Lnet/minecraft/world/BlockView;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/Fluid;)Z"))
+	public boolean canFillWithFluidProxy(Waterloggable obj, BlockView blockView_1, BlockPos blockPos_1, BlockState blockState_1, Fluid fluid_1)
+	{
+		return Fluidloggable.canFillImpl(blockView_1, blockPos_1, blockState_1, fluid_1);
 	}
 	
 	@Redirect(method = "tryFillWithFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Waterloggable;tryFillWithFluid(Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)Z"))
