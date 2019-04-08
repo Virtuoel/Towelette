@@ -27,7 +27,7 @@ public class CampfireBlockMixin
 		{
 			iWorld_1.setBlockState(blockPos_1, blockState_1.with(Properties.WATERLOGGED, true).with(Properties.LIT, false).with(FluidProperty.FLUID, FluidProperty.FLUID.of(Fluids.WATER)), 3);
 		}
-		else if(Fluidloggable.fillImpl(iWorld_1, blockPos_1, blockState_1.with(Properties.LIT, false), fluidState_1))
+		else if(Fluidloggable.tryFillImpl(iWorld_1, blockPos_1, blockState_1.with(Properties.LIT, false), fluidState_1))
 		{
 			if(blockState_1.get(Properties.LIT))
 			{

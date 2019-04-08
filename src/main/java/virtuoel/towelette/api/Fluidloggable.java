@@ -17,13 +17,13 @@ public interface Fluidloggable extends Waterloggable
 	@Override
 	default boolean canFillWithFluid(BlockView blockView_1, BlockPos blockPos_1, BlockState blockState_1, Fluid fluid_1)
 	{
-		return FLUID.getFluidState(blockState_1).isEmpty() && fluid_1.getDefaultState().isStill() && FLUID.isValid(fluid_1);
+		return canFillImpl(blockView_1, blockPos_1, blockState_1, fluid_1);
 	}
 	
 	@Override
 	default boolean tryFillWithFluid(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, FluidState fluidState_1)
 	{
-		return fillImpl(iWorld_1, blockPos_1, blockState_1, fluidState_1);
+		return tryFillImpl(iWorld_1, blockPos_1, blockState_1, fluidState_1);
 	}
 	
 	@Override
@@ -42,7 +42,12 @@ public interface Fluidloggable extends Waterloggable
 		return fluidState.getFluid();
 	}
 	
-	public static boolean fillImpl(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, FluidState fluidState_1)
+	public static boolean canFillImpl(BlockView blockView_1, BlockPos blockPos_1, BlockState blockState_1, Fluid fluid_1)
+	{
+		return FLUID.getFluidState(blockState_1).isEmpty() && fluid_1.getDefaultState().isStill() && FLUID.isValid(fluid_1);
+	}
+	
+	public static boolean tryFillImpl(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, FluidState fluidState_1)
 	{
 		if(fluidState_1.isStill() && FLUID.getFluidState(blockState_1).isEmpty() && FLUID.isValid(fluidState_1))
 		{
@@ -63,5 +68,11 @@ public interface Fluidloggable extends Waterloggable
 		{
 			return false;
 		}
+	}
+	
+	@Deprecated
+	public static boolean fillImpl(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, FluidState fluidState_1)
+	{
+		return tryFillImpl(iWorld_1, blockPos_1, blockState_1, fluidState_1);
 	}
 }

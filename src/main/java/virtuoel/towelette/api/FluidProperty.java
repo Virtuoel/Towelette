@@ -24,6 +24,7 @@ import virtuoel.towelette.util.ReflectionUtil;
 public class FluidProperty extends AbstractProperty<Identifier>
 {
 	public static final FluidProperty FLUID = new FluidProperty("fluid");
+	private static final Identifier EMPTY_ID = Registry.FLUID.getId(Fluids.EMPTY);
 	
 	private FluidProperty(String name)
 	{
@@ -42,7 +43,8 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	
 	public Identifier of(Fluid fluid)
 	{
-		return Registry.FLUID.getId(isValid(fluid) ? fluid : Fluids.EMPTY);
+		final Identifier id = Registry.FLUID.getId(fluid);
+		return isValid(id) ? id : EMPTY_ID;
 	}
 	
 	public boolean isValid(FluidState fluid)
@@ -52,7 +54,12 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	
 	public boolean isValid(Fluid fluid)
 	{
-		return getValues().contains(Registry.FLUID.getId(fluid));
+		return isValid(Registry.FLUID.getId(fluid));
+	}
+	
+	public boolean isValid(Identifier id)
+	{
+		return getValues().contains(id);
 	}
 	
 	public FluidState getFluidState(BlockState state)
@@ -104,7 +111,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	{
 		if(values.isEmpty())
 		{
-			values.add(Registry.FLUID.getId(Fluids.EMPTY));
+			values.add(EMPTY_ID);
 			values.addAll(Registry.FLUID.stream()
 				.filter(f -> f.getDefaultState().isStill())
 				.map(Registry.FLUID::getId)
@@ -117,16 +124,14 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	@Override
 	public Optional<Identifier> getValue(final String name)
 	{
-		Identifier id = of(Fluids.EMPTY);
-		
 		final int underscoreIndex = name.lastIndexOf('_');
 		if(underscoreIndex != -1)
 		{
 			try
 			{
 				final int namespaceLength = Integer.parseInt(name.substring(underscoreIndex + 1));
-				id = new Identifier(name.substring(0, namespaceLength), name.substring(namespaceLength + 1, underscoreIndex));
-				id = Registry.FLUID.getId(Registry.FLUID.get(id));
+				final Identifier id = new Identifier(name.substring(0, namespaceLength), name.substring(namespaceLength + 1, underscoreIndex));
+				return Optional.of(Registry.FLUID.getId(Registry.FLUID.get(id)));
 			}
 			catch (NumberFormatException e)
 			{
@@ -134,7 +139,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 			}
 		}
 		
-		return Optional.of(id);
+		return Optional.of(EMPTY_ID);
 	}
 	
 	@Override
