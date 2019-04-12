@@ -110,7 +110,7 @@ String generateHTMLChangelog() {
 		}
 		changelog_text += "<p>&nbsp;</p>\n"
 	}
-	changelog_text += "<p>Last successfully tested on:</p>\n<p>Minecraft version ${minecraft_version}</p>\n<p>Yarn mappings ${yarn_mappings}</p>\n<p>Fabric-Loader ${loader_version}</p>\n<p><a href=\"https://minecraft.curseforge.com/projects/fabric/files/\" rel=\"nofollow\">Fabric API ${fabric_version}</a></p>\n"
+	changelog_text += "<p>Last successfully tested on:</p>\n<p>Minecraft version <code>${minecraft_version}</code></p>\n<p>Yarn mappings <code>${yarn_mappings}</code></p>\n<p>Fabric-Loader <code>${loader_version}</code></p>\n<p><a href=\"https://minecraft.curseforge.com/projects/fabric/files/\" rel=\"nofollow\">Fabric API <code>${fabric_version}</code></a></p>\n"
 	return changelog_text
 }
 
