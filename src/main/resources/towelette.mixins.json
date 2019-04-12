@@ -11,6 +11,7 @@
 		"BlockItemMixin",
 		"BlockMixin",
 		"BlockStateMixin",
+		"BucketItemMixin",
 		"CampfireBlockMixin",
 		"CropBlockMixin",
 		"DoorBlockMixin",
