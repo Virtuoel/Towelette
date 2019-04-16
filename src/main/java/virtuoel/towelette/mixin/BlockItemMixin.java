@@ -6,8 +6,8 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.block.BlockItem;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(BlockItem.class)

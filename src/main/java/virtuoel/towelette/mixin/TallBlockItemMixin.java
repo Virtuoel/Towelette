@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.block.TallBlockItem;
+import net.minecraft.item.TallBlockItem;
 
 @Mixin(TallBlockItem.class)
 public abstract class TallBlockItemMixin

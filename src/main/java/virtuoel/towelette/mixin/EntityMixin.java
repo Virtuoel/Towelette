@@ -16,14 +16,14 @@ import virtuoel.towelette.api.AdditionalEntityProperties;
 @Mixin(Entity.class)
 public abstract class EntityMixin implements AdditionalEntityProperties
 {
-	@Shadow abstract boolean isInsideFluid(Tag<Fluid> tag_1);
+	@Shadow abstract boolean updateMovementInFluid(Tag<Fluid> tag_1);
 	
 	protected boolean insideLava = false;
 	
 	@Inject(at = @At("HEAD"), method = "method_5876")
 	public void onMethod_5876(CallbackInfo info)
 	{
-		this.insideLava = isInsideFluid(FluidTags.LAVA);
+		this.insideLava = updateMovementInFluid(FluidTags.LAVA);
 	}
 	
 	@Override

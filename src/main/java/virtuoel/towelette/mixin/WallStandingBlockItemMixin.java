@@ -7,7 +7,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.block.WallStandingBlockItem;
+import net.minecraft.item.WallStandingBlockItem;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(WallStandingBlockItem.class)
