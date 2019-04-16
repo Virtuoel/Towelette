@@ -3,6 +3,7 @@
 .gradle/
 build/
 out/
+classes/
 
 # idea
 
@@ -10,6 +11,14 @@ out/
 *.iml
 *.ipr
 *.iws
+
+# vscode
+
+.settings/
+.vscode/
+bin/
+.classpath
+.project
 
 # fabric
 
