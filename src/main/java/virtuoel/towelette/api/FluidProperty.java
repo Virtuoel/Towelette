@@ -71,7 +71,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	{
 		if(fluid instanceof BaseFluid)
 		{
-			return ((BaseFluid) fluid).getState(false);
+			return ((BaseFluid) fluid).getStill(false);
 		}
 		return Fluids.EMPTY.getDefaultState();
 	}

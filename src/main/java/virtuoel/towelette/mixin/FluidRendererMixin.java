@@ -59,12 +59,12 @@ public abstract class FluidRendererMixin
 		float float_1 = (float) (int_1 >> 16 & 255) / 255.0F;
 		float float_2 = (float) (int_1 >> 8 & 255) / 255.0F;
 		float float_3 = (float) (int_1 & 255) / 255.0F;
-		boolean boolean_2 = !method_3348(extendedBlockView_1, blockPos_1, Direction.UP, fluidState_1);
-		boolean boolean_3 = !method_3348(extendedBlockView_1, blockPos_1, Direction.DOWN, fluidState_1) && !method_3344(extendedBlockView_1, blockPos_1, Direction.DOWN, 0.8888889F);
-		boolean boolean_4 = !method_3348(extendedBlockView_1, blockPos_1, Direction.NORTH, fluidState_1);
-		boolean boolean_5 = !method_3348(extendedBlockView_1, blockPos_1, Direction.SOUTH, fluidState_1);
-		boolean boolean_6 = !method_3348(extendedBlockView_1, blockPos_1, Direction.WEST, fluidState_1);
-		boolean boolean_7 = !method_3348(extendedBlockView_1, blockPos_1, Direction.EAST, fluidState_1);
+		boolean boolean_2 = !isSameFluid(extendedBlockView_1, blockPos_1, Direction.UP, fluidState_1);
+		boolean boolean_3 = !isSameFluid(extendedBlockView_1, blockPos_1, Direction.DOWN, fluidState_1) && !method_3344(extendedBlockView_1, blockPos_1, Direction.DOWN, 0.8888889F);
+		boolean boolean_4 = !isSameFluid(extendedBlockView_1, blockPos_1, Direction.NORTH, fluidState_1);
+		boolean boolean_5 = !isSameFluid(extendedBlockView_1, blockPos_1, Direction.SOUTH, fluidState_1);
+		boolean boolean_6 = !isSameFluid(extendedBlockView_1, blockPos_1, Direction.WEST, fluidState_1);
+		boolean boolean_7 = !isSameFluid(extendedBlockView_1, blockPos_1, Direction.EAST, fluidState_1);
 		if(!boolean_2 && !boolean_3 && !boolean_7 && !boolean_6 && !boolean_4 && !boolean_5)
 		{
 			info.setReturnValue(false);
@@ -73,10 +73,10 @@ public abstract class FluidRendererMixin
 		else
 		{
 			boolean boolean_8 = false;
-			float float_8 = method_3346(extendedBlockView_1, blockPos_1, fluidState_1.getFluid());
-			float float_9 = method_3346(extendedBlockView_1, blockPos_1.south(), fluidState_1.getFluid());
-			float float_10 = method_3346(extendedBlockView_1, blockPos_1.east().south(), fluidState_1.getFluid());
-			float float_11 = method_3346(extendedBlockView_1, blockPos_1.east(), fluidState_1.getFluid());
+			float float_8 = getNorthWestCornerFluidHeight(extendedBlockView_1, blockPos_1, fluidState_1.getFluid());
+			float float_9 = getNorthWestCornerFluidHeight(extendedBlockView_1, blockPos_1.south(), fluidState_1.getFluid());
+			float float_10 = getNorthWestCornerFluidHeight(extendedBlockView_1, blockPos_1.east().south(), fluidState_1.getFluid());
+			float float_11 = getNorthWestCornerFluidHeight(extendedBlockView_1, blockPos_1.east(), fluidState_1.getFluid());
 			double double_1 = (double) blockPos_1.getX();
 			double double_2 = (double) blockPos_1.getY();
 			double double_3 = (double) blockPos_1.getZ();
@@ -96,7 +96,7 @@ public abstract class FluidRendererMixin
 				float_9 -= 0.001F;
 				float_10 -= 0.001F;
 				float_11 -= 0.001F;
-				Vec3d vec3d_1 = fluidState_1.method_15758(extendedBlockView_1, blockPos_1);
+				Vec3d vec3d_1 = fluidState_1.getVelocity(extendedBlockView_1, blockPos_1);
 				float float_26;
 				float float_28;
 				float float_30;
@@ -285,7 +285,7 @@ public abstract class FluidRendererMixin
 	
 	// fluid matching
 	@Shadow
-	private static boolean method_3348(BlockView blockView_1, BlockPos blockPos_1, Direction direction_1, FluidState fluidState_1)
+	private static boolean isSameFluid(BlockView blockView_1, BlockPos blockPos_1, Direction direction_1, FluidState fluidState_1)
 	{
 		return false;
 	}
@@ -303,5 +303,5 @@ public abstract class FluidRendererMixin
 	
 	// fluid height
 	@Shadow
-	abstract float method_3346(BlockView blockView_1, BlockPos blockPos_1, Fluid fluid_1);
+	abstract float getNorthWestCornerFluidHeight(BlockView blockView_1, BlockPos blockPos_1, Fluid fluid_1);
 }

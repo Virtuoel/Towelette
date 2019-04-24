@@ -21,10 +21,10 @@ import virtuoel.towelette.Towelette;
 @Mixin(BaseFluid.class)
 public abstract class BaseFluidMixin
 {
-	@Shadow abstract void method_15730(IWorld var1, BlockPos var2, BlockState var3);
+	@Shadow abstract void beforeBreakingBlock(IWorld var1, BlockPos var2, BlockState var3);
 	
-	@Inject(at = @At("HEAD"), method = "method_15745", cancellable = true)
-	public void onMethod_15745(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, Direction direction_1, FluidState fluidState_1, CallbackInfo info)
+	@Inject(at = @At("HEAD"), method = "flow", cancellable = true)
+	public void onFlow(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, Direction direction_1, FluidState fluidState_1, CallbackInfo info)
 	{
 		boolean filled = !iWorld_1.getFluidState(blockPos_1).isEmpty();
 		if(blockState_1.getBlock() instanceof FluidFillable)
@@ -36,7 +36,7 @@ public abstract class BaseFluidMixin
 		{
 			if(!blockState_1.isAir())
 			{
-				this.method_15730(iWorld_1, blockPos_1, blockState_1);
+				this.beforeBreakingBlock(iWorld_1, blockPos_1, blockState_1);
 			}
 			
 			iWorld_1.setBlockState(blockPos_1, fluidState_1.getBlockState(), 3);
