@@ -86,7 +86,9 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
-			artifact(jar)
+			artifact(jar) {
+				builtBy remapJar
+			}
 			artifact(sourcesJar) {
 				builtBy remapSourcesJar
 			}
