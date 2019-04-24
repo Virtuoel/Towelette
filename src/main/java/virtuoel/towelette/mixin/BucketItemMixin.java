@@ -32,7 +32,7 @@ public class BucketItemMixin
 		{
 			final BlockState state = world_1.getBlockState(obj);
 			final Material material = state.getMaterial();
-			return !material.method_15799() || material.isReplaceable() || (state.getBlock() instanceof FluidFillable && ((FluidFillable) state.getBlock()).canFillWithFluid(world_1, obj, state, fluid)) ? obj : obj.offset(side);
+			return !material.isSolid() || material.isReplaceable() || (state.getBlock() instanceof FluidFillable && ((FluidFillable) state.getBlock()).canFillWithFluid(world_1, obj, state, fluid)) ? obj : obj.offset(side);
 		}
 		return obj.offset(side);
 	}

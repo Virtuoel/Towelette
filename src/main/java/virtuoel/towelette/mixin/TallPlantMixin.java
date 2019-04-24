@@ -19,7 +19,7 @@ public abstract class TallPlantMixin
 		return obj.setBlockState(blockPos_1, obj.getFluidState(blockPos_1).getBlockState(), int_1);
 	}
 	
-	@Redirect(method = { "onPlaced", "method_10021" }, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
+	@Redirect(method = { "onPlaced", "placeAt" }, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	public boolean placement_growth_SetBlockStateProxy(World obj, BlockPos blockPos_1, BlockState blockState_1, int int_1)
 	{
 		return obj.setBlockState(blockPos_1, FluidUtils.getStateWithFluid(blockState_1, obj, blockPos_1), int_1);
