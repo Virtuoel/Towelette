@@ -22,12 +22,12 @@ import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(DoorBlock.class)
-public abstract class DoorBlockMixin extends BlockMixin
+public abstract class DoorBlockMixin
 {
 	@Inject(at = @At("HEAD"), method = "activate")
 	public void onActivate(BlockState blockState_1, World world_1, BlockPos blockPos_1, PlayerEntity playerEntity_1, Hand hand_1, BlockHitResult blockHitResult_1, CallbackInfoReturnable<Boolean> info)
 	{
-		if(material != Material.METAL)
+		if(blockState_1.getMaterial() != Material.METAL)
 		{
 			FluidUtils.scheduleFluidTick(blockState_1, world_1, blockPos_1);
 		}
