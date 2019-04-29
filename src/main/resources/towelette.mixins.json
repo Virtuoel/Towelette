@@ -6,6 +6,8 @@
 	[
 		"AnvilBlockMixin",
 		"AttachedStemBlockMixin",
+		"BambooBlockMixin",
+		"BambooSaplingBlockMixin",
 		"BaseFluidMixin",
 		"BedBlockMixin",
 		"BlockItemMixin",
