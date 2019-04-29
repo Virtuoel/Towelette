@@ -25,6 +25,7 @@ import net.minecraft.block.ChestBlock;
 import net.minecraft.block.ChorusFlowerBlock;
 import net.minecraft.block.CobwebBlock;
 import net.minecraft.block.CocoaBlock;
+import net.minecraft.block.ComposterBlock;
 import net.minecraft.block.ConduitBlock;
 import net.minecraft.block.ConnectedPlantBlock;
 import net.minecraft.block.CoralParentBlock;
@@ -82,6 +83,7 @@ import virtuoel.towelette.api.Fluidloggable;
 	BrewingStandBlock.class,
 	CampfireBlock.class,
 	ChestBlock.class,
+	ComposterBlock.class,
 	ConduitBlock.class,
 	DaylightDetectorBlock.class,
 	EnchantingTableBlock.class,
