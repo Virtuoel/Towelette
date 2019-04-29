@@ -19,6 +19,7 @@
 		"EntityMixin",
 		"FallingBlockEntityMixin",
 		"FallingBlockMixin",
+		"FireBlockMixin",
 		"FlowerPotBlockMixin",
 		"FluidloggableMixin",
 		"PistonBlockEntityMixin",
