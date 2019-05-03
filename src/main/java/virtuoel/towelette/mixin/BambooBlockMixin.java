@@ -13,7 +13,7 @@ import net.minecraft.world.World;
 @Mixin(BambooBlock.class)
 public class BambooBlockMixin
 {
-	@Redirect(method = "getPlacementState", at = @At(value = "INVOKE", target = "getFluidState"))
+	@Redirect(method = "getPlacementState(Lnet/minecraft/item/ItemPlacementContext;)Lnet/minecraft/block/BlockState;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;getFluidState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/fluid/FluidState;"))
 	public FluidState getPlacementStateGetFluidStateProxy(World obj, BlockPos blockPos_1)
 	{
 		return Fluids.EMPTY.getDefaultState();
