@@ -26,6 +26,7 @@
 		"FluidloggableMixin",
 		"PistonBlockEntityMixin",
 		"SlabBlockMixin",
+		"StateFactoryBuilderAccessor",
 		"StemBlockMixin",
 		"TagHelperMixin",
 		"TallBlockItemMixin",

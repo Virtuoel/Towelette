@@ -34,7 +34,10 @@ public abstract class BlockMixin
 		appendProperties(builder);
 		if(obj instanceof Fluidloggable)
 		{
-			FluidProperty.FLUID.tryAppendPropertySafely(builder);
+			if(!((StateFactoryBuilderAccessor) builder).getPropertyMap().containsKey(FluidProperty.FLUID.getName()))
+			{
+				builder.with(FluidProperty.FLUID);
+			}
 		}
 	}
 	
