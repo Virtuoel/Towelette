@@ -3,7 +3,6 @@ package virtuoel.towelette.api;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -19,7 +18,7 @@ import net.minecraft.state.property.AbstractProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import virtuoel.towelette.util.ReflectionUtil;
+import virtuoel.towelette.mixin.StateFactoryBuilderAccessor;
 
 public class FluidProperty extends AbstractProperty<Identifier>
 {
@@ -94,9 +93,10 @@ public class FluidProperty extends AbstractProperty<Identifier>
 		return ret;
 	}
 	
+	@Deprecated
 	public boolean tryAppendPropertySafely(StateFactory.Builder<Block, BlockState> builder)
 	{
-		if(ReflectionUtil.<Map<String, ?>, Boolean>test(map -> !map.containsKey(getName()), builder, ReflectionUtil.stateFactory$Builder$propertyMap, false))
+		if(!((StateFactoryBuilderAccessor) builder).getPropertyMap().containsKey(getName()))
 		{
 			builder.with(this);
 			return true;
