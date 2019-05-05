@@ -1,7 +1,5 @@
 package virtuoel.towelette.mixin;
 
-import org.spongepowered.asm.mixin.Implements;
-import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 
 import net.minecraft.block.AbstractBannerBlock;
@@ -141,8 +139,7 @@ import virtuoel.towelette.api.Fluidloggable;
 	VineBlock.class,
 	CobwebBlock.class,
 })
-@Implements(@Interface(iface = Fluidloggable.class, prefix = "fluidloggable$"))
-public abstract class FluidloggableMixin
+public abstract class FluidloggableMixin implements Fluidloggable
 {
 	
 }

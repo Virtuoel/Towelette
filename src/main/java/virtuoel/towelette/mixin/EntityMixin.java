@@ -1,5 +1,7 @@
 package virtuoel.towelette.mixin;
 
+import org.spongepowered.asm.mixin.Implements;
+import org.spongepowered.asm.mixin.Interface;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,7 +16,8 @@ import net.minecraft.tag.Tag;
 import virtuoel.towelette.api.AdditionalEntityProperties;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements AdditionalEntityProperties
+@Implements(@Interface(iface = AdditionalEntityProperties.class, prefix = "towelette$"))
+public abstract class EntityMixin
 {
 	@Shadow abstract boolean updateMovementInFluid(Tag<Fluid> tag_1);
 	
@@ -26,8 +29,7 @@ public abstract class EntityMixin implements AdditionalEntityProperties
 		this.insideLava = updateMovementInFluid(FluidTags.LAVA);
 	}
 	
-	@Override
-	public boolean isInsideLava()
+	public boolean towelette$isInsideLava()
 	{
 		return this.insideLava;
 	}
@@ -35,6 +37,6 @@ public abstract class EntityMixin implements AdditionalEntityProperties
 	@Inject(at = @At("RETURN"), method = "isTouchingLava", cancellable = true)
 	public void onIsTouchingLava(CallbackInfoReturnable<Boolean> info)
 	{
-		info.setReturnValue(info.getReturnValue() || isInsideLava());
+		info.setReturnValue(info.getReturnValue() || towelette$isInsideLava());
 	}
 }

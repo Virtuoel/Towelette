@@ -22,12 +22,6 @@ public abstract class BlockMixin
 {
 	@Shadow abstract void appendProperties(StateFactory.Builder<Block, BlockState> builder);
 	
-	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;setDefaultState(Lnet/minecraft/block/BlockState;)V"))
-	public BlockState onConstructSetDefaultState(BlockState state)
-	{
-		return FluidUtils.getStateWithFluid(state, Fluids.EMPTY);
-	}
-	
 	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;appendProperties(Lnet/minecraft/state/StateFactory$Builder;)V"))
 	public void onConstructAppendPropertiesProxy(Block obj, StateFactory.Builder<Block, BlockState> builder)
 	{
@@ -39,6 +33,12 @@ public abstract class BlockMixin
 				builder.with(FluidProperty.FLUID);
 			}
 		}
+	}
+	
+	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;setDefaultState(Lnet/minecraft/block/BlockState;)V"))
+	public BlockState onConstructSetDefaultState(BlockState state)
+	{
+		return FluidUtils.getStateWithFluid(state, Fluids.EMPTY);
 	}
 	
 	@Inject(at = @At("HEAD"), method = "getFluidState", cancellable = true)
