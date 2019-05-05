@@ -98,7 +98,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	{
 		if(!((StateFactoryBuilderAccessor) builder).getPropertyMap().containsKey(getName()))
 		{
-			builder.with(this);
+			builder.add(this);
 			return true;
 		}
 		return false;
