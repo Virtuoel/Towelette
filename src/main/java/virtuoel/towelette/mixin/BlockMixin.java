@@ -30,7 +30,7 @@ public abstract class BlockMixin
 		{
 			if(!((StateFactoryBuilderAccessor) builder).getPropertyMap().containsKey(FluidProperty.FLUID.getName()))
 			{
-				builder.with(FluidProperty.FLUID);
+				builder.add(FluidProperty.FLUID);
 			}
 		}
 	}
