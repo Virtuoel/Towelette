@@ -9,6 +9,7 @@ import javax.annotation.Nullable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.fluid.BaseFluid;
 import net.minecraft.fluid.Fluid;
@@ -122,7 +123,7 @@ public class FluidUtils
 	
 	public static class Client
 	{
-		public static final Sprite MISSING_SPRITE = MinecraftClient.getInstance().getSpriteAtlas().getSprite("missingno");
+		public static final Sprite MISSING_SPRITE = MinecraftClient.getInstance().getSpriteAtlas().getSprite(MissingSprite.getMissingSpriteId());
 		
 		public static Identifier withBlockPath(Identifier id)
 		{
