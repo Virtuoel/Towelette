@@ -34,8 +34,8 @@ public abstract class EntityMixin
 		return this.insideLava;
 	}
 	
-	@Inject(at = @At("RETURN"), method = "isTouchingLava", cancellable = true)
-	public void onIsTouchingLava(CallbackInfoReturnable<Boolean> info)
+	@Inject(at = @At("RETURN"), method = "isInLava", cancellable = true)
+	public void onIsInLava(CallbackInfoReturnable<Boolean> info)
 	{
 		info.setReturnValue(info.getReturnValue() || towelette$isInsideLava());
 	}

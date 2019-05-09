@@ -55,10 +55,10 @@ public abstract class FluidRendererMixin
 		return false;
 	}
 	
-	@Redirect(method = "tesselate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/block/BiomeColors;waterColorAt(Lnet/minecraft/world/ExtendedBlockView;Lnet/minecraft/util/math/BlockPos;)I"))
-	public int onTesselateWaterColorAtProxy(ExtendedBlockView extendedBlockView_1, BlockPos blockPos_1)
+	@Redirect(method = "tesselate", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/color/world/BiomeColors;getWaterColor(Lnet/minecraft/world/ExtendedBlockView;Lnet/minecraft/util/math/BlockPos;)I"))
+	public int onTesselateGetWaterColorProxy(ExtendedBlockView extendedBlockView_1, BlockPos blockPos_1)
 	{
-		return MinecraftClient.getInstance().getBlockColorMap().getRenderColor(extendedBlockView_1.getFluidState(blockPos_1).getBlockState(), extendedBlockView_1, blockPos_1, 0);
+		return MinecraftClient.getInstance().getBlockColorMap().getColorMultiplier(extendedBlockView_1.getFluidState(blockPos_1).getBlockState(), extendedBlockView_1, blockPos_1, 0);
 	}
 	
 	@Redirect(method = "tesselate", at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/block/FluidRenderer;waterSprites:[Lnet/minecraft/client/texture/Sprite;"))
