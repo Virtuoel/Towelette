@@ -113,12 +113,17 @@ public class FluidProperty extends AbstractProperty<Identifier>
 		{
 			values.add(EMPTY_ID);
 			values.addAll(Registry.FLUID.stream()
-				.filter(f -> f.getDefaultState().isStill())
+				.filter(this::filter)
 				.map(Registry.FLUID::getId)
 				.collect(Collectors.toList()));
 		}
 		
 		return values;
+	}
+	
+	public boolean filter(Fluid fluid)
+	{
+		return fluid.getDefaultState().isStill();
 	}
 	
 	@Override
