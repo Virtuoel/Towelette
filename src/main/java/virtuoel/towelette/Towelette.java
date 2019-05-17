@@ -26,6 +26,8 @@ public class Towelette implements ModInitializer
 	public static final Tag<Block> DISPLACEABLE = TagRegistry.block(id("displaceable"));
 	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
 	
+	public static boolean rebuildStatesOnFluidRegistration = true;
+	
 	@SuppressWarnings("unchecked")
 	public Towelette()
 	{
@@ -34,7 +36,7 @@ public class Towelette implements ModInitializer
 			@Override
 			public void afterRegistryRegistration(Registry<Fluid> registry, int id, Identifier identifier, Fluid object)
 			{
-				if(FluidProperty.FLUID.filter(object))
+				if(rebuildStatesOnFluidRegistration && FluidProperty.FLUID.filter(object))
 				{
 					((ExtendedIdList) Block.STATE_IDS).clear();
 					
