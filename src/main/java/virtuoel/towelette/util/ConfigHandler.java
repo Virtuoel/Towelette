@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -19,10 +21,10 @@ public class ConfigHandler<S>
 	private final Logger logger;
 	private final File configFile;
 	private final Supplier<S> defaultConfig;
-	private final Function<FileReader, S> configReader;
-	private final BiConsumer<FileWriter, S> configWriter;
+	private final Function<Reader, S> configReader;
+	private final BiConsumer<Writer, S> configWriter;
 	
-	public ConfigHandler(String modId, String path, Supplier<S> defaultConfig, Function<FileReader, S> configReader, BiConsumer<FileWriter, S> configWriter)
+	public ConfigHandler(String modId, String path, Supplier<S> defaultConfig, Function<Reader, S> configReader, BiConsumer<Writer, S> configWriter)
 	{
 		this.modId = modId;
 		logger = LogManager.getLogger(modId);
@@ -42,13 +44,13 @@ public class ConfigHandler<S>
 		return load(logger, configFile, defaultConfig, configReader, configWriter);
 	}
 	
-	public static <T> T load(Logger logger, File configFile, Supplier<T> defaultConfig, Function<FileReader, T> configReader, BiConsumer<FileWriter, T> configWriter)
+	public static <T> T load(Logger logger, File configFile, Supplier<T> defaultConfig, Function<Reader, T> configReader, BiConsumer<Writer, T> configWriter)
 	{
 		T configData = null;
 		configFile.getParentFile().mkdirs();
 		if(configFile.exists())
 		{
-			try(FileReader reader = new FileReader(configFile))
+			try(final FileReader reader = new FileReader(configFile))
 			{
 				configData = configReader.apply(reader);
 			}
@@ -70,9 +72,9 @@ public class ConfigHandler<S>
 		save(logger, configData, configFile, configWriter);
 	}
 	
-	public static <T> void save(Logger logger, T configData, File configFile, BiConsumer<FileWriter, T> configWriter)
+	public static <T> void save(Logger logger, T configData, File configFile, BiConsumer<Writer, T> configWriter)
 	{
-		try(FileWriter writer = new FileWriter(configFile))
+		try(final FileWriter writer = new FileWriter(configFile))
 		{
 			configWriter.accept(writer, configData);
 		}
