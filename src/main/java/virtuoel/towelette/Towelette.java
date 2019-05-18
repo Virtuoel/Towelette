@@ -19,7 +19,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.api.StateFactoryRebuildable;
-import virtuoel.towelette.util.ToweletteConfig;
+import virtuoel.towelette.util.JsonConfigHandler;
 
 public class Towelette implements ModInitializer
 {
@@ -27,7 +27,7 @@ public class Towelette implements ModInitializer
 	
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	
-	public static final JsonObject CONFIG = ToweletteConfig.load(Towelette::createDefaultConfig);
+	public static final JsonObject CONFIG = new JsonConfigHandler(MOD_ID, MOD_ID + "/config", Towelette::createDefaultConfig).load();
 	
 	public static final Tag<Block> DISPLACEABLE = TagRegistry.block(id("displaceable"));
 	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
