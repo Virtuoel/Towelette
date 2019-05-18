@@ -20,12 +20,12 @@ public class JsonConfigHandler extends ConfigHandler<JsonObject>
 		);
 	}
 	
-	private static JsonObject readConfig(Reader reader)
+	public static JsonObject readConfig(Reader reader)
 	{
 		return Streams.parse(new JsonReader(reader)).getAsJsonObject();
 	}
 	
-	private static void writeConfig(Writer writer, JsonObject configData)
+	public static void writeConfig(Writer writer, JsonObject configData)
 	{
 		try
 		{

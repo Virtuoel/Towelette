@@ -23,6 +23,7 @@ public class ConfigHandler<S>
 	private final Supplier<S> defaultConfig;
 	private final Function<Reader, S> configReader;
 	private final BiConsumer<Writer, S> configWriter;
+	private S cachedConfig = null;
 	
 	public ConfigHandler(String modId, String path, Supplier<S> defaultConfig, Function<Reader, S> configReader, BiConsumer<Writer, S> configWriter)
 	{
@@ -37,6 +38,11 @@ public class ConfigHandler<S>
 	public String getModID()
 	{
 		return modId;
+	}
+	
+	public S get()
+	{
+		return cachedConfig != null ? cachedConfig : (cachedConfig = load());
 	}
 	
 	public S load()
@@ -67,9 +73,9 @@ public class ConfigHandler<S>
 		return configData;
 	}
 	
-	public void save(S configData)
+	public void save()
 	{
-		save(logger, configData, configFile, configWriter);
+		save(logger, get(), configFile, configWriter);
 	}
 	
 	public static <T> void save(Logger logger, T configData, File configFile, BiConsumer<Writer, T> configWriter)

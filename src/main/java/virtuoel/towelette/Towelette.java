@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.tag.TagRegistry;
@@ -19,6 +18,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.api.StateFactoryRebuildable;
+import virtuoel.towelette.util.ConfigHandler;
 import virtuoel.towelette.util.JsonConfigHandler;
 
 public class Towelette implements ModInitializer
@@ -27,7 +27,8 @@ public class Towelette implements ModInitializer
 	
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	
-	public static final JsonObject CONFIG = new JsonConfigHandler(MOD_ID, MOD_ID + "/config", Towelette::createDefaultConfig).load();
+	public static final ConfigHandler<JsonObject> CONFIG_HANDLER = new JsonConfigHandler(MOD_ID, MOD_ID + "/config", Towelette::createDefaultConfig);
+	public static final JsonObject CONFIG = CONFIG_HANDLER.get();
 	
 	public static final Tag<Block> DISPLACEABLE = TagRegistry.block(id("displaceable"));
 	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
@@ -81,7 +82,7 @@ public class Towelette implements ModInitializer
 	private static JsonObject createDefaultConfig()
 	{
 		JsonObject config = new JsonObject();
-		config.add("rebuildStatesOnFluidRegistration", new JsonPrimitive(false));
+		config.addProperty("rebuildStatesOnFluidRegistration", false);
 		return config;
 	}
 }
