@@ -1,34 +1,15 @@
 package virtuoel.towelette.mixin;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.GlassBlock;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.BufferBuilder;
 import net.minecraft.client.render.block.FluidRenderer;
-import net.minecraft.client.texture.Sprite;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Pair;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.ExtendedBlockView;
-import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(FluidRenderer.class)
 public abstract class FluidRendererMixin
-{
+{/*
 	private final Map<Identifier, Pair<Sprite[], Sprite>> FLUID_SPRITE_MAP = new HashMap<>();
 	
 	@Inject(method = "onResourceReload()V", at = @At("HEAD"))
@@ -66,7 +47,7 @@ public abstract class FluidRendererMixin
 	{
 		return cachedSpriteData.get().getLeft();
 	}
-	
+	*/
 	private static final double BOTTOM_OFFSET = 0.001D;
 	
 	@Redirect(method = "tesselate", at = @At(value = "INVOKE", ordinal = 8, target = "Lnet/minecraft/client/render/BufferBuilder;vertex(DDD)Lnet/minecraft/client/render/BufferBuilder;"))
@@ -92,7 +73,7 @@ public abstract class FluidRendererMixin
 	{
 		return obj.vertex(double_1, double_2 + BOTTOM_OFFSET, double_3);
 	}
-	
+	/*
 	@Redirect(method = "tesselate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/ExtendedBlockView;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
 	public BlockState onTesselateGetBlockStateProxy(ExtendedBlockView obj, BlockPos pos)
 	{
@@ -120,5 +101,5 @@ public abstract class FluidRendererMixin
 	public void onPostTesselate(ExtendedBlockView extendedBlockView_1, BlockPos blockPos_1, BufferBuilder bufferBuilder_1, FluidState fluidState_1, CallbackInfoReturnable<Boolean> info)
 	{
 		cachedSpriteData.remove();
-	}
+	}*/
 }
