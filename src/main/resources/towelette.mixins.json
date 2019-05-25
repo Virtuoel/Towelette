@@ -35,10 +35,6 @@
 		"TripwireHookBlockMixin",
 		"WallStandingBlockItemMixin"
 	],
-	"client":
-	[
-		"FluidRendererMixin"
-	],
 	"injectors":
 	{
 		"defaultRequire": 1
