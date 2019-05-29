@@ -6,12 +6,11 @@ import org.apache.logging.log4j.Logger;
 import com.google.gson.JsonObject;
 
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.tag.TagRegistry;
-import net.fabricmc.fabric.impl.registry.ListenableRegistry;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -37,12 +36,12 @@ public class Towelette implements ModInitializer
 	{
 		if(CONFIG.get("rebuildStatesOnFluidRegistration").getAsBoolean())
 		{
-			((ListenableRegistry<Fluid>) Registry.FLUID).getPostRegisterEvent().register(
+			RegistryEntryAddedCallback.event(Registry.FLUID).register(
 				(rawId, identifier, object) ->
 				{
 					if(FluidProperty.FLUID.filter(object))
 					{
-						((RemovableIdList<BlockState>) Block.STATE_IDS).clear();
+						((RemovableIdList<BlockState>) Block.STATE_IDS).fabric_clear();
 						
 						FluidProperty.FLUID.getValues().clear();
 						
