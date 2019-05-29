@@ -78,7 +78,7 @@ public class Towelette implements ModInitializer
 	private static JsonObject createDefaultConfig()
 	{
 		JsonObject config = new JsonObject();
-		config.addProperty("rebuildStatesOnFluidRegistration", false);
+		config.addProperty("rebuildStatesOnFluidRegistration", true);
 		return config;
 	}
 }
