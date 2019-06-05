@@ -17,6 +17,7 @@ import net.minecraft.util.registry.Registry;
 import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.api.StateFactoryRebuildable;
 import virtuoel.towelette.util.ConfigHandler;
+import virtuoel.towelette.util.FoamFixCompatibility;
 import virtuoel.towelette.util.JsonConfigHandler;
 
 public class Towelette implements ModInitializer
@@ -44,6 +45,11 @@ public class Towelette implements ModInitializer
 						((RemovableIdList<BlockState>) Block.STATE_IDS).fabric_clear();
 						
 						FluidProperty.FLUID.getValues().clear();
+						
+						FoamFixCompatibility.PROPERTY_ENTRY_MAP.ifPresent(map ->
+						{
+							map.remove(FluidProperty.FLUID);
+						});
 						
 						for(Block block : Registry.BLOCK)
 						{
