@@ -148,7 +148,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	}
 	
 	@Override
-	public String getValueAsString(Identifier value)
+	public String getName(Identifier value)
 	{
 		return value.getNamespace() + "_" + value.getPath() + "_" + value.getNamespace().length();
 	}
