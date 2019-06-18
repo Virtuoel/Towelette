@@ -2,6 +2,7 @@ package virtuoel.towelette.mixin;
 
 import org.spongepowered.asm.mixin.Implements;
 import org.spongepowered.asm.mixin.Interface;
+import org.spongepowered.asm.mixin.Interface.Remap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -16,7 +17,7 @@ import net.minecraft.tag.Tag;
 import virtuoel.towelette.api.AdditionalEntityProperties;
 
 @Mixin(Entity.class)
-@Implements(@Interface(iface = AdditionalEntityProperties.class, prefix = "towelette$"))
+@Implements(@Interface(iface = AdditionalEntityProperties.class, prefix = "towelette$", remap = Remap.NONE))
 public abstract class EntityMixin
 {
 	@Shadow abstract boolean updateMovementInFluid(Tag<Fluid> tag_1);
