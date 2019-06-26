@@ -33,7 +33,8 @@
 		"TallPlantMixin",
 		"TrapdoorBlockMixin",
 		"TripwireHookBlockMixin",
-		"WallStandingBlockItemMixin"
+		"WallStandingBlockItemMixin",
+		"WorldMixin"
 	],
 	"injectors":
 	{

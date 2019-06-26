@@ -6,38 +6,38 @@ import org.spongepowered.asm.mixin.Interface.Remap;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.fluid.Fluid;
 import net.minecraft.tag.FluidTags;
-import net.minecraft.tag.Tag;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BoundingBox;
+import net.minecraft.world.World;
 import virtuoel.towelette.api.AdditionalEntityProperties;
 
 @Mixin(Entity.class)
 @Implements(@Interface(iface = AdditionalEntityProperties.class, prefix = "towelette$", remap = Remap.NONE))
 public abstract class EntityMixin
 {
-	@Shadow abstract boolean updateMovementInFluid(Tag<Fluid> tag_1);
+	@Shadow World world;
 	
-	protected boolean insideLava = false;
-	
-	@Inject(at = @At("HEAD"), method = "method_5876")
-	public void onMethod_5876(CallbackInfo info)
+	@Inject(method = "checkBlockCollision", locals = LocalCapture.CAPTURE_FAILSOFT, at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
+	public void checkBlockCollisionGetFluidState(CallbackInfo info, BoundingBox noop1, BlockPos.PooledMutable noop2, BlockPos.PooledMutable noop3, BlockPos.PooledMutable pos, int noop4, int noop5, int noop6)
 	{
-		this.insideLava = updateMovementInFluid(FluidTags.LAVA);
+		if(world.getFluidState(pos).matches(FluidTags.LAVA))
+		{
+			((Entity) (Object) this).setInLava();
+		}
 	}
 	
+	@Shadow abstract boolean isInLava();
+	
+	@Deprecated
 	public boolean towelette$isInsideLava()
 	{
-		return this.insideLava;
-	}
-	
-	@Inject(at = @At("RETURN"), method = "isInLava", cancellable = true)
-	public void onIsInLava(CallbackInfoReturnable<Boolean> info)
-	{
-		info.setReturnValue(info.getReturnValue() || towelette$isInsideLava());
+		return isInLava();
 	}
 }
