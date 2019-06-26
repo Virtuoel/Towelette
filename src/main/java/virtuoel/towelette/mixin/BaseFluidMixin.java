@@ -69,10 +69,14 @@ public abstract class BaseFluidMixin
 				return;
 			}
 		}
-		else if(!fillable && block.matches(Towelette.UNDISPLACEABLE))
+		else if(!fillable)
 		{
-			info.setReturnValue(false);
-			return;
+			final boolean empty = blockView_1.getFluidState(blockPos_1).isEmpty();
+			if(!empty || block.matches(Towelette.UNDISPLACEABLE))
+			{
+				info.setReturnValue(false);
+				return;
+			}
 		}
 	}
 }
