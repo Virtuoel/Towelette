@@ -53,10 +53,11 @@ public abstract class BaseFluidMixin
 	{
 		final Block block = blockState_1.getBlock();
 		final boolean displaceable = info.getReturnValueZ();
-		final boolean fillable = block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(blockView_1, blockPos_1, blockState_1, fluid_1);
+		final boolean fillable = block instanceof FluidFillable;
+		final boolean canFill = fillable && ((FluidFillable) block).canFillWithFluid(blockView_1, blockPos_1, blockState_1, fluid_1);
 		if(!displaceable)
 		{
-			if(fillable)
+			if(canFill)
 			{
 				info.setReturnValue(true);
 				return;
@@ -69,7 +70,7 @@ public abstract class BaseFluidMixin
 				return;
 			}
 		}
-		else if(!fillable)
+		else if(fillable && !canFill)
 		{
 			final boolean empty = blockView_1.getFluidState(blockPos_1).isEmpty();
 			if(!empty || block.matches(Towelette.UNDISPLACEABLE))
