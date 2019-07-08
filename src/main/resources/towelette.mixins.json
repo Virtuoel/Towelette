@@ -36,6 +36,7 @@
 		"WallStandingBlockItemMixin",
 		"WorldMixin",
 		"fluidloggable.FluidloggableMixin",
+		"fluidloggable.AllOfTheBlocksMixin",
 		"fluidloggable.BarrierBlockMixin",
 		"fluidloggable.BeaconBlockMixin",
 		"fluidloggable.CauldronBlockMixin",

@@ -63,6 +63,8 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 		{
 			switch(mixinClassName)
 			{
+				case FLUIDLOGGABLE_PACKAGE + ".AllOfTheBlocksMixin":
+					return isConfigEnabled("absolutely_every_single_existing_block_yes_i_am_sure", false);
 				case FLUIDLOGGABLE_PACKAGE + ".BarrierBlockMixin":
 					return isConfigEnabled("barrier", false);
 				case FLUIDLOGGABLE_PACKAGE + ".BeaconBlockMixin":
