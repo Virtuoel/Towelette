@@ -18,7 +18,6 @@ import net.minecraft.state.property.AbstractProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import virtuoel.towelette.mixin.StateFactoryBuilderAccessor;
 
 public class FluidProperty extends AbstractProperty<Identifier>
 {
@@ -96,7 +95,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	@Deprecated
 	public boolean tryAppendPropertySafely(StateFactory.Builder<Block, BlockState> builder)
 	{
-		if(!((StateFactoryBuilderAccessor) builder).getPropertyMap().containsKey(getName()))
+		if(!((virtuoel.towelette.mixin.StateFactoryBuilderAccessor) builder).getPropertyMap().containsKey(getName()))
 		{
 			builder.add(this);
 			return true;

@@ -1,4 +1,4 @@
-package virtuoel.towelette.mixin;
+package virtuoel.towelette.mixin.fluidloggable;
 
 import org.spongepowered.asm.mixin.Mixin;
 
@@ -47,7 +47,6 @@ import net.minecraft.block.LanternBlock;
 import net.minecraft.block.LecternBlock;
 import net.minecraft.block.MushroomPlantBlock;
 import net.minecraft.block.NetherWartBlock;
-import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.block.SeaPickleBlock;
@@ -60,7 +59,6 @@ import net.minecraft.block.StonecutterBlock;
 import net.minecraft.block.SugarCaneBlock;
 import net.minecraft.block.SweetBerryBushBlock;
 import net.minecraft.block.TallPlantBlock;
-import net.minecraft.block.TorchBlock;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.TripwireBlock;
 import net.minecraft.block.TripwireHookBlock;
@@ -93,7 +91,6 @@ import virtuoel.towelette.api.Fluidloggable;
 	CactusBlock.class,
 	CakeBlock.class,
 	CarpetBlock.class,
-//	CauldronBlock.class,
 	ChorusFlowerBlock.class,
 	ConnectedPlantBlock.class,
 	CoralParentBlock.class,
@@ -125,14 +122,12 @@ import virtuoel.towelette.api.Fluidloggable;
 	StemBlock.class,
 	SweetBerryBushBlock.class,
 	TallPlantBlock.class,
-	RedstoneWireBlock.class,
 	ScaffoldingBlock.class,
 	SlabBlock.class,
 	SnowBlock.class,
 	StairsBlock.class,
 	StonecutterBlock.class,
 	SugarCaneBlock.class,
-	TorchBlock.class,
 	TripwireBlock.class,
 	TripwireHookBlock.class,
 	TurtleEggBlock.class,

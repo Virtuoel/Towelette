@@ -2,6 +2,7 @@
 	"required": true,
 	"package": "virtuoel.towelette.mixin",
 	"compatibilityLevel": "JAVA_8",
+	"plugin": "virtuoel.towelette.mixin.ToweletteMixinConfigPlugin",
 	"mixins":
 	[
 		"AnvilBlockMixin",
@@ -23,7 +24,6 @@
 		"FallingBlockMixin",
 		"FireBlockMixin",
 		"FlowerPotBlockMixin",
-		"FluidloggableMixin",
 		"PistonBlockEntityMixin",
 		"SlabBlockMixin",
 		"StateFactoryBuilderAccessor",
@@ -34,7 +34,24 @@
 		"TrapdoorBlockMixin",
 		"TripwireHookBlockMixin",
 		"WallStandingBlockItemMixin",
-		"WorldMixin"
+		"WorldMixin",
+		"fluidloggable.FluidloggableMixin",
+		"fluidloggable.BarrierBlockMixin",
+		"fluidloggable.BeaconBlockMixin",
+		"fluidloggable.CauldronBlockMixin",
+		"fluidloggable.EndPortalBlockMixin",
+		"fluidloggable.FarmlandBlockMixin",
+		"fluidloggable.FireBlockMixin",
+		"fluidloggable.GrassPathBlockMixin",
+		"fluidloggable.LeavesBlockMixin",
+		"fluidloggable.LilyPadBlockMixin",
+		"fluidloggable.PistonBlockMixin",
+		"fluidloggable.PortalBlockMixin",
+		"fluidloggable.RedstoneWireBlockMixin",
+		"fluidloggable.ShulkerBoxBlockMixin",
+		"fluidloggable.SpawnerBlockMixin",
+		"fluidloggable.StructureVoidBlockMixin",
+		"fluidloggable.TorchBlockMixin"
 	],
 	"injectors":
 	{

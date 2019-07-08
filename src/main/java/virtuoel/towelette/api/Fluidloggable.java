@@ -1,5 +1,9 @@
 package virtuoel.towelette.api;
 
+import java.util.Optional;
+
+import com.google.gson.JsonElement;
+
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.fluid.Fluid;
@@ -29,7 +33,7 @@ public interface Fluidloggable extends Waterloggable
 	@Override
 	default Fluid tryDrainFluid(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1)
 	{
-		FluidState fluidState = FLUID.getFluidState(blockState_1);
+		final FluidState fluidState = FLUID.getFluidState(blockState_1);
 		if(!fluidState.isEmpty())
 		{
 			blockState_1 = blockState_1.with(FLUID, FLUID.of(Fluids.EMPTY));
@@ -44,12 +48,15 @@ public interface Fluidloggable extends Waterloggable
 	
 	public static boolean canFillImpl(BlockView blockView_1, BlockPos blockPos_1, BlockState blockState_1, Fluid fluid_1)
 	{
-		return FLUID.getFluidState(blockState_1).isEmpty() && fluid_1.getDefaultState().isStill() && FLUID.isValid(fluid_1);
+		return FLUID.isValid(fluid_1) && (FLUID.getFluidState(blockState_1).isEmpty() ||
+			Optional.ofNullable(ToweletteConfig.DATA.get("replaceableFluids"))
+			.filter(JsonElement::isJsonPrimitive)
+			.map(JsonElement::getAsBoolean).orElse(false));
 	}
 	
 	public static boolean tryFillImpl(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, FluidState fluidState_1)
 	{
-		if(fluidState_1.isStill() && FLUID.getFluidState(blockState_1).isEmpty() && FLUID.isValid(fluidState_1))
+		if(canFillImpl(iWorld_1, blockPos_1, blockState_1, fluidState_1.getFluid()))
 		{
 			if(!iWorld_1.isClient())
 			{

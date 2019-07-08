@@ -3,8 +3,6 @@ package virtuoel.towelette;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.google.gson.JsonObject;
-
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.tag.TagRegistry;
@@ -16,9 +14,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.api.StateFactoryRebuildable;
-import virtuoel.towelette.util.ConfigHandler;
 import virtuoel.towelette.util.FoamFixCompatibility;
-import virtuoel.towelette.util.JsonConfigHandler;
 
 public class Towelette implements ModInitializer
 {
@@ -26,48 +22,42 @@ public class Towelette implements ModInitializer
 	
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	
-	public static final ConfigHandler<JsonObject> CONFIG_HANDLER = new JsonConfigHandler(MOD_ID, MOD_ID + "/config", Towelette::createDefaultConfig);
-	public static final JsonObject CONFIG = CONFIG_HANDLER.get();
-	
 	public static final Tag<Block> DISPLACEABLE = TagRegistry.block(id("displaceable"));
 	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
 	
 	@SuppressWarnings("unchecked")
 	public Towelette()
 	{
-		if(CONFIG.get("rebuildStatesOnFluidRegistration").getAsBoolean())
-		{
-			RegistryEntryAddedCallback.event(Registry.FLUID).register(
-				(rawId, identifier, object) ->
+		RegistryEntryAddedCallback.event(Registry.FLUID).register(
+			(rawId, identifier, object) ->
+			{
+				if(FluidProperty.FLUID.filter(object))
 				{
-					if(FluidProperty.FLUID.filter(object))
+					((RemovableIdList<BlockState>) Block.STATE_IDS).fabric_clear();
+					
+					FluidProperty.FLUID.getValues().clear();
+					
+					FoamFixCompatibility.PROPERTY_ENTRY_MAP.ifPresent(map ->
 					{
-						((RemovableIdList<BlockState>) Block.STATE_IDS).fabric_clear();
-						
-						FluidProperty.FLUID.getValues().clear();
-						
-						FoamFixCompatibility.PROPERTY_ENTRY_MAP.ifPresent(map ->
+						map.remove(FluidProperty.FLUID);
+					});
+					
+					for(Block block : Registry.BLOCK)
+					{
+						if(block.getDefaultState().contains(FluidProperty.FLUID))
 						{
-							map.remove(FluidProperty.FLUID);
-						});
+							((StateFactoryRebuildable) block).rebuildStates();
+						}
 						
-						for(Block block : Registry.BLOCK)
+						for(BlockState state : block.getStateFactory().getStates())
 						{
-							if(block.getDefaultState().contains(FluidProperty.FLUID))
-							{
-								((StateFactoryRebuildable) block).rebuildStates();
-							}
-							
-							for(BlockState state : block.getStateFactory().getStates())
-							{
-								state.initShapeCache();
-								Block.STATE_IDS.add(state);
-							}
+							state.initShapeCache();
+							Block.STATE_IDS.add(state);
 						}
 					}
 				}
-			);
-		}
+			}
+		);
 	}
 	
 	@Override
@@ -79,12 +69,5 @@ public class Towelette implements ModInitializer
 	public static Identifier id(String name)
 	{
 		return new Identifier(MOD_ID, name);
-	}
-	
-	private static JsonObject createDefaultConfig()
-	{
-		JsonObject config = new JsonObject();
-		config.addProperty("rebuildStatesOnFluidRegistration", true);
-		return config;
 	}
 }
