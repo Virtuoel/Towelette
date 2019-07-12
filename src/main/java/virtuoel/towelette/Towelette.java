@@ -2,7 +2,6 @@ package virtuoel.towelette;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -78,13 +77,13 @@ public class Towelette implements ModInitializer
 		);
 	}
 	
-	public static <T, O, S, U extends AbstractPropertyContainer<O, S>> void refreshStates(Optional<Runnable> preIterationTask, Iterable<T> collection, Optional<Consumer<T>> iterationTask, Function<T, Collection<U>> stateGetter, Optional<Consumer<U>> stateConsumer, IdList<U> immediateStateCollection, Optional<Predicate<U>> immediateStateCondition)
+	public static <T, O, S, U extends AbstractPropertyContainer<O, S>> void refreshStates(Optional<Runnable> preIterationTask, Iterable<T> collection, Optional<Consumer<T>> iterationTask, Function<T, Collection<U>> stateGetter, Optional<Consumer<U>> stateConsumer, IdList<U> immediateStateList, Optional<Predicate<U>> immediateStateCondition)
 	{
-		((RemovableIdList<?>) immediateStateCollection).fabric_clear();
+		((RemovableIdList<?>) immediateStateList).fabric_clear();
 		
 		preIterationTask.ifPresent(Runnable::run);
 		
-		final List<U> deferredStates = new LinkedList<>();
+		final Collection<U> deferredStates = new LinkedList<>();
 		
 		for(final T object : collection)
 		{
@@ -96,7 +95,7 @@ public class Towelette implements ModInitializer
 				
 				if(immediateStateCondition.map(p -> p.test(state)).orElse(true))
 				{
-					immediateStateCollection.add(state);
+					immediateStateList.add(state);
 				}
 				else
 				{
@@ -105,7 +104,7 @@ public class Towelette implements ModInitializer
 			});
 		}
 		
-		deferredStates.forEach(immediateStateCollection::add);
+		deferredStates.forEach(immediateStateList::add);
 	}
 	
 	@Override
