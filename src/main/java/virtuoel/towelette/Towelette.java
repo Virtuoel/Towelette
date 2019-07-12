@@ -24,6 +24,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.api.StateFactoryRebuildable;
+import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.util.FoamFixCompatibility;
 
 public class Towelette implements ModInitializer
@@ -37,6 +38,8 @@ public class Towelette implements ModInitializer
 	
 	public Towelette()
 	{
+		ToweletteConfig.DATA.getClass();
+		
 		refreshBlockStates(true);
 		RegistryEntryAddedCallback.event(Registry.FLUID).register(
 			(rawId, identifier, object) ->
