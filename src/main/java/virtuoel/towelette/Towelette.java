@@ -1,15 +1,24 @@
 package virtuoel.towelette;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.state.AbstractPropertyContainer;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.IdList;
 import net.minecraft.util.Identifier;
@@ -29,59 +38,74 @@ public class Towelette implements ModInitializer
 	
 	public Towelette()
 	{
-		rebuildStates();
+		refreshBlockStates(true);
 		RegistryEntryAddedCallback.event(Registry.FLUID).register(
 			(rawId, identifier, object) ->
 			{
 				if(FluidProperty.FLUID.filter(object))
 				{
-					rebuildStates();
+					refreshBlockStates(true);
 				}
 			}
 		);
+		RegistryIdRemapCallback.event(Registry.BLOCK).register(s -> refreshBlockStates(false));
 	}
 	
-	@SuppressWarnings("unchecked")
-	public static void rebuildStates()
+	public static void refreshBlockStates(boolean rebuild)
 	{
-		((RemovableIdList<BlockState>) Block.STATE_IDS).fabric_clear();
-		
-		FluidProperty.FLUID.getValues().clear();
-		
-		FoamFixCompatibility.PROPERTY_ENTRY_MAP.ifPresent(map ->
-		{
-			map.remove(FluidProperty.FLUID);
-		});
-		
-		final Identifier empty = Registry.FLUID.getId(Fluids.EMPTY);
-		final IdList<BlockState> fluidloggedIds = new IdList<>();
-		
-		for(Block block : Registry.BLOCK)
-		{
-			if(block.getDefaultState().contains(FluidProperty.FLUID))
+		refreshStates(
+			!rebuild ? Optional.empty() : Optional.of(() ->
 			{
-				((StateFactoryRebuildable) block).rebuildStates();
-			}
-			
-			for(final BlockState state : block.getStateFactory().getStates())
-			{
-				state.initShapeCache();
+				FluidProperty.FLUID.getValues().clear();
 				
-				if(!state.contains(FluidProperty.FLUID) || state.get(FluidProperty.FLUID).equals(empty))
+				FoamFixCompatibility.PROPERTY_ENTRY_MAP.ifPresent(map ->
 				{
-					Block.STATE_IDS.add(state);
+					map.remove(FluidProperty.FLUID);
+				});
+			}),
+			Registry.BLOCK,
+			!rebuild ? Optional.empty() : Optional.of(block ->
+			{
+				if(block.getDefaultState().contains(FluidProperty.FLUID))
+				{
+					((StateFactoryRebuildable) block).rebuildStates();
+				}
+			}),
+			block -> block.getStateFactory().getStates(),
+			!rebuild ? Optional.empty() : Optional.of(BlockState::initShapeCache),
+			Block.STATE_IDS,
+			Optional.of(state -> !state.contains(FluidProperty.FLUID) || state.get(FluidProperty.FLUID).equals(Registry.FLUID.getDefaultId()))
+		);
+	}
+	
+	public static <T, O, S, U extends AbstractPropertyContainer<O, S>> void refreshStates(Optional<Runnable> preIterationTask, Iterable<T> collection, Optional<Consumer<T>> iterationTask, Function<T, Collection<U>> stateGetter, Optional<Consumer<U>> stateConsumer, IdList<U> immediateStateCollection, Optional<Predicate<U>> immediateStateCondition)
+	{
+		((RemovableIdList<?>) immediateStateCollection).fabric_clear();
+		
+		preIterationTask.ifPresent(Runnable::run);
+		
+		final List<U> deferredStates = new LinkedList<>();
+		
+		for(final T object : collection)
+		{
+			iterationTask.ifPresent(c -> c.accept(object));
+			
+			stateGetter.apply(object).forEach(state ->
+			{
+				stateConsumer.ifPresent(c -> c.accept(state));
+				
+				if(immediateStateCondition.map(p -> p.test(state)).orElse(true))
+				{
+					immediateStateCollection.add(state);
 				}
 				else
 				{
-					fluidloggedIds.add(state);
+					deferredStates.add(state);
 				}
-			}
+			});
 		}
 		
-		for(final BlockState state : fluidloggedIds)
-		{
-			Block.STATE_IDS.add(state);
-		}
+		deferredStates.forEach(immediateStateCollection::add);
 	}
 	
 	@Override
