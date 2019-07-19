@@ -149,7 +149,6 @@ curseforge {
 		}
 		options {
 			forgeGradleIntegration = false
-			debug = true
 		}
 	}
 }
