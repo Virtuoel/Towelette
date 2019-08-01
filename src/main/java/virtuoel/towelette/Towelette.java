@@ -2,28 +2,22 @@ package virtuoel.towelette;
 
 import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.collect.ImmutableSet;
+
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.api.tag.TagRegistry;
-import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.state.AbstractPropertyContainer;
 import net.minecraft.tag.Tag;
-import net.minecraft.util.IdList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import virtuoel.towelette.api.RefreshableStateFactory;
 import virtuoel.towelette.api.FluidProperty;
-import virtuoel.towelette.api.StateFactoryRebuildable;
 import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.util.FoamFixCompatibility;
 
@@ -40,80 +34,50 @@ public class Towelette implements ModInitializer
 	{
 		ToweletteConfig.DATA.getClass();
 		
-		refreshBlockStates(true);
 		RegistryEntryAddedCallback.event(Registry.FLUID).register(
 			(rawId, identifier, object) ->
 			{
 				if(FluidProperty.FLUID.filter(object))
 				{
-					refreshBlockStates(true);
+					refreshBlockStates(ImmutableSet.of(identifier));
 				}
 			}
 		);
-		RegistryIdRemapCallback.event(Registry.BLOCK).register(s -> refreshBlockStates(false));
-	}
-	
-	public static void refreshBlockStates(boolean rebuild)
-	{
-		refreshStates(
-			!rebuild ? Optional.empty() : Optional.of(() ->
-			{
-				FluidProperty.FLUID.getValues().clear();
-				
-				FoamFixCompatibility.PROPERTY_ENTRY_MAP.ifPresent(map ->
-				{
-					map.remove(FluidProperty.FLUID);
-				});
-			}),
-			Registry.BLOCK,
-			!rebuild ? Optional.empty() : Optional.of(block ->
-			{
-				if(block.getDefaultState().contains(FluidProperty.FLUID))
-				{
-					((StateFactoryRebuildable) block).rebuildStates();
-				}
-			}),
-			block -> block.getStateFactory().getStates(),
-			!rebuild ? Optional.empty() : Optional.of(BlockState::initShapeCache),
-			Block.STATE_IDS,
-			Optional.of(state -> !state.contains(FluidProperty.FLUID) || state.get(FluidProperty.FLUID).equals(Registry.FLUID.getDefaultId()))
-		);
-	}
-	
-	public static <T, O, S, U extends AbstractPropertyContainer<O, S>> void refreshStates(Optional<Runnable> preIterationTask, Iterable<T> collection, Optional<Consumer<T>> iterationTask, Function<T, Collection<U>> stateGetter, Optional<Consumer<U>> stateConsumer, IdList<U> immediateStateList, Optional<Predicate<U>> immediateStateCondition)
-	{
-		((RemovableIdList<?>) immediateStateList).fabric_clear();
-		
-		preIterationTask.ifPresent(Runnable::run);
-		
-		final Collection<U> deferredStates = new LinkedList<>();
-		
-		for(final T object : collection)
-		{
-			iterationTask.ifPresent(c -> c.accept(object));
-			
-			stateGetter.apply(object).forEach(state ->
-			{
-				stateConsumer.ifPresent(c -> c.accept(state));
-				
-				if(immediateStateCondition.map(p -> p.test(state)).orElse(true))
-				{
-					immediateStateList.add(state);
-				}
-				else
-				{
-					deferredStates.add(state);
-				}
-			});
-		}
-		
-		deferredStates.forEach(immediateStateList::add);
 	}
 	
 	@Override
 	public void onInitialize()
 	{
+		refreshBlockStates(ImmutableSet.of(new Identifier("water"), new Identifier("lava")));
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static void refreshBlockStates(Collection<Identifier> newIds)
+	{
+		newIds.forEach(FluidProperty.FLUID.getValues()::add);
 		
+		FoamFixCompatibility.PROPERTY_ENTRY_MAP.ifPresent(map ->
+		{
+			map.remove(FluidProperty.FLUID);
+		});
+		
+		final Collection<BlockState> newStates = new LinkedList<>();
+		
+		for(final Block block : Registry.BLOCK)
+		{
+			if(block.getDefaultState().contains(FluidProperty.FLUID))
+			{
+				((RefreshableStateFactory<BlockState>) block.getStateFactory())
+					.refreshPropertyValues(FluidProperty.FLUID, newIds)
+					.forEach(newStates::add);
+			}
+		}
+		
+		newStates.forEach(state ->
+		{
+			state.initShapeCache();
+			Block.STATE_IDS.add(state);
+		});
 	}
 	
 	public static Identifier id(String name)

@@ -5,6 +5,7 @@
 	"plugin": "virtuoel.towelette.mixin.ToweletteMixinConfigPlugin",
 	"mixins":
 	[
+		"AbstractPropertyContainerMixin",
 		"AnvilBlockMixin",
 		"AttachedStemBlockMixin",
 		"BambooBlockMixin",
@@ -17,6 +18,7 @@
 		"BucketItemMixin",
 		"CampfireBlockMixin",
 		"CropBlockMixin",
+		"DefaultedRegistryMixin",
 		"DoorBlockMixin",
 		"DragonEggBlockMixin",
 		"EntityMixin",
@@ -27,6 +29,8 @@
 		"PistonBlockEntityMixin",
 		"SlabBlockMixin",
 		"StateFactoryBuilderAccessor",
+		"StateFactoryBuilderMixin",
+		"StateFactoryMixin",
 		"StemBlockMixin",
 		"TagHelperMixin",
 		"TallBlockItemMixin",

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -22,11 +21,11 @@ import net.minecraft.util.registry.Registry;
 public class FluidProperty extends AbstractProperty<Identifier>
 {
 	public static final FluidProperty FLUID = new FluidProperty("fluid");
-	private static final Identifier EMPTY_ID = Registry.FLUID.getId(Fluids.EMPTY);
 	
 	private FluidProperty(String name)
 	{
 		super(name, Identifier.class);
+		values.add(Registry.FLUID.getDefaultId());
 	}
 	
 	public Identifier of(ItemPlacementContext context)
@@ -42,7 +41,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	public Identifier of(Fluid fluid)
 	{
 		final Identifier id = Registry.FLUID.getId(fluid);
-		return isValid(id) ? id : EMPTY_ID;
+		return isValid(id) ? id : Registry.FLUID.getDefaultId();
 	}
 	
 	public boolean isValid(FluidState fluid)
@@ -108,15 +107,6 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	@Override
 	public Collection<Identifier> getValues()
 	{
-		if(values.isEmpty())
-		{
-			values.add(EMPTY_ID);
-			values.addAll(Registry.FLUID.stream()
-				.filter(this::filter)
-				.map(Registry.FLUID::getId)
-				.collect(Collectors.toList()));
-		}
-		
 		return values;
 	}
 	
@@ -143,7 +133,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 			}
 		}
 		
-		return Optional.of(EMPTY_ID);
+		return Optional.of(Registry.FLUID.getDefaultId());
 	}
 	
 	@Override
