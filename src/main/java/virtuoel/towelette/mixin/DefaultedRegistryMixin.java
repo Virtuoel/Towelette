@@ -14,8 +14,8 @@ public abstract class DefaultedRegistryMixin
 {
 	@Shadow @Final Identifier defaultId;
 	
-	@ModifyArg(method = "set", index = 1, at =  @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/SimpleRegistry;set(ILnet/minecraft/util/Identifier;Ljava/lang/Object;)Ljava/lang/Object;"))
-	private Identifier setDefault(int int_1, Identifier identifier_1, Object object_1)
+	@ModifyArg(method = "set", index = 1, at = @At(value = "INVOKE", target = "Lnet/minecraft/util/registry/SimpleRegistry;set(ILnet/minecraft/util/Identifier;Ljava/lang/Object;)Ljava/lang/Object;"))
+	private Identifier setDefault(Identifier identifier_1)
 	{
 		return defaultId.equals(identifier_1) ? defaultId : identifier_1;
 	}
