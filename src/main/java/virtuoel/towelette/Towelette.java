@@ -56,7 +56,7 @@ public class Towelette implements ModInitializer
 	}
 	
 	@SuppressWarnings("unchecked")
-	public static void refreshBlockStates(Collection<Identifier> newIds)
+	public static void refreshBlockStates(final Collection<Identifier> newIds)
 	{
 		newIds.forEach(FluidProperty.FLUID.getValues()::add);
 		
@@ -84,7 +84,7 @@ public class Towelette implements ModInitializer
 		});
 	}
 	
-	public static Identifier id(String name)
+	public static Identifier id(final String name)
 	{
 		return new Identifier(MOD_ID, name);
 	}

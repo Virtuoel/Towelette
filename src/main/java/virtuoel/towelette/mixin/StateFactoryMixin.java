@@ -96,12 +96,15 @@ public class StateFactoryMixin<O, S extends PropertyContainer<S>, A extends Abst
 			}
 		});
 		
-		for(final PropertyContainer<?> propertyContainer : allStates)
+		if(!newStates.isEmpty())
 		{
-			createWithTable(propertyContainer, stateMap);
+			for(final PropertyContainer<?> propertyContainer : allStates)
+			{
+				createWithTable(propertyContainer, stateMap);
+			}
+			
+			states = ImmutableList.copyOf(allStates);
 		}
-		
-		states = ImmutableList.copyOf(allStates);
 		
 		return newStates;
 	}
