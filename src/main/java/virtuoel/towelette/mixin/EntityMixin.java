@@ -10,11 +10,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.tag.FluidTags;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import virtuoel.towelette.api.AdditionalEntityProperties;
+import virtuoel.towelette.api.CollidableFluid;
 
 @Mixin(Entity.class)
 public abstract class EntityMixin implements AdditionalEntityProperties
@@ -24,10 +25,9 @@ public abstract class EntityMixin implements AdditionalEntityProperties
 	@Inject(method = "checkBlockCollision", locals = LocalCapture.CAPTURE_FAILSOFT, at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
 	public void checkBlockCollisionGetFluidState(CallbackInfo info, Box noop1, BlockPos.PooledMutable noop2, BlockPos.PooledMutable noop3, BlockPos.PooledMutable pos, int noop4, int noop5, int noop6)
 	{
-		if(world.getFluidState(pos).matches(FluidTags.LAVA))
-		{
-			((Entity) (Object) this).setInLava();
-		}
+		final FluidState state = world.getFluidState(pos);
+		
+		((CollidableFluid) state.getFluid()).onEntityCollision(state, world, pos, (Entity) (Object) this); 
 	}
 	
 	@Shadow abstract boolean isInLava();
