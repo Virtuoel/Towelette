@@ -1,12 +1,15 @@
 package virtuoel.towelette.mixin;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.tuple.MutableTriple;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
@@ -28,6 +31,7 @@ import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.Property;
 import net.minecraft.util.MapUtil;
 import virtuoel.towelette.api.RefreshableStateFactory;
+import virtuoel.towelette.util.FoamFixCompatibility;
 
 @Mixin(StateFactory.class)
 public class StateFactoryMixin<O, S extends PropertyContainer<S>, A extends AbstractPropertyContainer<O, S>> implements RefreshableStateFactory<PropertyContainer<?>>
@@ -67,6 +71,8 @@ public class StateFactoryMixin<O, S extends PropertyContainer<S>, A extends Abst
 		
 		final Map<Map<Property<?>, Comparable<?>>, PropertyContainer<?>> stateMap = Maps.newLinkedHashMap();
 		
+		final MutableTriple<Optional<Field>, Optional<?>, StateFactory.Factory<O, S, A>> compatibilityData = FoamFixCompatibility.resetFactoryMapperData(factory);
+		
 		tableStream.forEach((valueList) ->
 		{
 			final Map<Property<?>, Comparable<?>> propertyValueMap = MapUtil.createMap(propertyMap.values(), valueList);
@@ -76,6 +82,8 @@ public class StateFactoryMixin<O, S extends PropertyContainer<S>, A extends Abst
 			{
 				currentState = factory.create(baseObject, ImmutableMap.copyOf(propertyValueMap));
 				newStates.add(currentState);
+				
+				FoamFixCompatibility.loadFactoryMapperData(compatibilityData);
 			}
 			else
 			{
@@ -100,6 +108,8 @@ public class StateFactoryMixin<O, S extends PropertyContainer<S>, A extends Abst
 		{
 			for(final PropertyContainer<?> propertyContainer : allStates)
 			{
+				FoamFixCompatibility.setStateOwnerData(compatibilityData, propertyContainer);
+				
 				createWithTable(propertyContainer, stateMap);
 			}
 			

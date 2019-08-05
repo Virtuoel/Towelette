@@ -60,10 +60,7 @@ public class Towelette implements ModInitializer
 	{
 		newIds.forEach(FluidProperty.FLUID.getValues()::add);
 		
-		FoamFixCompatibility.PROPERTY_ENTRY_MAP.ifPresent(map ->
-		{
-			map.remove(FluidProperty.FLUID);
-		});
+		FoamFixCompatibility.removePropertyFromEntryMap(FluidProperty.FLUID);
 		
 		final Collection<BlockState> newStates = new LinkedList<>();
 		
