@@ -26,6 +26,7 @@
 		"FallingBlockMixin",
 		"FireBlockMixin",
 		"FlowerPotBlockMixin",
+		"FluidMixin",
 		"PistonBlockEntityMixin",
 		"SlabBlockMixin",
 		"StateFactoryBuilderAccessor",
