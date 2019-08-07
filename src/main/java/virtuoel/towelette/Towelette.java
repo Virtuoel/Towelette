@@ -56,10 +56,15 @@ public class Towelette implements ModInitializer
 	@Override
 	public void onInitialize()
 	{
-		refreshBlockStates(ImmutableSet.of(
-			Registry.FLUID.getId(Fluids.WATER),
-			Registry.FLUID.getId(Fluids.LAVA)
-		));
+		if(FluidProperty.FLUID.filter(Fluids.WATER))
+		{
+			refreshBlockStates(ImmutableSet.of(Registry.FLUID.getId(Fluids.WATER)));
+		}
+		
+		if(FluidProperty.FLUID.filter(Fluids.LAVA))
+		{
+			refreshBlockStates(ImmutableSet.of(Registry.FLUID.getId(Fluids.LAVA)));
+		}
 	}
 	
 	@SuppressWarnings("unchecked")

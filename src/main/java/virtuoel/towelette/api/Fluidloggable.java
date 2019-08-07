@@ -48,7 +48,8 @@ public interface Fluidloggable extends Waterloggable
 	
 	public static boolean canFillImpl(BlockView blockView_1, BlockPos blockPos_1, BlockState blockState_1, Fluid fluid_1)
 	{
-		return FLUID.isValid(fluid_1) && (FLUID.getFluidState(blockState_1).isEmpty() ||
+		return ((fluid_1 == Fluids.WATER && blockState_1.contains(Properties.WATERLOGGED) && !blockState_1.get(Properties.WATERLOGGED)) || FLUID.isValid(fluid_1)) &&
+			(FLUID.getFluidState(blockState_1).isEmpty() ||
 			Optional.ofNullable(ToweletteConfig.DATA.get("replaceableFluids"))
 			.filter(JsonElement::isJsonPrimitive)
 			.map(JsonElement::getAsBoolean).orElse(false));

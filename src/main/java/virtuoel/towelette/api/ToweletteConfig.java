@@ -2,6 +2,7 @@ package virtuoel.towelette.api;
 
 import java.util.function.Supplier;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import net.fabricmc.loader.api.FabricLoader;
@@ -48,6 +49,10 @@ public class ToweletteConfig
 		fluidlogging.addProperty("torches", true);
 		
 		config.add("fluidlogging", fluidlogging);
+		
+		final JsonArray fluidBlacklist = new JsonArray();
+		
+		config.add("fluidBlacklist", fluidBlacklist);
 		
 		return config;
 	}
