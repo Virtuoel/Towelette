@@ -37,9 +37,5 @@
 	"mixins":
 	[
 		"towelette.mixins.json"
-	],
-	"custom":
-	{
-		"modmenu:api": true
-	}
+	]
 }
