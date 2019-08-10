@@ -15,7 +15,7 @@ import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluids;
+import net.minecraft.fluid.Fluid;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -33,9 +33,19 @@ public class Towelette implements ModInitializer
 	public static final Tag<Block> DISPLACEABLE = TagRegistry.block(id("displaceable"));
 	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
 	
-	public Towelette()
+	@Override
+	public void onInitialize()
 	{
 		ToweletteConfig.DATA.getClass();
+		
+		for(final Fluid fluid : Registry.FLUID)
+		{
+			final Identifier id = Registry.FLUID.getId(fluid);
+			if(FluidProperty.FLUID.filter(fluid, id))
+			{
+				refreshBlockStates(ImmutableSet.of(id));
+			}
+		}
 		
 		RegistryEntryAddedCallback.event(Registry.FLUID).register(
 			(rawId, identifier, object) ->
@@ -51,22 +61,6 @@ public class Towelette implements ModInitializer
 		{
 			reorderBlockStates();
 		});
-	}
-	
-	@Override
-	public void onInitialize()
-	{
-		final Identifier waterId = Registry.FLUID.getId(Fluids.WATER);
-		if(FluidProperty.FLUID.filter(Fluids.WATER, waterId))
-		{
-			refreshBlockStates(ImmutableSet.of(waterId));
-		}
-		
-		final Identifier lavaId = Registry.FLUID.getId(Fluids.LAVA);
-		if(FluidProperty.FLUID.filter(Fluids.LAVA, lavaId))
-		{
-			refreshBlockStates(ImmutableSet.of(lavaId));
-		}
 	}
 	
 	@SuppressWarnings("unchecked")
