@@ -40,7 +40,7 @@ public class Towelette implements ModInitializer
 		RegistryEntryAddedCallback.event(Registry.FLUID).register(
 			(rawId, identifier, object) ->
 			{
-				if(FluidProperty.FLUID.filter(object))
+				if(FluidProperty.FLUID.filter(object, identifier))
 				{
 					refreshBlockStates(ImmutableSet.of(identifier));
 				}
@@ -56,14 +56,16 @@ public class Towelette implements ModInitializer
 	@Override
 	public void onInitialize()
 	{
-		if(FluidProperty.FLUID.filter(Fluids.WATER))
+		final Identifier waterId = Registry.FLUID.getId(Fluids.WATER);
+		if(FluidProperty.FLUID.filter(Fluids.WATER, waterId))
 		{
-			refreshBlockStates(ImmutableSet.of(Registry.FLUID.getId(Fluids.WATER)));
+			refreshBlockStates(ImmutableSet.of(waterId));
 		}
 		
-		if(FluidProperty.FLUID.filter(Fluids.LAVA))
+		final Identifier lavaId = Registry.FLUID.getId(Fluids.LAVA);
+		if(FluidProperty.FLUID.filter(Fluids.LAVA, lavaId))
 		{
-			refreshBlockStates(ImmutableSet.of(Registry.FLUID.getId(Fluids.LAVA)));
+			refreshBlockStates(ImmutableSet.of(lavaId));
 		}
 	}
 	

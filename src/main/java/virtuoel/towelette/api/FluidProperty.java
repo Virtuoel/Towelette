@@ -113,14 +113,24 @@ public class FluidProperty extends AbstractProperty<Identifier>
 		return values;
 	}
 	
-	public boolean filter(Fluid fluid)
+	public boolean filter(Fluid fluid, Identifier id)
 	{
 		return fluid.getDefaultState().isStill() &&
-		Optional.ofNullable(ToweletteConfig.DATA.get("fluidBlacklist"))
-		.filter(JsonElement::isJsonArray)
-		.map(JsonElement::getAsJsonArray)
-		.map(a -> !a.contains(new JsonPrimitive(Registry.FLUID.getId(fluid).toString())))
-		.orElse(true);
+			Optional.ofNullable(ToweletteConfig.DATA.get("fluidBlacklist"))
+				.filter(JsonElement::isJsonArray)
+				.map(JsonElement::getAsJsonArray)
+				.map(a -> !a.contains(new JsonPrimitive(id.toString())))
+				.orElse(true);
+	}
+	
+	public boolean filter(Fluid fluid)
+	{
+		return filter(fluid, Registry.FLUID.getId(fluid));
+	}
+	
+	public boolean filter(Identifier id)
+	{
+		return filter(Registry.FLUID.get(id), id);
 	}
 	
 	@Override
