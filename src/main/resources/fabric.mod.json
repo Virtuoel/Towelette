@@ -18,8 +18,7 @@
 	],
 	"depends":
 	{
-		"fabricloader": ">=0.4.0",
-		"fabric": "*"
+		"fabricloader": ">=0.4.0"
 	},
 	"icon": "assets/towelette/icon.png",
 	"environment": "*",
@@ -27,15 +26,15 @@
 	{
 		"main":
 		[
-			"virtuoel.towelette.Towelette"
+			
 		],
 		"client":
 		[
 			
 		]
 	},
-	"mixins":
-	[
-		"towelette.mixins.json"
-	]
+	"custom":
+	{
+		"modmenu:api": true
+	}
 }
