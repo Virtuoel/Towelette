@@ -5,22 +5,17 @@ import java.util.function.Supplier;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.Lazy;
+import virtuoel.towelette.Towelette;
+import virtuoel.towelette.util.JsonConfigHandler;
 
 public class ToweletteConfig
 {
-	public static final String NAMESPACE = "towelette";
-	
 	public static final Supplier<JsonObject> HANDLER =
-		!FabricLoader.getInstance().isModLoaded(NAMESPACE) ?
-		new Lazy<JsonObject>(JsonObject::new)::get :
-		((Supplier<Supplier<Supplier<JsonObject>>>)() ->
-		(() -> new virtuoel.towelette.util.JsonConfigHandler(
-			NAMESPACE,
-			NAMESPACE + "/config.json",
+		new JsonConfigHandler(
+			Towelette.MOD_ID,
+			Towelette.MOD_ID + "/config.json",
 			ToweletteConfig::createDefaultConfig
-		))).get().get();
+		);
 	
 	public static final JsonObject DATA = HANDLER.get();
 	
