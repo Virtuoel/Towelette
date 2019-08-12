@@ -3,7 +3,12 @@ package virtuoel.towelette;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.BiPredicate;
 
 import org.apache.logging.log4j.LogManager;
@@ -88,27 +93,52 @@ public class Towelette implements ModInitializer, ToweletteApi
 	@SuppressWarnings("unchecked")
 	public static void refreshBlockStates(final Collection<Identifier> newIds)
 	{
-		newIds.forEach(FluidProperty.FLUID.getValues()::add);
-		
-		FoamFixCompatibility.removePropertyFromEntryMap(FluidProperty.FLUID);
-		
-		final Collection<BlockState> newStates = new LinkedList<>();
-		
-		for(final Block block : Registry.BLOCK)
+		synchronized(FluidProperty.FLUID)
 		{
-			if(block.getDefaultState().contains(FluidProperty.FLUID))
+			newIds.forEach(FluidProperty.FLUID.getValues()::add);
+			
+			FoamFixCompatibility.removePropertyFromEntryMap(FluidProperty.FLUID);
+			
+			final List<Block> blocksToRefresh = new LinkedList<>();
+			
+			for(final Block block : Registry.BLOCK)
 			{
-				((RefreshableStateFactory<BlockState>) block.getStateFactory())
-					.refreshPropertyValues(FluidProperty.FLUID, newIds)
-					.forEach(newStates::add);
+				if(block.getDefaultState().contains(FluidProperty.FLUID))
+				{
+					blocksToRefresh.add(block);
+				}
 			}
+			
+			final int blockQuantity = blocksToRefresh.size();
+			
+			final ExecutorService executor = Executors.newCachedThreadPool();
+			
+			final Collection<BlockState> newStates = new ConcurrentLinkedQueue<>();
+			
+			final CompletableFuture<?>[] allFutures = new CompletableFuture[blockQuantity];
+			
+			for(int i = 0; i < blockQuantity; i++)
+			{
+				final int index = i;
+				allFutures[i] = CompletableFuture.supplyAsync(() ->
+				{
+					return ((RefreshableStateFactory<BlockState>) blocksToRefresh.get(index).getStateFactory())
+						.refreshPropertyValues(FluidProperty.FLUID, newIds);
+				},
+				executor).thenAccept(s -> s.forEach(newStates::add));
+			}
+			
+			CompletableFuture.allOf(allFutures).thenAccept(c ->
+			{
+				newStates.forEach(state ->
+				{
+					state.initShapeCache();
+					Block.STATE_IDS.add(state);
+				});
+			}).join();
+			
+			executor.shutdown();
 		}
-		
-		newStates.forEach(state ->
-		{
-			state.initShapeCache();
-			Block.STATE_IDS.add(state);
-		});
 	}
 	
 	@SuppressWarnings("unchecked")
