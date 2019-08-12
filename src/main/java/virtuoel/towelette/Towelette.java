@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +20,6 @@ import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -37,19 +36,13 @@ public class Towelette implements ModInitializer, ToweletteApi
 	public static final Tag<Block> DISPLACEABLE = TagRegistry.block(id("displaceable"));
 	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
 	
+	public static final BiPredicate<Fluid, Identifier> ENTRYPOINT_WHITELIST_PREDICATE = (fluid, id) -> ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidBlacklisted(fluid, id));
+	
 	public static final Collection<Identifier> FLUID_ID_BLACKLIST = new HashSet<>();
 	
 	@Override
 	public void onInitialize()
 	{
-		final Predicate<FluidState> stillPredicate = FluidState::isStill;
-		Registry.FLUID.stream()
-		.map(Fluid::getDefaultState)
-		.filter(stillPredicate.negate())
-		.map(FluidState::getFluid)
-		.map(Registry.FLUID::getId)
-		.forEach(FLUID_ID_BLACKLIST::add);
-		
 		Optional.ofNullable(ToweletteConfig.DATA.get("fluidBlacklist"))
 		.filter(JsonElement::isJsonArray)
 		.map(JsonElement::getAsJsonArray)
@@ -65,7 +58,7 @@ public class Towelette implements ModInitializer, ToweletteApi
 		});
 		
 		Registry.FLUID.stream()
-		.filter(FluidProperty.FLUID::filter)
+		.filter(f -> ENTRYPOINT_WHITELIST_PREDICATE.test(f, Registry.FLUID.getId(f)))
 		.map(Registry.FLUID::getId)
 		.map(ImmutableSet::of)
 		.forEach(Towelette::refreshBlockStates);
@@ -73,7 +66,7 @@ public class Towelette implements ModInitializer, ToweletteApi
 		RegistryEntryAddedCallback.event(Registry.FLUID).register(
 			(rawId, identifier, object) ->
 			{
-				if(FluidProperty.FLUID.filter(object, identifier))
+				if(ENTRYPOINT_WHITELIST_PREDICATE.test(object, identifier))
 				{
 					refreshBlockStates(ImmutableSet.of(identifier));
 				}
@@ -87,9 +80,9 @@ public class Towelette implements ModInitializer, ToweletteApi
 	}
 	
 	@Override
-	public Collection<Identifier> getBlacklistedFluidIds()
+	public boolean isFluidBlacklisted(Fluid fluid, Identifier id)
 	{
-		return FLUID_ID_BLACKLIST;
+		return !fluid.getDefaultState().isStill() || FLUID_ID_BLACKLIST.contains(id);
 	}
 	
 	@SuppressWarnings("unchecked")
