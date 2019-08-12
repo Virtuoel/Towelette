@@ -1,12 +1,16 @@
 package virtuoel.towelette;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.JsonElement;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -16,36 +20,55 @@ import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.api.RefreshableStateFactory;
+import virtuoel.towelette.api.ToweletteApi;
 import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.util.FoamFixCompatibility;
 
-public class Towelette implements ModInitializer
+public class Towelette implements ModInitializer, ToweletteApi
 {
-	public static final String MOD_ID = "towelette";
-	
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	
 	public static final Tag<Block> DISPLACEABLE = TagRegistry.block(id("displaceable"));
 	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
 	
+	public static final Collection<Identifier> FLUID_ID_BLACKLIST = new HashSet<>();
+	
 	@Override
 	public void onInitialize()
 	{
-		ToweletteConfig.DATA.getClass();
+		final Predicate<FluidState> stillPredicate = FluidState::isStill;
+		Registry.FLUID.stream()
+		.map(Fluid::getDefaultState)
+		.filter(stillPredicate.negate())
+		.map(FluidState::getFluid)
+		.map(Registry.FLUID::getId)
+		.forEach(FLUID_ID_BLACKLIST::add);
 		
-		for(final Fluid fluid : Registry.FLUID)
+		Optional.ofNullable(ToweletteConfig.DATA.get("fluidBlacklist"))
+		.filter(JsonElement::isJsonArray)
+		.map(JsonElement::getAsJsonArray)
+		.ifPresent(array ->
 		{
-			final Identifier id = Registry.FLUID.getId(fluid);
-			if(FluidProperty.FLUID.filter(fluid, id))
+			array.forEach(element ->
 			{
-				refreshBlockStates(ImmutableSet.of(id));
-			}
-		}
+				if(element.isJsonPrimitive())
+				{
+					FLUID_ID_BLACKLIST.add(new Identifier(element.getAsString()));
+				}
+			});
+		});
+		
+		Registry.FLUID.stream()
+		.filter(FluidProperty.FLUID::filter)
+		.map(Registry.FLUID::getId)
+		.map(ImmutableSet::of)
+		.forEach(Towelette::refreshBlockStates);
 		
 		RegistryEntryAddedCallback.event(Registry.FLUID).register(
 			(rawId, identifier, object) ->
@@ -61,6 +84,12 @@ public class Towelette implements ModInitializer
 		{
 			reorderBlockStates();
 		});
+	}
+	
+	@Override
+	public Collection<Identifier> getBlacklistedFluidIds()
+	{
+		return FLUID_ID_BLACKLIST;
 	}
 	
 	@SuppressWarnings("unchecked")

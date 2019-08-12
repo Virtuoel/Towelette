@@ -32,6 +32,10 @@
 		"client":
 		[
 			
+		],
+		"towelette":
+		[
+			"virtuoel.towelette.Towelette"
 		]
 	},
 	"mixins":

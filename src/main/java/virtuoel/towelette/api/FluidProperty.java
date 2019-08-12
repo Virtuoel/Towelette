@@ -5,9 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.BaseFluid;
@@ -115,12 +112,7 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	
 	public boolean filter(Fluid fluid, Identifier id)
 	{
-		return fluid.getDefaultState().isStill() &&
-			Optional.ofNullable(ToweletteConfig.DATA.get("fluidBlacklist"))
-				.filter(JsonElement::isJsonArray)
-				.map(JsonElement::getAsJsonArray)
-				.map(a -> !a.contains(new JsonPrimitive(id.toString())))
-				.orElse(true);
+		return ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.getBlacklistedFluidIds().contains(id));
 	}
 	
 	public boolean filter(Fluid fluid)
