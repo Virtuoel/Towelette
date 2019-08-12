@@ -29,21 +29,21 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	}
 	
 	@Deprecated
-	public boolean filter(Identifier id)
+	public boolean filter(Fluid fluid, Identifier id)
 	{
-		return ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.getBlacklistedFluidIds().contains(id));
+		return ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidBlacklisted(fluid, id));
 	}
 	
 	@Deprecated
 	public boolean filter(Fluid fluid)
 	{
-		return filter(Registry.FLUID.getId(fluid));
+		return filter(fluid, Registry.FLUID.getId(fluid));
 	}
 	
 	@Deprecated
-	public boolean filter(Fluid fluid, Identifier id)
+	public boolean filter(Identifier id)
 	{
-		return filter(id);
+		return filter(Registry.FLUID.get(id), id);
 	}
 	
 	@Override
