@@ -87,14 +87,7 @@ public class StateFactoryMixin<O, S extends PropertyContainer<S>, A extends Abst
 			}
 			else
 			{
-				for(final PropertyContainer<?> state : states)
-				{
-					if(state.getEntries().equals(propertyValueMap))
-					{
-						currentState = state;
-						break;
-					}
-				}
+				currentState = states.parallelStream().filter(state -> state.getEntries().equals(propertyValueMap)).findFirst().orElse(null);
 			}
 			
 			if(currentState != null)
@@ -106,12 +99,12 @@ public class StateFactoryMixin<O, S extends PropertyContainer<S>, A extends Abst
 		
 		if(!newStates.isEmpty())
 		{
-			for(final PropertyContainer<?> propertyContainer : allStates)
+			allStates.parallelStream().forEach(propertyContainer ->
 			{
 				FoamFixCompatibility.setStateOwnerData(compatibilityData, propertyContainer);
 				
 				createWithTable(propertyContainer, stateMap);
-			}
+			});
 			
 			states = ImmutableList.copyOf(allStates);
 		}

@@ -25,6 +25,7 @@ import net.fabricmc.fabric.impl.registry.RemovableIdList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.state.StateFactory;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -90,45 +91,46 @@ public class Towelette implements ModInitializer, ToweletteApi
 		return !fluid.getDefaultState().isStill() || FLUID_ID_BLACKLIST.contains(id);
 	}
 	
+	private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool();
+	
 	@SuppressWarnings("unchecked")
 	public static void refreshBlockStates(final Collection<Identifier> newIds)
 	{
+		final List<StateFactory<Block, BlockState>> factoriesToRefresh = new LinkedList<>();
+		
+		for(final Block block : Registry.BLOCK)
+		{
+			if(block.getDefaultState().contains(FluidProperty.FLUID))
+			{
+				factoriesToRefresh.add(block.getStateFactory());
+			}
+		}
+		
+		final Collection<BlockState> newStates = new ConcurrentLinkedQueue<>();
+		
+		final Collection<CompletableFuture<?>> allFutures = new LinkedList<>();
+		
 		synchronized(FluidProperty.FLUID)
 		{
 			newIds.forEach(FluidProperty.FLUID.getValues()::add);
 			
 			FoamFixCompatibility.removePropertyFromEntryMap(FluidProperty.FLUID);
-			
-			final List<Block> blocksToRefresh = new LinkedList<>();
-			
-			for(final Block block : Registry.BLOCK)
+		}
+		
+		synchronized(Block.STATE_IDS)
+		{
+			for(final StateFactory<Block, BlockState> factory : factoriesToRefresh)
 			{
-				if(block.getDefaultState().contains(FluidProperty.FLUID))
+				allFutures.add(CompletableFuture.supplyAsync(() ->
 				{
-					blocksToRefresh.add(block);
-				}
-			}
-			
-			final int blockQuantity = blocksToRefresh.size();
-			
-			final ExecutorService executor = Executors.newCachedThreadPool();
-			
-			final Collection<BlockState> newStates = new ConcurrentLinkedQueue<>();
-			
-			final CompletableFuture<?>[] allFutures = new CompletableFuture[blockQuantity];
-			
-			for(int i = 0; i < blockQuantity; i++)
-			{
-				final int index = i;
-				allFutures[i] = CompletableFuture.supplyAsync(() ->
-				{
-					return ((RefreshableStateFactory<BlockState>) blocksToRefresh.get(index).getStateFactory())
+					return ((RefreshableStateFactory<BlockState>) factory)
 						.refreshPropertyValues(FluidProperty.FLUID, newIds);
 				},
-				executor).thenAccept(s -> s.forEach(newStates::add));
+				EXECUTOR).thenAccept(newStates::addAll));
 			}
 			
-			CompletableFuture.allOf(allFutures).thenAccept(c ->
+			CompletableFuture.allOf(allFutures.stream().toArray(CompletableFuture<?>[]::new))
+			.thenAccept(v ->
 			{
 				newStates.forEach(state ->
 				{
@@ -136,8 +138,6 @@ public class Towelette implements ModInitializer, ToweletteApi
 					Block.STATE_IDS.add(state);
 				});
 			}).join();
-			
-			executor.shutdown();
 		}
 	}
 	
