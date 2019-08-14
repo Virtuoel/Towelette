@@ -49,6 +49,11 @@ public class ToweletteConfig
 		
 		config.add("fluidBlacklist", fluidBlacklist);
 		
+		final JsonObject debug = new JsonObject();
+		debug.addProperty("logStateRefresh", false);
+		
+		config.add("debug", debug);
+		
 		return config;
 	}
 }
