@@ -16,6 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -96,6 +97,18 @@ public class Towelette implements ModInitializer, ToweletteApi
 	@SuppressWarnings("unchecked")
 	public static void refreshBlockStates(final Collection<Identifier> newIds)
 	{
+		final long startTime = System.nanoTime();
+		
+		final boolean enableDebugLogging = Optional.ofNullable(ToweletteConfig.DATA.get("debug"))
+			.filter(JsonElement::isJsonObject)
+			.map(JsonElement::getAsJsonObject)
+			.map(o -> o.get("logStateRefresh"))
+			.filter(JsonElement::isJsonPrimitive)
+			.map(JsonElement::getAsJsonPrimitive)
+			.filter(JsonPrimitive::isBoolean)
+			.map(JsonElement::getAsBoolean)
+			.orElse(false);
+		
 		final List<StateFactory<Block, BlockState>> factoriesToRefresh = new LinkedList<>();
 		
 		for(final Block block : Registry.BLOCK)
@@ -106,9 +119,16 @@ public class Towelette implements ModInitializer, ToweletteApi
 			}
 		}
 		
+		final int blockQuantity = factoriesToRefresh.size();
+		
 		final Collection<BlockState> newStates = new ConcurrentLinkedQueue<>();
 		
 		final Collection<CompletableFuture<?>> allFutures = new LinkedList<>();
+		
+		if(enableDebugLogging)
+		{
+			LOGGER.info("Refreshing states of {} blocks for fluid(s) {} after {} ns of setup.", blockQuantity, newIds, System.nanoTime() - startTime);
+		}
 		
 		synchronized(FluidProperty.FLUID)
 		{
@@ -137,6 +157,11 @@ public class Towelette implements ModInitializer, ToweletteApi
 					state.initShapeCache();
 					Block.STATE_IDS.add(state);
 				});
+				
+				if(enableDebugLogging)
+				{
+					LOGGER.info("Added {} new states for fluid(s) {} after {} ms.", newStates.size(), newIds, (System.nanoTime() - startTime) / 1_000_000);
+				}
 			}).join();
 		}
 	}
