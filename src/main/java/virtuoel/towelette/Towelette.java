@@ -11,7 +11,6 @@ import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -89,18 +88,6 @@ public class Towelette implements ModInitializer, ToweletteApi
 	@SuppressWarnings("unchecked")
 	public static void refreshBlockStates(final Collection<Identifier> newIds)
 	{
-		final long startTime = System.nanoTime();
-		
-		final boolean enableDebugLogging = Optional.ofNullable(ToweletteConfig.DATA.get("debug"))
-			.filter(JsonElement::isJsonObject)
-			.map(JsonElement::getAsJsonObject)
-			.map(o -> o.get("logStateRefresh"))
-			.filter(JsonElement::isJsonPrimitive)
-			.map(JsonElement::getAsJsonPrimitive)
-			.filter(JsonPrimitive::isBoolean)
-			.map(JsonElement::getAsBoolean)
-			.orElse(false);
-		
 		newIds.forEach(FluidProperty.FLUID.getValues()::add);
 		
 		FoamFixCompatibility.removePropertyFromEntryMap(FluidProperty.FLUID);
@@ -122,11 +109,6 @@ public class Towelette implements ModInitializer, ToweletteApi
 			state.initShapeCache();
 			Block.STATE_IDS.add(state);
 		});
-		
-		if(enableDebugLogging)
-		{
-			LOGGER.info("Added {} new states for fluid(s) {} after {} ms.", newStates.size(), newIds, (System.nanoTime() - startTime) / 1_000_000);
-		}
 	}
 	
 	@SuppressWarnings("unchecked")
