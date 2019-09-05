@@ -7,9 +7,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.MutableTriple;
 
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.state.AbstractPropertyContainer;
 import net.minecraft.state.PropertyContainer;
-import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.Property;
 
 public class FoamFixCompatibility
@@ -33,43 +31,49 @@ public class FoamFixCompatibility
 		});
 	}
 	
-	public static <O, S extends PropertyContainer<S>, A extends AbstractPropertyContainer<O, S>> MutableTriple<Optional<Field>, Optional<?>, StateFactory.Factory<O, S, A>> resetFactoryMapperData(final StateFactory.Factory<O, S, A> factory)
+	public static MutableTriple<Optional<Field>, Optional<?>, ?> resetFactoryMapperData(final Optional<Object> factory)
 	{
-		final MutableTriple<Optional<Field>, Optional<?>, StateFactory.Factory<O, S, A>> data = MutableTriple.of(FACTORY_CLASS.filter(c -> c.isInstance(factory)).flatMap(c -> FACTORY_MAPPER), Optional.empty(), factory);
-		data.getLeft().ifPresent(f ->
+		final MutableTriple<Optional<Field>, Optional<?>, Object> data = MutableTriple.of(Optional.empty(), Optional.empty(), Optional.empty());
+		factory.ifPresent(f ->
 		{
-			try
+			data.setRight(factory);
+			
+			final Optional<Field> mapper = FACTORY_CLASS.filter(c -> c.isInstance(f)).flatMap(c -> FACTORY_MAPPER);
+			mapper.ifPresent(field ->
 			{
-				f.set(factory, null);
-			}
-			catch(IllegalArgumentException | IllegalAccessException e)
-			{
-				
-			}
-		});
-		return data;
-	}
-	
-	public static <O, S extends PropertyContainer<S>, A extends AbstractPropertyContainer<O, S>> void loadFactoryMapperData(final MutableTriple<Optional<Field>, Optional<?>, StateFactory.Factory<O, S, A>> data)
-	{
-		if(!data.getMiddle().isPresent())
-		{
-			data.setMiddle(data.getLeft().map(f ->
-			{
+				data.setLeft(mapper);
 				try
 				{
-					return f.get(data.getRight());
+					field.set(f, null);
 				}
 				catch(IllegalArgumentException | IllegalAccessException e)
 				{
 					
 				}
-				return null;
-			}));
+			});
+		});
+		return data;
+	}
+	
+	public static void loadFactoryMapperData(final MutableTriple<Optional<Field>, Optional<?>, ?> data)
+	{
+		if(!data.getMiddle().isPresent())
+		{
+			data.getLeft().ifPresent(field ->
+			{
+				try
+				{
+					data.setMiddle(Optional.ofNullable(field.get(data.getRight())));
+				}
+				catch(IllegalArgumentException | IllegalAccessException e)
+				{
+					data.setMiddle(Optional.empty());
+				}
+			});
 		}
 	}
 	
-	public static <O, S extends PropertyContainer<S>, A extends AbstractPropertyContainer<O, S>> void setStateOwnerData(final MutableTriple<Optional<Field>, Optional<?>, StateFactory.Factory<O, S, A>> data, final PropertyContainer<?> propertyContainer)
+	public static void setStateOwnerData(final MutableTriple<Optional<Field>, Optional<?>, ?> data, final PropertyContainer<?> propertyContainer)
 	{
 		data.getMiddle().ifPresent(m ->
 		{
