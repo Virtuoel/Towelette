@@ -2,7 +2,6 @@ package virtuoel.towelette.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
@@ -16,11 +15,10 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.state.StateFactory;
 import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.api.Fluidloggable;
-import virtuoel.towelette.api.StateFactoryRebuildable;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(Block.class)
-public abstract class BlockMixin implements StateFactoryRebuildable
+public abstract class BlockMixin
 {
 	@Shadow abstract void appendProperties(StateFactory.Builder<Block, BlockState> builder);
 	
@@ -46,14 +44,6 @@ public abstract class BlockMixin implements StateFactoryRebuildable
 	@Inject(at = @At("HEAD"), method = "getFluidState", cancellable = true)
 	public void getFluidState(BlockState state, CallbackInfoReturnable<FluidState> info)
 	{
-		info.setReturnValue(FluidProperty.FLUID.getFluidState(state));
-	}
-	
-	@Unique(silent = true)
-	@Deprecated
-	@Override
-	public void rebuildStates()
-	{
-		
+		info.setReturnValue(FluidUtils.getFluidState(state));
 	}
 }

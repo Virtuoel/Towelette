@@ -2,7 +2,6 @@ package virtuoel.towelette.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.At.Shift;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -14,11 +13,10 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
-import virtuoel.towelette.api.AdditionalEntityProperties;
 import virtuoel.towelette.api.CollidableFluid;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin implements AdditionalEntityProperties
+public abstract class EntityMixin
 {
 	@Shadow World world;
 	
@@ -28,15 +26,5 @@ public abstract class EntityMixin implements AdditionalEntityProperties
 		final FluidState state = world.getFluidState(pos);
 		
 		((CollidableFluid) state.getFluid()).onEntityCollision(state, world, pos, (Entity) (Object) this); 
-	}
-	
-	@Shadow abstract boolean isInLava();
-	
-	@Unique(silent = true)
-	@Deprecated
-	@Override
-	public boolean isInsideLava()
-	{
-		return isInLava();
 	}
 }
