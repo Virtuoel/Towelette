@@ -5,16 +5,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.BaseFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.AbstractProperty;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -28,113 +19,12 @@ public class FluidProperty extends AbstractProperty<Identifier>
 		values.add(Registry.FLUID.getDefaultId());
 	}
 	
-	@Deprecated
-	public Identifier of(ItemPlacementContext context)
-	{
-		return of(context.getWorld().getFluidState(context.getBlockPos()));
-	}
-	
-	@Deprecated
-	public Identifier of(FluidState fluid)
-	{
-		return of(fluid.getFluid());
-	}
-	
-	@Deprecated
-	public Identifier of(Fluid fluid)
-	{
-		final Identifier id = Registry.FLUID.getId(fluid);
-		return isValid(id) ? id : Registry.FLUID.getDefaultId();
-	}
-	
-	@Deprecated
-	public boolean isValid(FluidState fluid)
-	{
-		return isValid(fluid.getFluid());
-	}
-	
-	@Deprecated
-	public boolean isValid(Fluid fluid)
-	{
-		return isValid(Registry.FLUID.getId(fluid));
-	}
-	
-	@Deprecated
-	public boolean isValid(Identifier id)
-	{
-		return getValues().contains(id);
-	}
-	
-	@Deprecated
-	public FluidState getFluidState(BlockState state)
-	{
-		return getFluidState(getFluid(state));
-	}
-	
-	@Deprecated
-	public FluidState getFluidState(Fluid fluid)
-	{
-		if(fluid instanceof BaseFluid)
-		{
-			return ((BaseFluid) fluid).getStill(false);
-		}
-		return Fluids.EMPTY.getDefaultState();
-	}
-	
-	@Deprecated
-	public Fluid getFluid(BlockState state)
-	{
-		Fluid ret = Fluids.EMPTY;
-		if(state != null)
-		{
-			if(state.contains(this))
-			{
-				ret = Registry.FLUID.get(state.get(this));
-			}
-			
-			if(ret == Fluids.EMPTY && state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED))
-			{
-				ret = Fluids.WATER;
-			}
-		}
-		return ret;
-	}
-	
-	@Deprecated
-	public boolean tryAppendPropertySafely(StateFactory.Builder<Block, BlockState> builder)
-	{
-		if(!((virtuoel.towelette.mixin.StateFactoryBuilderAccessor) builder).getPropertyMap().containsKey(getName()))
-		{
-			builder.add(this);
-			return true;
-		}
-		return false;
-	}
-	
 	private final List<Identifier> values = new ArrayList<>();
 	
 	@Override
 	public Collection<Identifier> getValues()
 	{
 		return values;
-	}
-	
-	@Deprecated
-	public boolean filter(Fluid fluid, Identifier id)
-	{
-		return ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidBlacklisted(fluid, id));
-	}
-	
-	@Deprecated
-	public boolean filter(Fluid fluid)
-	{
-		return filter(fluid, Registry.FLUID.getId(fluid));
-	}
-	
-	@Deprecated
-	public boolean filter(Identifier id)
-	{
-		return filter(Registry.FLUID.get(id), id);
 	}
 	
 	@Override

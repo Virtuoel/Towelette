@@ -11,7 +11,7 @@ import net.minecraft.block.FireBlock;
 import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import virtuoel.towelette.api.FluidProperty;
+import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(FireBlock.class)
 public class FireBlockMixin
@@ -19,7 +19,7 @@ public class FireBlockMixin
 	@Inject(at = @At("HEAD"), method = { "getSpreadChance", "getBurnChance" }, cancellable = true)
 	public void onGetChances(BlockState blockState_1, CallbackInfoReturnable<Integer> info)
 	{
-		if(FluidProperty.FLUID.getFluid(blockState_1).matches(FluidTags.WATER))
+		if(FluidUtils.getFluid(blockState_1).matches(FluidTags.WATER))
 		{
 			info.setReturnValue(0);
 		}

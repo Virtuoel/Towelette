@@ -7,10 +7,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.PistonBlockEntity;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.IWorld;
 import virtuoel.towelette.api.FluidProperty;
+import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(PistonBlockEntity.class)
 public abstract class PistonBlockEntityMixin
@@ -22,9 +23,9 @@ public abstract class PistonBlockEntityMixin
 		
 		if(!state.isAir())
 		{
-			if(state.contains(FluidProperty.FLUID) && !FluidProperty.FLUID.getFluidState(state).isEmpty())
+			if(state.contains(FluidProperty.FLUID) && !FluidUtils.getFluidState(state).isEmpty())
 			{
-				state = state.with(FluidProperty.FLUID, FluidProperty.FLUID.of(Fluids.EMPTY));
+				state = state.with(FluidProperty.FLUID, Registry.FLUID.getDefaultId());
 			}
 		}
 		

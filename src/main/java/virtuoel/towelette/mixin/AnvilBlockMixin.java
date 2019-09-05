@@ -7,7 +7,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.BlockState;
-import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(AnvilBlock.class)
@@ -16,6 +15,6 @@ public class AnvilBlockMixin
 	@Inject(at = @At("RETURN"), method = "getLandingState", cancellable = true)
 	private static void onGetLandingState(BlockState blockState_1, CallbackInfoReturnable<BlockState> info)
 	{
-		info.setReturnValue(FluidUtils.getStateWithFluid(info.getReturnValue(), FluidProperty.FLUID.getFluidState(blockState_1)));
+		info.setReturnValue(FluidUtils.getStateWithFluid(info.getReturnValue(), FluidUtils.getFluidState(blockState_1)));
 	}
 }

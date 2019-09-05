@@ -15,7 +15,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
 import virtuoel.towelette.api.FluidProperty;
-import virtuoel.towelette.api.Fluidloggable;
+import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(CampfireBlock.class)
 public class CampfireBlockMixin
@@ -25,9 +25,9 @@ public class CampfireBlockMixin
 	{
 		if(info.getReturnValue())
 		{
-			iWorld_1.setBlockState(blockPos_1, blockState_1.with(Properties.WATERLOGGED, true).with(Properties.LIT, false).with(FluidProperty.FLUID, FluidProperty.FLUID.of(Fluids.WATER)), 3);
+			iWorld_1.setBlockState(blockPos_1, blockState_1.with(Properties.WATERLOGGED, true).with(Properties.LIT, false).with(FluidProperty.FLUID, FluidUtils.getFluidId(Fluids.WATER)), 3);
 		}
-		else if(Fluidloggable.tryFillImpl(iWorld_1, blockPos_1, blockState_1.with(Properties.LIT, false), fluidState_1))
+		else if(FluidUtils.tryFillWithFluid(iWorld_1, blockPos_1, blockState_1.with(Properties.LIT, false), fluidState_1))
 		{
 			if(blockState_1.get(Properties.LIT))
 			{

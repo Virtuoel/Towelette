@@ -1,50 +1,73 @@
 package virtuoel.towelette.util;
 
-import javax.annotation.Nonnull;
+import java.util.Optional;
+
 import javax.annotation.Nullable;
+
+import com.google.gson.JsonElement;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.SlabType;
+import net.minecraft.fluid.BaseFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import virtuoel.towelette.api.FluidProperty;
+import virtuoel.towelette.api.ToweletteConfig;
 
 public class FluidUtils
 {
+	public static Identifier getFluidId(ItemPlacementContext context)
+	{
+		return getFluidId(context.getWorld().getFluidState(context.getBlockPos()));
+	}
+	
+	public static Identifier getFluidId(FluidState fluid)
+	{
+		return getFluidId(fluid.getFluid());
+	}
+	
+	public static Identifier getFluidId(Fluid fluid)
+	{
+		final Identifier id = Registry.FLUID.getId(fluid);
+		return isValid(id) ? id : Registry.FLUID.getDefaultId();
+	}
+	
+	public static boolean isValid(FluidState fluid)
+	{
+		return isValid(fluid.getFluid());
+	}
+	
+	public static boolean isValid(Fluid fluid)
+	{
+		return isValid(Registry.FLUID.getId(fluid));
+	}
+	
+	public static boolean isValid(Identifier id)
+	{
+		return FluidProperty.FLUID.getValues().contains(id);
+	}
+	
 	@Nullable
 	public static BlockState getStateWithFluid(@Nullable BlockState state, ItemUsageContext context)
 	{
-		if(state != null && state.contains(FluidProperty.FLUID))
-		{
-			return getStateWithFluidImpl(state, context.getWorld().getFluidState(context.getBlockPos()));
-		}
-		
-		return state;
+		return getStateWithFluid(state, context.getWorld(), context.getBlockPos());
 	}
 	
 	@Nullable
 	public static BlockState getStateWithFluid(@Nullable BlockState state, BlockView world, BlockPos pos)
 	{
-		if(state != null && state.contains(FluidProperty.FLUID))
+		if(state != null && (state.contains(Properties.WATERLOGGED) || state.contains(FluidProperty.FLUID)))
 		{
-			return getStateWithFluidImpl(state, world.getFluidState(pos));
-		}
-		
-		return state;
-	}
-	
-	@Nullable
-	public static BlockState getStateWithFluid(@Nullable BlockState state, Fluid fluid)
-	{
-		if(state != null && state.contains(FluidProperty.FLUID))
-		{
-			return getStateWithFluidImpl(state, fluid.getDefaultState());
+			return getStateWithFluid(state, world.getFluidState(pos));
 		}
 		
 		return state;
@@ -53,27 +76,64 @@ public class FluidUtils
 	@Nullable
 	public static BlockState getStateWithFluid(@Nullable BlockState state, FluidState fluid)
 	{
-		if(state != null && state.contains(FluidProperty.FLUID))
+		return getStateWithFluid(state, fluid.getFluid());
+	}
+	
+	@Nullable
+	public static BlockState getStateWithFluid(@Nullable BlockState state, Fluid fluid)
+	{
+		if(state != null)
 		{
-			return getStateWithFluidImpl(state, fluid);
+			final boolean isDoubleSlab = state.contains(Properties.SLAB_TYPE) && state.get(Properties.SLAB_TYPE) == SlabType.DOUBLE;
+			
+			if(state.contains(Properties.WATERLOGGED))
+			{
+				state = state.with(Properties.WATERLOGGED, !isDoubleSlab && fluid == Fluids.WATER);
+			}
+			
+			if(state.contains(FluidProperty.FLUID))
+			{
+				state = state.with(FluidProperty.FLUID, getFluidId(isDoubleSlab ? Fluids.EMPTY : fluid));
+			}
 		}
-		
 		return state;
 	}
 	
-	private static BlockState getStateWithFluidImpl(@Nonnull BlockState state, FluidState fluid)
+	public static FluidState getFluidState(BlockState state)
 	{
-		final boolean isDoubleSlab = state.contains(Properties.SLAB_TYPE) && state.get(Properties.SLAB_TYPE) == SlabType.DOUBLE;
-		if(state.contains(Properties.WATERLOGGED))
+		return getFluidState(getFluid(state));
+	}
+	
+	public static FluidState getFluidState(Fluid fluid)
+	{
+		if(fluid instanceof BaseFluid)
 		{
-			state = state.with(Properties.WATERLOGGED, !isDoubleSlab && fluid.getFluid() == Fluids.WATER);
+			return ((BaseFluid) fluid).getStill(false);
 		}
-		return state.with(FluidProperty.FLUID, isDoubleSlab ? FluidProperty.FLUID.of(Fluids.EMPTY) : FluidProperty.FLUID.of(fluid));
+		return Fluids.EMPTY.getDefaultState();
+	}
+	
+	public static Fluid getFluid(BlockState state)
+	{
+		Fluid ret = Fluids.EMPTY;
+		if(state != null)
+		{
+			if(state.contains(FluidProperty.FLUID))
+			{
+				ret = Registry.FLUID.get(state.get(FluidProperty.FLUID));
+			}
+			
+			if(ret.getDefaultState().isEmpty() && state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED))
+			{
+				ret = Fluids.WATER;
+			}
+		}
+		return ret;
 	}
 	
 	public static boolean scheduleFluidTick(BlockState state, IWorld world, BlockPos pos)
 	{
-		return scheduleFluidTick(FluidProperty.FLUID.getFluid(state), world, pos);
+		return scheduleFluidTick(getFluid(state), world, pos);
 	}
 	
 	public static boolean scheduleFluidTick(FluidState state, IWorld world, BlockPos pos)
@@ -99,5 +159,63 @@ public class FluidUtils
 	private static void scheduleFluidTickImpl(Fluid fluid, IWorld world, BlockPos pos)
 	{
 		world.getFluidTickScheduler().schedule(pos, fluid, fluid.getTickRate(world));
+	}
+	
+	public static boolean canFillWithFluid(BlockView blockView_1, BlockPos blockPos_1, BlockState blockState_1, Fluid fluid_1)
+	{
+		return ((fluid_1 == Fluids.WATER && blockState_1.contains(Properties.WATERLOGGED) && !blockState_1.get(Properties.WATERLOGGED)) || isValid(fluid_1)) &&
+			(getFluidState(blockState_1).isEmpty() ||
+			Optional.ofNullable(ToweletteConfig.DATA.get("replaceableFluids"))
+			.filter(JsonElement::isJsonPrimitive)
+			.map(JsonElement::getAsBoolean).orElse(false));
+	}
+	
+	public static boolean tryFillWithFluid(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, FluidState fluidState_1)
+	{
+		if(canFillWithFluid(iWorld_1, blockPos_1, blockState_1, fluidState_1.getFluid()))
+		{
+			if(!iWorld_1.isClient())
+			{
+				final Fluid fluid = fluidState_1.getFluid();
+				
+				if(fluid == Fluids.WATER && blockState_1.contains(Properties.WATERLOGGED))
+				{
+					blockState_1 = blockState_1.with(Properties.WATERLOGGED, true);
+				}
+				
+				if(blockState_1.contains(FluidProperty.FLUID))
+				{
+					iWorld_1.setBlockState(blockPos_1, blockState_1.with(FluidProperty.FLUID, getFluidId(fluidState_1)), 3);
+				}
+				
+				iWorld_1.getFluidTickScheduler().schedule(blockPos_1, fluid, fluid.getTickRate(iWorld_1));
+			}
+			
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	public static Fluid tryDrainFluid(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1)
+	{
+		final FluidState fluidState = getFluidState(blockState_1);
+		if(!fluidState.isEmpty())
+		{
+			if(blockState_1.contains(FluidProperty.FLUID))
+			{
+				blockState_1 = blockState_1.with(FluidProperty.FLUID, Registry.FLUID.getDefaultId());
+			}
+			
+			if(blockState_1.contains(Properties.WATERLOGGED))
+			{
+				blockState_1 = blockState_1.with(Properties.WATERLOGGED, false);
+			}
+			
+			iWorld_1.setBlockState(blockPos_1, blockState_1, 3);
+		}
+		return fluidState.getFluid();
 	}
 }
