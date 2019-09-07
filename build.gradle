@@ -38,6 +38,8 @@ dependencies {
 	
 	implementation "com.google.code.findbugs:jsr305:${findbugs_version}"
 	
+	modImplementation "com.github.Virtuoel:Statement:${statement_version}"
+	
 	modImplementation "io.github.prospector:modmenu:${modmenu_version}"
 }
 
@@ -141,6 +143,7 @@ curseforge {
 				displayName = "${mod_name}-${minecraft_version}-${mod_version}.jar"
 				relations {
 					requiredDependency "fabric-api"
+					embeddedLibrary "statement"
 				}
 				
 				changelogType = "html"

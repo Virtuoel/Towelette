@@ -8,8 +8,9 @@ import java.util.Optional;
 import net.minecraft.state.property.AbstractProperty;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import virtuoel.statement.api.MutableProperty;
 
-public class FluidProperty extends AbstractProperty<Identifier>
+public class FluidProperty extends AbstractProperty<Identifier> implements MutableProperty<Identifier>
 {
 	public static final FluidProperty FLUID = new FluidProperty("fluid");
 	
@@ -25,6 +26,19 @@ public class FluidProperty extends AbstractProperty<Identifier>
 	public Collection<Identifier> getValues()
 	{
 		return values;
+	}
+	
+	@Override
+	public void addValue(Identifier value)
+	{
+		values.add(value);
+	}
+	
+	@Override
+	public Identifier removeValue(Identifier value)
+	{
+		values.remove(value);
+		return value;
 	}
 	
 	@Override

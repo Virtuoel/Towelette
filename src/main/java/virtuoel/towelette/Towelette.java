@@ -20,6 +20,8 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
+import virtuoel.statement.Statement;
+import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.api.ToweletteApi;
 import virtuoel.towelette.api.ToweletteConfig;
 
@@ -50,8 +52,9 @@ public class Towelette implements ModInitializer, ToweletteApi
 				}
 			});
 		});
-		/*
-		refreshBlockStates(
+		
+		Statement.refreshBlockStates(
+			FluidProperty.FLUID,
 			Registry.FLUID.getIds().stream()
 			.filter(f -> ENTRYPOINT_WHITELIST_PREDICATE.test(Registry.FLUID.get(f), f))
 			.collect(ImmutableSet.toImmutableSet())
@@ -62,15 +65,15 @@ public class Towelette implements ModInitializer, ToweletteApi
 			{
 				if(ENTRYPOINT_WHITELIST_PREDICATE.test(object, identifier))
 				{
-					refreshBlockStates(ImmutableSet.of(identifier));
+					Statement.refreshBlockStates(FluidProperty.FLUID, ImmutableSet.of(identifier));
 				}
 			}
 		);
 		
 		RegistryIdRemapCallback.event(Registry.BLOCK).register(remapState ->
 		{
-			reorderBlockStates();
-		});*/
+			Statement.reorderBlockStates(state -> state.contains(FluidProperty.FLUID) && !state.get(FluidProperty.FLUID).equals(Registry.FLUID.getDefaultId()));
+		});
 	}
 	
 	@Override
