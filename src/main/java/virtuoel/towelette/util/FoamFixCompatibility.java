@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.tuple.MutableTriple;
+import org.apache.commons.lang3.tuple.Triple;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.state.PropertyContainer;
@@ -31,7 +32,7 @@ public class FoamFixCompatibility
 		});
 	}
 	
-	public static MutableTriple<Optional<Field>, Optional<?>, ?> resetFactoryMapperData(final Optional<Object> factory)
+	public static Optional<MutableTriple<Optional<Field>, Optional<?>, ?>> resetFactoryMapperData(final Optional<Object> factory)
 	{
 		final MutableTriple<Optional<Field>, Optional<?>, Object> data = MutableTriple.of(Optional.empty(), Optional.empty(), Optional.empty());
 		factory.ifPresent(f ->
@@ -52,30 +53,33 @@ public class FoamFixCompatibility
 				}
 			});
 		});
-		return data;
+		return Optional.of(data);
 	}
 	
-	public static void loadFactoryMapperData(final MutableTriple<Optional<Field>, Optional<?>, ?> data)
+	public static void loadFactoryMapperData(final Optional<MutableTriple<Optional<Field>, Optional<?>, ?>> data)
 	{
-		if(!data.getMiddle().isPresent())
+		data.ifPresent(d ->
 		{
-			data.getLeft().ifPresent(field ->
+			if(!d.getMiddle().isPresent())
 			{
-				try
+				d.getLeft().ifPresent(field ->
 				{
-					data.setMiddle(Optional.ofNullable(field.get(data.getRight())));
-				}
-				catch(IllegalArgumentException | IllegalAccessException e)
-				{
-					data.setMiddle(Optional.empty());
-				}
-			});
-		}
+					try
+					{
+						d.setMiddle(Optional.ofNullable(field.get(d.getRight())));
+					}
+					catch(IllegalArgumentException | IllegalAccessException e)
+					{
+						d.setMiddle(Optional.empty());
+					}
+				});
+			}
+		});
 	}
 	
-	public static void setStateOwnerData(final MutableTriple<Optional<Field>, Optional<?>, ?> data, final PropertyContainer<?> propertyContainer)
+	public static <T extends Triple<Optional<Field>, Optional<?>, ?>> void setStateOwnerData(final Optional<T> data, final PropertyContainer<?> propertyContainer)
 	{
-		data.getMiddle().ifPresent(m ->
+		data.map(Triple::getMiddle).ifPresent(m ->
 		{
 			STATE_CLASS.filter(c -> c.isInstance(propertyContainer)).flatMap(c -> STATE_OWNER).ifPresent(f ->
 			{
@@ -91,14 +95,15 @@ public class FoamFixCompatibility
 		});
 	}
 	
-	@SuppressWarnings("unchecked")
 	private static Optional<Map<Property<?>, ?>> getEntryMap()
 	{
 		return getField(ORDERING_CLASS, "entryMap").map(f ->
 		{
 			try
 			{
-				return (Map<Property<?>, ?>) f.get(null);
+				@SuppressWarnings("unchecked")
+				final Map<Property<?>, ?> map = (Map<Property<?>, ?>) f.get(null);
+				return map;
 			}
 			catch(IllegalArgumentException | IllegalAccessException e)
 			{

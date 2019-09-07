@@ -72,7 +72,7 @@ public interface RefreshableStateFactory<O, S extends PropertyContainer<S>>
 		
 		final BiFunction<O, ImmutableMap<Property<?>, Comparable<?>>, S> function = getStateFunction();
 		
-		final MutableTriple<Optional<Field>, Optional<?>, ?> compatibilityData = FoamFixCompatibility.resetFactoryMapperData(getFactory());
+		final Optional<MutableTriple<Optional<Field>, Optional<?>, ?>> compatibilityData = FoamFixCompatibility.resetFactoryMapperData(getFactory());
 		
 		tableStream.forEach((valueList) ->
 		{
