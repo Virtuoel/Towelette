@@ -3,7 +3,6 @@
 	"id": "towelette",
 	"name": "Towelette",
 	"version": "${version}",
-	"side": "universal",
 	"description": "Fabric mod that allows waterlogging with any fluid.",
 	"license": "MIT",
 	"contact":

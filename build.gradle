@@ -39,6 +39,7 @@ dependencies {
 	implementation "com.google.code.findbugs:jsr305:${findbugs_version}"
 	
 	modImplementation "com.github.Virtuoel:Statement:${statement_version}"
+	include "com.github.Virtuoel:Statement:${statement_version}"
 	
 	modImplementation "io.github.prospector:modmenu:${modmenu_version}"
 }
