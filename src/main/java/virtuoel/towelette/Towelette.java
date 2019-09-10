@@ -17,17 +17,19 @@ import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.state.PropertyContainer;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
-import virtuoel.statement.Statement;
+import virtuoel.statement.api.StateRefresher;
+import virtuoel.statement.api.StatementApi;
 import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.api.ToweletteApi;
 import virtuoel.towelette.api.ToweletteConfig;
 
-public class Towelette implements ModInitializer, ToweletteApi
+public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 {
-	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+	public static final Logger LOGGER = LogManager.getLogger(ToweletteApi.MOD_ID);
 	
 	public static final Tag<Block> DISPLACEABLE = TagRegistry.block(id("displaceable"));
 	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
@@ -53,7 +55,7 @@ public class Towelette implements ModInitializer, ToweletteApi
 			});
 		});
 		
-		Statement.refreshBlockStates(
+		StateRefresher.INSTANCE.refreshBlockStates(
 			FluidProperty.FLUID,
 			Registry.FLUID.getIds().stream()
 			.filter(f -> ENTRYPOINT_WHITELIST_PREDICATE.test(Registry.FLUID.get(f), f))
@@ -65,14 +67,14 @@ public class Towelette implements ModInitializer, ToweletteApi
 			{
 				if(ENTRYPOINT_WHITELIST_PREDICATE.test(object, identifier))
 				{
-					Statement.refreshBlockStates(FluidProperty.FLUID, ImmutableSet.of(identifier));
+					StateRefresher.INSTANCE.refreshBlockStates(FluidProperty.FLUID, ImmutableSet.of(identifier));
 				}
 			}
 		);
 		
 		RegistryIdRemapCallback.event(Registry.BLOCK).register(remapState ->
 		{
-			Statement.reorderBlockStates(state -> state.contains(FluidProperty.FLUID) && !state.get(FluidProperty.FLUID).equals(Registry.FLUID.getDefaultId()));
+			StateRefresher.INSTANCE.reorderBlockStates();
 		});
 	}
 	
@@ -82,8 +84,14 @@ public class Towelette implements ModInitializer, ToweletteApi
 		return !fluid.getDefaultState().isStill() || FLUID_ID_BLACKLIST.contains(id);
 	}
 	
+	@Override
+	public boolean shouldDeferState(PropertyContainer<?> state)
+	{
+		return state.getEntries().containsKey(FluidProperty.FLUID) && !state.get(FluidProperty.FLUID).equals(Registry.FLUID.getDefaultId());
+	}
+	
 	public static Identifier id(final String name)
 	{
-		return new Identifier(MOD_ID, name);
+		return new Identifier(ToweletteApi.MOD_ID, name);
 	}
 }

@@ -5,15 +5,14 @@ import java.util.function.Supplier;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
-import virtuoel.towelette.Towelette;
 import virtuoel.towelette.util.JsonConfigHandler;
 
 public class ToweletteConfig
 {
 	public static final Supplier<JsonObject> HANDLER =
 		new JsonConfigHandler(
-			Towelette.MOD_ID,
-			Towelette.MOD_ID + "/config.json",
+			ToweletteApi.MOD_ID,
+			ToweletteApi.MOD_ID + "/config.json",
 			ToweletteConfig::createDefaultConfig
 		);
 	

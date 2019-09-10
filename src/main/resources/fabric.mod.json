@@ -32,6 +32,10 @@
 		"towelette":
 		[
 			"virtuoel.towelette.Towelette"
+		],
+		"statement":
+		[
+			"virtuoel.towelette.Towelette"
 		]
 	},
 	"mixins":
