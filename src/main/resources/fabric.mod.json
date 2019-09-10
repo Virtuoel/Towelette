@@ -4,34 +4,30 @@
 	"name": "Towelette",
 	"version": "${version}",
 	"description": "Fabric mod that allows waterlogging with any fluid.",
-	"license": "MIT",
+	"authors":
+	[
+		"Virtuoel"
+	],
 	"contact":
 	{
 		"homepage": "https://www.curseforge.com/minecraft/mc-mods/towelette",
 		"issues": "https://github.com/Virtuoel/Towelette/issues",
 		"sources": "https://github.com/Virtuoel/Towelette"
 	},
-	"authors":
-	[
-		"Virtuoel"
-	],
+	"license": "MIT",
+	"icon": "assets/towelette/icon.png",
+	"environment": "*",
 	"depends":
 	{
 		"fabricloader": ">=0.4.0",
 		"fabric": "*",
 		"statement": "*"
 	},
-	"icon": "assets/towelette/icon.png",
-	"environment": "*",
 	"entrypoints":
 	{
 		"main":
 		[
 			"virtuoel.towelette.Towelette"
-		],
-		"client":
-		[
-			
 		],
 		"towelette":
 		[
