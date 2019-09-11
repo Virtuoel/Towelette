@@ -15,6 +15,6 @@ public class DragonEggBlockMixin
 	@ModifyArg(method = "teleport", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private BlockState teleportSetBlockStateModified(BlockState blockState_1)
 	{
-		return FluidUtils.getStateWithFluid(blockState_1, Fluids.EMPTY);
+		return FluidUtils.getStateWithFluid(blockState_1, Fluids.EMPTY.getDefaultState());
 	}
 }

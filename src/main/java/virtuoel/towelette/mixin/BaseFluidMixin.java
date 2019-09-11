@@ -14,11 +14,14 @@ import net.minecraft.block.FluidFillable;
 import net.minecraft.fluid.BaseFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
+import net.minecraft.world.World;
 import virtuoel.towelette.Towelette;
+import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(BaseFluid.class)
 public abstract class BaseFluidMixin
@@ -79,5 +82,13 @@ public abstract class BaseFluidMixin
 				return;
 			}
 		}
+	}
+	
+	@Redirect(method = "onScheduledTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
+	public boolean onOnScheduledTickSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags, World world, BlockPos noop, FluidState fluidState)
+	{
+		final BlockState existingState = world.getBlockState(pos);
+		final BlockState stateWithFluid = FluidUtils.getStateWithFluid(existingState, state != Blocks.AIR.getDefaultState() ? fluidState : Fluids.EMPTY.getDefaultState());
+		return obj.setBlockState(pos, existingState == stateWithFluid ? state : stateWithFluid, flags);
 	}
 }

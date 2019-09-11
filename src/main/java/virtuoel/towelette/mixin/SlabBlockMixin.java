@@ -26,7 +26,7 @@ public abstract class SlabBlockMixin
 	{
 		if(context.getWorld().getBlockState(context.getBlockPos()).getBlock() == (SlabBlock) (Object) this)
 		{
-			final BlockState state = FluidUtils.getStateWithFluid(info.getReturnValue(), Fluids.EMPTY);
+			final BlockState state = FluidUtils.getStateWithFluid(info.getReturnValue(), Fluids.EMPTY.getDefaultState());
 			if(state != null)
 			{
 				info.setReturnValue(state);

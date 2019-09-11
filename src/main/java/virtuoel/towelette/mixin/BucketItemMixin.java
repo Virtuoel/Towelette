@@ -9,10 +9,12 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidFillable;
 import net.minecraft.block.Material;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BucketItem;
 import net.minecraft.util.Hand;
@@ -20,11 +22,24 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(BucketItem.class)
 public class BucketItemMixin
 {
 	@Shadow Fluid fluid;
+	
+	@Redirect(method = "use", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
+	public BlockState onUseGetBlockStateProxy(World obj, BlockPos blockPos_1)
+	{
+		final BlockState original = obj.getBlockState(blockPos_1);
+		final FluidState state = FluidUtils.getFluidState(original);
+		if(!state.isEmpty() && !state.isStill())
+		{
+			return Blocks.AIR.getDefaultState();
+		}
+		return original;
+	}
 	
 	@Redirect(method = "use", at = @At(value = "FIELD", ordinal = 2, target = "Lnet/minecraft/item/BucketItem;fluid:Lnet/minecraft/fluid/Fluid;"))
 	public Fluid onUseFluidProxy(BucketItem this$0, World world_1, PlayerEntity playerEntity_1, Hand hand_1)

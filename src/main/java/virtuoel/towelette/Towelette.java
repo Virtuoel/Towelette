@@ -8,6 +8,7 @@ import java.util.function.BiPredicate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 
@@ -18,6 +19,7 @@ import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.state.PropertyContainer;
+import net.minecraft.state.property.Property;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
@@ -81,13 +83,22 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	@Override
 	public boolean isFluidBlacklisted(Fluid fluid, Identifier id)
 	{
-		return !fluid.getDefaultState().isStill() || FLUID_ID_BLACKLIST.contains(id);
+		final boolean allowFlowing = Optional.ofNullable(ToweletteConfig.DATA.get("flowingFluidlogging"))
+			.filter(JsonElement::isJsonPrimitive)
+			.map(JsonElement::getAsBoolean).orElse(false);
+		
+		return FLUID_ID_BLACKLIST.contains(id) || FluidProperty.FLUID.getValues().contains(id) || (!allowFlowing && !fluid.getDefaultState().isStill());
 	}
 	
 	@Override
 	public boolean shouldDeferState(PropertyContainer<?> state)
 	{
-		return state.getEntries().containsKey(FluidProperty.FLUID) && !state.get(FluidProperty.FLUID).equals(Registry.FLUID.getDefaultId());
+		final ImmutableMap<Property<?>, Comparable<?>> entries = state.getEntries();
+		final boolean canContainFluid = entries.containsKey(FluidProperty.FLUID);
+		boolean deferred = canContainFluid && !state.get(FluidProperty.FLUID).equals(Registry.FLUID.getDefaultId());
+		deferred |= canContainFluid && entries.containsKey(FluidProperty.LEVEL_1_8) && state.get(FluidProperty.LEVEL_1_8) != 8;
+		deferred |= canContainFluid && entries.containsKey(FluidProperty.FALLING) && state.get(FluidProperty.FALLING);
+		return deferred;
 	}
 	
 	public static Identifier id(final String name)

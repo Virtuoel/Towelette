@@ -17,6 +17,6 @@ public class FallingBlockMixin
 	@Redirect(method = "tryStartFalling", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
 	public BlockState tryStartFallingGetBlockStateProxy(World obj, BlockPos blockPos_1)
 	{
-		return FluidUtils.getStateWithFluid(obj.getBlockState(blockPos_1), Fluids.EMPTY);
+		return FluidUtils.getStateWithFluid(obj.getBlockState(blockPos_1), Fluids.EMPTY.getDefaultState());
 	}
 }

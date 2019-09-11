@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import net.minecraft.state.property.AbstractProperty;
+import net.minecraft.state.property.BooleanProperty;
+import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import virtuoel.statement.api.MutableProperty;
@@ -13,6 +15,8 @@ import virtuoel.statement.api.MutableProperty;
 public class FluidProperty extends AbstractProperty<Identifier> implements MutableProperty<Identifier>
 {
 	public static final FluidProperty FLUID = new FluidProperty("fluid");
+	public static final IntProperty LEVEL_1_8 = IntProperty.of("fluid_level", 1, 8);
+	public static final BooleanProperty FALLING = BooleanProperty.of("falling_fluid");
 	
 	private FluidProperty(String name)
 	{
