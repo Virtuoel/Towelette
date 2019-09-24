@@ -36,9 +36,12 @@ public class ToweletteConfig
 		fluidlogging.addProperty("leaves", false);
 		fluidlogging.addProperty("lily_pad", false);
 		fluidlogging.addProperty("nether_portal", false);
+		fluidlogging.addProperty("observer", false);
 		fluidlogging.addProperty("pistons", false);
+		fluidlogging.addProperty("redstone_block", false);
 		fluidlogging.addProperty("redstone_dust", true);
 		fluidlogging.addProperty("shulker_boxes", false);
+		fluidlogging.addProperty("slime", false);
 		fluidlogging.addProperty("spawner", false);
 		fluidlogging.addProperty("structure_void", false);
 		fluidlogging.addProperty("torches", true);
