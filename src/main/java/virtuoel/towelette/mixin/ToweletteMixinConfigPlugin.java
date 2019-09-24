@@ -92,7 +92,7 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 			);
 		}
 		
-		return Optional.of(CLASS_CONFIG_MAP.get(mixinClassName)).map(ToweletteMixinConfigPlugin::isConfigEnabled).orElse(true);
+		return Optional.ofNullable(CLASS_CONFIG_MAP.get(mixinClassName)).map(ToweletteMixinConfigPlugin::isConfigEnabled).orElse(true);
 	}
 	
 	@Override
