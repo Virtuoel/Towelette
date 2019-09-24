@@ -82,8 +82,12 @@ dependencies {
 		}
 	}
 	
-	modApi "virtuoel:statement:${statement_version}"
-	include "virtuoel:statement:${statement_version}"
+	modApi("virtuoel:statement:${statement_version}") {
+		transitive = false
+	}
+	include("virtuoel:statement:${statement_version}") {
+		transitive = false
+	}
 }
 
 processResources {
