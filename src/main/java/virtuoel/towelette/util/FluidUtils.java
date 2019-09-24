@@ -19,7 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.registry.Registry;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
-import virtuoel.towelette.api.FluidProperty;
+import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteConfig;
 
 public class FluidUtils
@@ -52,7 +52,7 @@ public class FluidUtils
 	
 	public static boolean isValid(Identifier id)
 	{
-		return FluidProperty.FLUID.getValues().contains(id);
+		return FluidProperties.FLUID.getValues().contains(id);
 	}
 	
 	@Nullable
@@ -64,7 +64,7 @@ public class FluidUtils
 	@Nullable
 	public static BlockState getStateWithFluid(@Nullable BlockState state, BlockView world, BlockPos pos)
 	{
-		if(state != null && (state.contains(Properties.WATERLOGGED) || state.contains(FluidProperty.FLUID)))
+		if(state != null && (state.contains(Properties.WATERLOGGED) || state.contains(FluidProperties.FLUID)))
 		{
 			return getStateWithFluid(state, world.getFluidState(pos));
 		}
@@ -84,19 +84,19 @@ public class FluidUtils
 				blockState = blockState.with(Properties.WATERLOGGED, !isDoubleSlab && fluidState.getFluid() == Fluids.WATER);
 			}
 			
-			if(blockState.contains(FluidProperty.FLUID))
+			if(blockState.contains(FluidProperties.FLUID))
 			{
-				blockState = blockState.with(FluidProperty.FLUID, getFluidId(isDoubleSlab ? Fluids.EMPTY : fluidState.getFluid()));
+				blockState = blockState.with(FluidProperties.FLUID, getFluidId(isDoubleSlab ? Fluids.EMPTY : fluidState.getFluid()));
 			}
 			
-			if(blockState.contains(FluidProperty.FALLING))
+			if(blockState.contains(FluidProperties.FALLING))
 			{
-				blockState = blockState.with(FluidProperty.FALLING, fluidState.getEntries().containsKey(Properties.FALLING) && fluidState.get(Properties.FALLING));
+				blockState = blockState.with(FluidProperties.FALLING, fluidState.getEntries().containsKey(Properties.FALLING) && fluidState.get(Properties.FALLING));
 			}
 			
-			if(blockState.contains(FluidProperty.LEVEL_1_8))
+			if(blockState.contains(FluidProperties.LEVEL_1_8))
 			{
-				blockState = blockState.with(FluidProperty.LEVEL_1_8, fluidState.getEntries().containsKey(Properties.LEVEL_1_8) ? fluidState.get(Properties.LEVEL_1_8) : 8);
+				blockState = blockState.with(FluidProperties.LEVEL_1_8, fluidState.getEntries().containsKey(Properties.LEVEL_1_8) ? fluidState.get(Properties.LEVEL_1_8) : 8);
 			}
 		}
 		return blockState;
@@ -106,14 +106,14 @@ public class FluidUtils
 	{
 		FluidState state = getFluidState(getFluid(blockState));
 		
-		if(blockState.contains(FluidProperty.FALLING) && state.getEntries().containsKey(Properties.FALLING))
+		if(blockState.contains(FluidProperties.FALLING) && state.getEntries().containsKey(Properties.FALLING))
 		{
-			state = state.with(Properties.FALLING, blockState.get(FluidProperty.FALLING));
+			state = state.with(Properties.FALLING, blockState.get(FluidProperties.FALLING));
 		}
 		
-		if(blockState.contains(FluidProperty.LEVEL_1_8) && state.getEntries().containsKey(Properties.LEVEL_1_8))
+		if(blockState.contains(FluidProperties.LEVEL_1_8) && state.getEntries().containsKey(Properties.LEVEL_1_8))
 		{
-			state = state.with(Properties.LEVEL_1_8, blockState.get(FluidProperty.LEVEL_1_8));
+			state = state.with(Properties.LEVEL_1_8, blockState.get(FluidProperties.LEVEL_1_8));
 		}
 		
 		return state;
@@ -130,9 +130,9 @@ public class FluidUtils
 		Fluid ret = Fluids.EMPTY;
 		if(state != null)
 		{
-			if(state.contains(FluidProperty.FLUID))
+			if(state.contains(FluidProperties.FLUID))
 			{
-				ret = Registry.FLUID.get(state.get(FluidProperty.FLUID));
+				ret = Registry.FLUID.get(state.get(FluidProperties.FLUID));
 			}
 			
 			if(ret.getDefaultState().isEmpty() && state.contains(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED))
@@ -208,20 +208,20 @@ public class FluidUtils
 					filled = true;
 				}
 				
-				if(blockState.contains(FluidProperty.FLUID))
+				if(blockState.contains(FluidProperties.FLUID))
 				{
-					blockState = blockState.with(FluidProperty.FLUID, getFluidId(fluidState));
+					blockState = blockState.with(FluidProperties.FLUID, getFluidId(fluidState));
 					filled = true;
 				}
 				
-				if(filled && blockState.contains(FluidProperty.FALLING))
+				if(filled && blockState.contains(FluidProperties.FALLING))
 				{
-					blockState = blockState.with(FluidProperty.FALLING, fluidState.getEntries().containsKey(Properties.FALLING) && fluidState.get(Properties.FALLING));
+					blockState = blockState.with(FluidProperties.FALLING, fluidState.getEntries().containsKey(Properties.FALLING) && fluidState.get(Properties.FALLING));
 				}
 				
-				if(filled && blockState.contains(FluidProperty.LEVEL_1_8))
+				if(filled && blockState.contains(FluidProperties.LEVEL_1_8))
 				{
-					blockState = blockState.with(FluidProperty.LEVEL_1_8, fluidState.getEntries().containsKey(Properties.LEVEL_1_8) ? fluidState.get(Properties.LEVEL_1_8) : 8);
+					blockState = blockState.with(FluidProperties.LEVEL_1_8, fluidState.getEntries().containsKey(Properties.LEVEL_1_8) ? fluidState.get(Properties.LEVEL_1_8) : 8);
 				}
 				
 				if(filled)
@@ -245,19 +245,19 @@ public class FluidUtils
 		final FluidState fluidState = getFluidState(blockState_1);
 		if(!fluidState.isEmpty())
 		{
-			if(blockState_1.contains(FluidProperty.FLUID))
+			if(blockState_1.contains(FluidProperties.FLUID))
 			{
-				blockState_1 = blockState_1.with(FluidProperty.FLUID, Registry.FLUID.getDefaultId());
+				blockState_1 = blockState_1.with(FluidProperties.FLUID, Registry.FLUID.getDefaultId());
 			}
 			
-			if(blockState_1.contains(FluidProperty.FALLING))
+			if(blockState_1.contains(FluidProperties.FALLING))
 			{
-				blockState_1 = blockState_1.with(FluidProperty.FALLING, false);
+				blockState_1 = blockState_1.with(FluidProperties.FALLING, false);
 			}
 			
-			if(blockState_1.contains(FluidProperty.LEVEL_1_8))
+			if(blockState_1.contains(FluidProperties.LEVEL_1_8))
 			{
-				blockState_1 = blockState_1.with(FluidProperty.LEVEL_1_8, 8);
+				blockState_1 = blockState_1.with(FluidProperties.LEVEL_1_8, 8);
 			}
 			
 			if(blockState_1.contains(Properties.WATERLOGGED))

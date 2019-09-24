@@ -25,7 +25,7 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import virtuoel.statement.api.StateRefresher;
 import virtuoel.statement.api.StatementApi;
-import virtuoel.towelette.api.FluidProperty;
+import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteApi;
 import virtuoel.towelette.api.ToweletteConfig;
 
@@ -35,8 +35,6 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	
 	public static final Tag<Block> DISPLACEABLE = TagRegistry.block(id("displaceable"));
 	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
-	
-	public static final BiPredicate<Fluid, Identifier> ENTRYPOINT_WHITELIST_PREDICATE = (fluid, id) -> ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidBlacklisted(fluid, id));
 	
 	public static final Collection<Identifier> FLUID_ID_BLACKLIST = new HashSet<>();
 	
@@ -58,18 +56,19 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		});
 		
 		StateRefresher.INSTANCE.refreshBlockStates(
-			FluidProperty.FLUID,
+			FluidProperties.FLUID,
 			Registry.FLUID.getIds().stream()
-			.filter(f -> ENTRYPOINT_WHITELIST_PREDICATE.test(Registry.FLUID.get(f), f))
-			.collect(ImmutableSet.toImmutableSet())
+			.filter(f -> filterFluid(Registry.FLUID.get(f), f, this::isFluidBlacklisted))
+			.collect(ImmutableSet.toImmutableSet()),
+			ImmutableSet.of()
 		);
 		
 		RegistryEntryAddedCallback.event(Registry.FLUID).register(
 			(rawId, identifier, object) ->
 			{
-				if(ENTRYPOINT_WHITELIST_PREDICATE.test(object, identifier))
+				if(filterFluid(object, identifier, this::isFluidBlacklisted))
 				{
-					StateRefresher.INSTANCE.refreshBlockStates(FluidProperty.FLUID, ImmutableSet.of(identifier));
+					StateRefresher.INSTANCE.refreshBlockStates(FluidProperties.FLUID, ImmutableSet.of(identifier), ImmutableSet.of());
 				}
 			}
 		);
@@ -80,6 +79,15 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		});
 	}
 	
+	private static boolean filterFluid(final Fluid fluid, final Identifier id, final BiPredicate<Fluid, Identifier> defaultPredicate)
+	{
+		final boolean entrypointBlacklists = Optional.ofNullable(ToweletteConfig.DATA.get("enableBlacklistAPI"))
+			.filter(JsonElement::isJsonPrimitive)
+			.map(JsonElement::getAsBoolean).orElse(true);
+		
+		return entrypointBlacklists ? ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidBlacklisted(fluid, id)) : defaultPredicate.test(fluid, id);
+	}
+	
 	@Override
 	public boolean isFluidBlacklisted(Fluid fluid, Identifier id)
 	{
@@ -87,17 +95,17 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			.filter(JsonElement::isJsonPrimitive)
 			.map(JsonElement::getAsBoolean).orElse(false);
 		
-		return FLUID_ID_BLACKLIST.contains(id) || FluidProperty.FLUID.getValues().contains(id) || (!allowFlowing && !fluid.getDefaultState().isStill());
+		return FLUID_ID_BLACKLIST.contains(id) || FluidProperties.FLUID.getValues().contains(id) || (!allowFlowing && !fluid.getDefaultState().isStill());
 	}
 	
 	@Override
 	public boolean shouldDeferState(PropertyContainer<?> state)
 	{
 		final ImmutableMap<Property<?>, Comparable<?>> entries = state.getEntries();
-		final boolean canContainFluid = entries.containsKey(FluidProperty.FLUID);
-		boolean deferred = canContainFluid && !state.get(FluidProperty.FLUID).equals(Registry.FLUID.getDefaultId());
-		deferred |= canContainFluid && entries.containsKey(FluidProperty.LEVEL_1_8) && state.get(FluidProperty.LEVEL_1_8) != 8;
-		deferred |= canContainFluid && entries.containsKey(FluidProperty.FALLING) && state.get(FluidProperty.FALLING);
+		final boolean canContainFluid = entries.containsKey(FluidProperties.FLUID);
+		boolean deferred = canContainFluid && !state.get(FluidProperties.FLUID).equals(Registry.FLUID.getDefaultId());
+		deferred |= canContainFluid && entries.containsKey(FluidProperties.LEVEL_1_8) && state.get(FluidProperties.LEVEL_1_8) != 8;
+		deferred |= canContainFluid && entries.containsKey(FluidProperties.FALLING) && state.get(FluidProperties.FALLING);
 		return deferred;
 	}
 	

@@ -19,7 +19,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.state.StateFactory;
 import net.minecraft.state.property.Property;
-import virtuoel.towelette.api.FluidProperty;
+import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.Fluidloggable;
 import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.util.FluidUtils;
@@ -37,23 +37,23 @@ public abstract class BlockMixin
 		{
 			final Map<String, Property<?>> propertyMap = ((StateFactoryBuilderAccessor) builder).getPropertyMap();
 			
-			if(!propertyMap.containsKey(FluidProperty.FLUID.getName()))
+			if(!propertyMap.containsKey(FluidProperties.FLUID.getName()))
 			{
-				builder.add(FluidProperty.FLUID);
+				builder.add(FluidProperties.FLUID);
 			}
 			
 			if(Optional.ofNullable(ToweletteConfig.DATA.get("flowingFluidlogging"))
 			.filter(JsonElement::isJsonPrimitive)
 			.map(JsonElement::getAsBoolean).orElse(false))
 			{
-				if(!propertyMap.containsKey(FluidProperty.LEVEL_1_8.getName()))
+				if(!propertyMap.containsKey(FluidProperties.LEVEL_1_8.getName()))
 				{
-					builder.add(FluidProperty.LEVEL_1_8);
+					builder.add(FluidProperties.LEVEL_1_8);
 				}
 				
-				if(!propertyMap.containsKey(FluidProperty.FALLING.getName()))
+				if(!propertyMap.containsKey(FluidProperties.FALLING.getName()))
 				{
-					builder.add(FluidProperty.FALLING);
+					builder.add(FluidProperties.FALLING);
 				}
 			}
 		}

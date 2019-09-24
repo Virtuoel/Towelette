@@ -8,13 +8,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.CampfireBlock;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import virtuoel.towelette.api.FluidProperty;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(CampfireBlock.class)
@@ -25,7 +23,7 @@ public class CampfireBlockMixin
 	{
 		if(info.getReturnValue())
 		{
-			iWorld_1.setBlockState(blockPos_1, blockState_1.with(Properties.WATERLOGGED, true).with(Properties.LIT, false).with(FluidProperty.FLUID, FluidUtils.getFluidId(Fluids.WATER)), 3);
+			iWorld_1.setBlockState(blockPos_1, FluidUtils.getStateWithFluid(blockState_1.with(Properties.LIT, false), fluidState_1), 3);
 		}
 		else if(FluidUtils.tryFillWithFluid(iWorld_1, blockPos_1, blockState_1.with(Properties.LIT, false), fluidState_1))
 		{

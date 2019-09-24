@@ -1,9 +1,12 @@
 package virtuoel.towelette.mixin;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -34,19 +37,49 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 		return null;
 	}
 	
-	private static final String FLUIDLOGGABLE_PACKAGE = MIXIN_PACKAGE + ".fluidloggable";
-	
-	private static boolean isConfigEnabled(String name, boolean defaultValue)
+	private static boolean isConfigEnabled(final Pair<String, Boolean> data)
 	{
 		return Optional.ofNullable(ToweletteConfig.DATA.get("fluidlogging"))
 			.filter(JsonElement::isJsonObject)
 			.map(JsonElement::getAsJsonObject)
-			.map(o -> o.get(name))
+			.map(o -> o.get(data.getLeft()))
 			.filter(JsonElement::isJsonPrimitive)
 			.map(JsonElement::getAsJsonPrimitive)
 			.filter(JsonPrimitive::isBoolean)
 			.map(JsonElement::getAsBoolean)
-			.orElse(defaultValue);
+			.orElse(data.getRight());
+	}
+	
+	private static final Map<String, Pair<String, Boolean>> CLASS_CONFIG_MAP = buildMap();
+	
+	private static void addConfig(final Map<String, Pair<String, Boolean>> map, final String mixinClassName, final String config, final boolean defaultValue)
+	{
+		map.put(MIXIN_PACKAGE + ".fluidloggable." + mixinClassName, Pair.of(config, defaultValue));
+	}
+	
+	private static Map<String, Pair<String, Boolean>> buildMap()
+	{
+		final Map<String, Pair<String, Boolean>> map = new HashMap<>();
+
+		addConfig(map, "AllOfTheBlocksMixin", "absolutely_every_single_existing_block_yes_i_am_sure", false);
+		addConfig(map, "BarrierBlockMixin", "barrier", false);
+		addConfig(map, "BeaconBlockMixin", "beacon", false);
+		addConfig(map, "CauldronBlockMixin", "cauldron", false);
+		addConfig(map, "EndPortalBlockMixin", "end_portal", false);
+		addConfig(map, "FarmlandBlockMixin", "farmland", false);
+		addConfig(map, "FireBlockMixin", "fire", false);
+		addConfig(map, "GrassPathBlockMixin", "grass_path", false);
+		addConfig(map, "LeavesBlockMixin", "leaves", false);
+		addConfig(map, "LilyPadBlockMixin", "lily_pad", false);
+		addConfig(map, "PistonBlockMixin", "pistons", false);
+		addConfig(map, "PortalBlockMixin", "nether_portal", false);
+		addConfig(map, "RedstoneWireBlockMixin", "redstone_dust", true);
+		addConfig(map, "ShulkerBoxBlockMixin", "shulker_boxes", false);
+		addConfig(map, "SpawnerBlockMixin", "spawner", false);
+		addConfig(map, "StructureVoidBlockMixin", "structure_void", false);
+		addConfig(map, "TorchBlockMixin", "torches", true);
+		
+		return map;
 	}
 	
 	@Override
@@ -59,53 +92,7 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 			);
 		}
 		
-		try
-		{
-			switch(mixinClassName)
-			{
-				case FLUIDLOGGABLE_PACKAGE + ".AllOfTheBlocksMixin":
-					return isConfigEnabled("absolutely_every_single_existing_block_yes_i_am_sure", false);
-				case FLUIDLOGGABLE_PACKAGE + ".BarrierBlockMixin":
-					return isConfigEnabled("barrier", false);
-				case FLUIDLOGGABLE_PACKAGE + ".BeaconBlockMixin":
-					return isConfigEnabled("beacon", false);
-				case FLUIDLOGGABLE_PACKAGE + ".CauldronBlockMixin":
-					return isConfigEnabled("cauldron", false);
-				case FLUIDLOGGABLE_PACKAGE + ".EndPortalBlockMixin":
-					return isConfigEnabled("end_portal", false);
-				case FLUIDLOGGABLE_PACKAGE + ".FarmlandBlockMixin":
-					return isConfigEnabled("farmland", false);
-				case FLUIDLOGGABLE_PACKAGE + ".FireBlockMixin":
-					return isConfigEnabled("fire", false);
-				case FLUIDLOGGABLE_PACKAGE + ".GrassPathBlockMixin":
-					return isConfigEnabled("grass_path", false);
-				case FLUIDLOGGABLE_PACKAGE + ".LeavesBlockMixin":
-					return isConfigEnabled("leaves", false);
-				case FLUIDLOGGABLE_PACKAGE + ".LilyPadBlockMixin":
-					return isConfigEnabled("lily_pad", false);
-				case FLUIDLOGGABLE_PACKAGE + ".PistonBlockMixin":
-					return isConfigEnabled("pistons", false);
-				case FLUIDLOGGABLE_PACKAGE + ".PortalBlockMixin":
-					return isConfigEnabled("nether_portal", false);
-				case FLUIDLOGGABLE_PACKAGE + ".RedstoneWireBlockMixin":
-					return isConfigEnabled("redstone_dust", true);
-				case FLUIDLOGGABLE_PACKAGE + ".ShulkerBoxBlockMixin":
-					return isConfigEnabled("shulker_boxes", false);
-				case FLUIDLOGGABLE_PACKAGE + ".SpawnerBlockMixin":
-					return isConfigEnabled("spawner", false);
-				case FLUIDLOGGABLE_PACKAGE + ".StructureVoidBlockMixin":
-					return isConfigEnabled("structure_void", false);
-				case FLUIDLOGGABLE_PACKAGE + ".TorchBlockMixin":
-					return isConfigEnabled("torches", true);
-				default:
-					return true;
-			}
-		}
-		catch(UnsupportedOperationException | ClassCastException e)
-		{
-			e.printStackTrace();
-			return false;
-		}
+		return Optional.of(CLASS_CONFIG_MAP.get(mixinClassName)).map(ToweletteMixinConfigPlugin::isConfigEnabled).orElse(true);
 	}
 	
 	@Override

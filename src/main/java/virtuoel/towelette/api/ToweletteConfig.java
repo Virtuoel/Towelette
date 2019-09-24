@@ -45,6 +45,8 @@ public class ToweletteConfig
 		
 		config.add("fluidlogging", fluidlogging);
 		
+		config.addProperty("enableBlacklistAPI", true);
+		
 		final JsonArray fluidBlacklist = new JsonArray();
 		
 		config.add("fluidBlacklist", fluidBlacklist);
