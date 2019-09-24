@@ -1,5 +1,6 @@
 plugins {
 	id "fabric-loom" version "0.2.5-SNAPSHOT"
+	id "eclipse"
 	id "maven-publish"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
 }
@@ -9,6 +10,10 @@ repositories {
 	maven {
 		name = "CurseForge"
 		url = "https://minecraft.curseforge.com/api/maven"
+	}
+	maven {
+		name = "GitHub"
+		url = "https://maven.pkg.github.com"
 	}
 	maven {
 		name = "JitPack"
@@ -23,6 +28,9 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+def ENV = System.getenv()
+version = version + (ENV.BUILD_NUMBER ? ("+build." + ENV.BUILD_NUMBER) : "")
+
 minecraft {
 	
 }
@@ -33,15 +41,49 @@ dependencies {
 	
 	modImplementation "net.fabricmc:fabric-loader:${loader_version}"
 	if(project.hasProperty("fabric_version")) {
-		modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+		modRuntime "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 	}
 	
-	implementation "com.google.code.findbugs:jsr305:${findbugs_version}"
+	if(project.hasProperty("api_fabric_modules")) {
+		project.api_fabric_modules.split(", ").each { String module ->
+			modApi "net.fabricmc.fabric-api:${module}"
+		}
+	}
 	
-	modImplementation "com.github.Virtuoel:Statement:${statement_version}"
-	include "com.github.Virtuoel:Statement:${statement_version}"
+	if(project.hasProperty("impl_fabric_modules")) {
+		project.impl_fabric_modules.split(", ").each { String module ->
+			modImplementation "net.fabricmc.fabric-api:${module}"
+		}
+	}
 	
-	modImplementation "io.github.prospector:modmenu:${modmenu_version}"
+	if(project.hasProperty("compile_fabric_modules")) {
+		project.runtime_fabric_modules.split(", ").each { String module ->
+			modCompile "net.fabricmc.fabric-api:${module}"
+		}
+	}
+	
+	if(project.hasProperty("runtime_fabric_modules")) {
+		project.runtime_fabric_modules.split(", ").each { String module ->
+			modRuntime "net.fabricmc.fabric-api:${module}"
+		}
+	}
+	
+	if(project.hasProperty("included_fabric_modules")) {
+		project.included_fabric_modules.split(", ").each { String module ->
+			include "net.fabricmc.fabric-api:${module}"
+		}
+	}
+	
+	compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
+	
+	if(project.hasProperty("modmenu_version")) {
+		modImplementation("io.github.prospector:modmenu:${modmenu_version}") {
+			transitive = false
+		}
+	}
+	
+	modApi "virtuoel:statement:${statement_version}"
+	include "virtuoel:statement:${statement_version}"
 }
 
 processResources {
@@ -54,6 +96,12 @@ processResources {
 	
 	from(sourceSets.main.resources.srcDirs) {
 		exclude "fabric.mod.json"
+	}
+}
+
+eclipse {
+	project {
+		name = mod_name
 	}
 }
 
@@ -93,13 +141,38 @@ publishing {
 				builtBy remapJar
 			}
 			artifact(sourcesJar) {
+				classifier = "sources"
 				builtBy remapSourcesJar
+			}
+			
+			pom.withXml {
+				NodeList dependencies = asNode().dependencies
+				if(!dependencies.isEmpty() && project.hasProperty("removed_dependencies")) {
+					def removed_dep_list = project.removed_dependencies.split(", ")
+					dependencies.first().each { dep ->
+						def groupId = dep.get("groupId").first().value().first()
+						def artifactId = dep.get("artifactId").first().value().first()
+						if("${groupId}:${artifactId}" in removed_dep_list) {
+							assert dep.parent().remove(dep)
+						}
+					}
+				}
 			}
 		}
 	}
 	
 	repositories {
 		mavenLocal()
+		if(project.hasProperty("github_maven_owner")) {
+			maven {
+				url = "https://maven.pkg.github.com/${github_maven_owner}"
+				
+				credentials {
+					username project.properties.github_username
+					password project.properties.github_token
+				}
+			}
+		}
 	}
 }
 
@@ -141,10 +214,11 @@ curseforge {
 			addGameVersion "Fabric"
 			
 			mainArtifact(remapJar) {
-				displayName = "${mod_name}-${minecraft_version}-${mod_version}.jar"
-				relations {
-					requiredDependency "fabric-api"
-					embeddedLibrary "statement"
+				displayName = "${mod_name}-${minecraft_version}-${project.version}.jar"
+				if(project.hasProperty("fabric_version")) {
+					relations {
+						requiredDependency "fabric-api"
+					}
 				}
 				
 				changelogType = "html"
@@ -152,7 +226,7 @@ curseforge {
 			}
 			
 			addArtifact(sourcesJar) {
-				displayName = "${mod_name}-${minecraft_version}-${mod_version}-sources.jar"
+				displayName = "${mod_name}-${minecraft_version}-${project.version}-sources.jar"
 			}
 			
 			afterEvaluate {
