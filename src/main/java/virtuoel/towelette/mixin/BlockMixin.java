@@ -4,11 +4,9 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import com.google.gson.JsonElement;
@@ -27,13 +25,10 @@ import virtuoel.towelette.util.FluidUtils;
 @Mixin(Block.class)
 public abstract class BlockMixin
 {
-	@Shadow abstract void appendProperties(StateFactory.Builder<Block, BlockState> builder);
-	
-	@Redirect(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;appendProperties(Lnet/minecraft/state/StateFactory$Builder;)V"))
-	public void onConstructAppendPropertiesProxy(Block obj, StateFactory.Builder<Block, BlockState> builder)
+	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;appendProperties(Lnet/minecraft/state/StateFactory$Builder;)V"))
+	public StateFactory.Builder<Block, BlockState> onConstructAppendPropertiesProxy(StateFactory.Builder<Block, BlockState> builder)
 	{
-		appendProperties(builder);
-		if(obj instanceof Fluidloggable)
+		if(this instanceof Fluidloggable)
 		{
 			final Map<String, Property<?>> propertyMap = ((StateFactoryBuilderAccessor) builder).getPropertyMap();
 			
@@ -57,6 +52,8 @@ public abstract class BlockMixin
 				}
 			}
 		}
+		
+		return builder;
 	}
 	
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;setDefaultState(Lnet/minecraft/block/BlockState;)V"))

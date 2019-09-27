@@ -1,6 +1,7 @@
 package virtuoel.towelette.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
@@ -34,7 +35,7 @@ public abstract class BaseFluidMixin
 		return fillable ? block : null;
 	}
 	
-	private final ThreadLocal<Block> towelette$cachedBlock = ThreadLocal.withInitial(() -> Blocks.AIR);
+	@Unique private final ThreadLocal<Block> towelette$cachedBlock = ThreadLocal.withInitial(() -> Blocks.AIR);
 	
 	@ModifyVariable(method = "method_15754", at = @At(value = "LOAD", ordinal = 0), allow = 1, require = 1)
 	private Block hookMethod_15754NotFillable(Block block)
