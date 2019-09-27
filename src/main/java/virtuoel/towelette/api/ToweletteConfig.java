@@ -23,6 +23,7 @@ public class ToweletteConfig
 		final JsonObject config = new JsonObject();
 		
 		config.addProperty("replaceableFluids", false);
+		config.addProperty("unpushableFluids", true);
 		config.addProperty("flowingFluidlogging", false);
 		
 		final JsonObject fluidlogging = new JsonObject();
