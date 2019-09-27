@@ -34,7 +34,7 @@ public class IdentifierProperty extends AbstractProperty<Identifier> implements 
 				final int namespaceLength = Integer.parseInt(valueName.substring(underscoreIndex + 1));
 				return Optional.of(new Identifier(valueName.substring(0, namespaceLength), valueName.substring(namespaceLength + 1, underscoreIndex)));
 			}
-			catch (NumberFormatException e)
+			catch(NumberFormatException e)
 			{
 				
 			}

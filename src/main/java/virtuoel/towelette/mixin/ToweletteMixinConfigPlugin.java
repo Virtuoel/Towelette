@@ -60,7 +60,7 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 	private static Map<String, Pair<String, Boolean>> buildMap()
 	{
 		final Map<String, Pair<String, Boolean>> map = new HashMap<>();
-
+		
 		addConfig(map, "AllOfTheBlocksMixin", "absolutely_every_single_existing_block_yes_i_am_sure", false);
 		addConfig(map, "BarrierBlockMixin", "barrier", false);
 		addConfig(map, "BeaconBlockMixin", "beacon", false);

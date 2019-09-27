@@ -25,6 +25,6 @@ public abstract class EntityMixin
 	{
 		final FluidState state = world.getFluidState(pos);
 		
-		((CollidableFluid) state.getFluid()).onEntityCollision(state, world, pos, (Entity) (Object) this); 
+		((CollidableFluid) state.getFluid()).onEntityCollision(state, world, pos, (Entity) (Object) this);
 	}
 }
