@@ -41,7 +41,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	@Override
 	public void onInitialize()
 	{
-		Optional.ofNullable(ToweletteConfig.DATA.get("fluidBlacklist"))
+		Optional.ofNullable(ToweletteConfig.DATA.get("blacklistedFluidIds"))
 		.filter(JsonElement::isJsonArray)
 		.map(JsonElement::getAsJsonArray)
 		.ifPresent(array ->

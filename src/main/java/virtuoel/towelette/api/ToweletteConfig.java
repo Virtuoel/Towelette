@@ -42,7 +42,7 @@ public class ToweletteConfig
 		fluidlogging.addProperty("redstone_block", false);
 		fluidlogging.addProperty("redstone_dust", true);
 		fluidlogging.addProperty("shulker_boxes", false);
-		fluidlogging.addProperty("slime", false);
+		fluidlogging.addProperty("slime_block", false);
 		fluidlogging.addProperty("spawner", false);
 		fluidlogging.addProperty("structure_void", false);
 		fluidlogging.addProperty("torches", true);
@@ -51,9 +51,9 @@ public class ToweletteConfig
 		
 		config.addProperty("enableBlacklistAPI", true);
 		
-		final JsonArray fluidBlacklist = new JsonArray();
+		final JsonArray blacklistedFluidIds = new JsonArray();
 		
-		config.add("fluidBlacklist", fluidBlacklist);
+		config.add("blacklistedFluidIds", blacklistedFluidIds);
 		
 		return config;
 	}

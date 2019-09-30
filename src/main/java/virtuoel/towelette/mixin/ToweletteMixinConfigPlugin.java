@@ -77,7 +77,7 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 		addConfig(map, "RedstoneBlockMixin", "redstone_block", true);
 		addConfig(map, "RedstoneWireBlockMixin", "redstone_dust", true);
 		addConfig(map, "ShulkerBoxBlockMixin", "shulker_boxes", false);
-		addConfig(map, "SlimeBlockMixin", "slime", false);
+		addConfig(map, "SlimeBlockMixin", "slime_block", false);
 		addConfig(map, "SpawnerBlockMixin", "spawner", false);
 		addConfig(map, "StructureVoidBlockMixin", "structure_void", false);
 		addConfig(map, "TorchBlockMixin", "torches", true);
