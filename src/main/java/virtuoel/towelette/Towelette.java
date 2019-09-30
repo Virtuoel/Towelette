@@ -73,10 +73,11 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			}
 		);
 		
-		RegistryIdRemapCallback.event(Registry.BLOCK).register(remapState ->
-		{
-			StateRefresher.INSTANCE.reorderBlockStates();
-		});
+		StateRefresher.INSTANCE.provideTask(
+			Registry.BLOCK,
+			r -> RegistryIdRemapCallback.event(r)::register,
+			r -> s -> r.reorderBlockStates()
+		);
 	}
 	
 	private static boolean filterFluid(final Fluid fluid, final Identifier id, final BiPredicate<Fluid, Identifier> defaultPredicate)
