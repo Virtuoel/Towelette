@@ -8,16 +8,20 @@ plugins {
 repositories {
 	mavenLocal()
 	maven {
+		name = "Fabric"
+		url = "https://maven.fabricmc.net/"
+	}
+	maven {
 		name = "CurseForge"
 		url = "https://minecraft.curseforge.com/api/maven"
 	}
 	maven {
-		name = "GitHub"
-		url = "https://maven.pkg.github.com"
-	}
-	maven {
 		name = "JitPack"
 		url = "https://jitpack.io"
+	}
+	maven {
+		name = "GitHub"
+		url = "https://maven.pkg.github.com"
 	}
 }
 
