@@ -45,7 +45,13 @@ dependencies {
 	
 	modImplementation "net.fabricmc:fabric-loader:${loader_version}"
 	if(project.hasProperty("fabric_version")) {
-		modRuntime "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+		modCompileOnly "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+	}
+	
+	if(project.hasProperty("fabric_modules")) {
+		project.fabric_modules.split(", ").each { String module ->
+			modCompileOnly "net.fabricmc.fabric-api:${module}"
+		}
 	}
 	
 	if(project.hasProperty("api_fabric_modules")) {
@@ -60,18 +66,6 @@ dependencies {
 		}
 	}
 	
-	if(project.hasProperty("compile_fabric_modules")) {
-		project.runtime_fabric_modules.split(", ").each { String module ->
-			modCompile "net.fabricmc.fabric-api:${module}"
-		}
-	}
-	
-	if(project.hasProperty("runtime_fabric_modules")) {
-		project.runtime_fabric_modules.split(", ").each { String module ->
-			modRuntime "net.fabricmc.fabric-api:${module}"
-		}
-	}
-	
 	if(project.hasProperty("included_fabric_modules")) {
 		project.included_fabric_modules.split(", ").each { String module ->
 			include "net.fabricmc.fabric-api:${module}"
@@ -81,17 +75,13 @@ dependencies {
 	compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
 	
 	if(project.hasProperty("modmenu_version")) {
-		modImplementation("io.github.prospector:modmenu:${modmenu_version}") {
+		modCompileOnly("io.github.prospector:modmenu:${modmenu_version}") {
 			transitive = false
 		}
 	}
 	
-	modApi("virtuoel:statement:${statement_version}") {
-		transitive = false
-	}
-	include("virtuoel:statement:${statement_version}") {
-		transitive = false
-	}
+	modApi "virtuoel:statement:${statement_version}"
+	include "virtuoel:statement:${statement_version}"
 }
 
 processResources {
@@ -151,20 +141,6 @@ publishing {
 			artifact(sourcesJar) {
 				classifier = "sources"
 				builtBy remapSourcesJar
-			}
-			
-			pom.withXml {
-				NodeList dependencies = asNode().dependencies
-				if(!dependencies.isEmpty() && project.hasProperty("removed_dependencies")) {
-					def removed_dep_list = project.removed_dependencies.split(", ")
-					dependencies.first().each { dep ->
-						def groupId = dep.get("groupId").first().value().first()
-						def artifactId = dep.get("artifactId").first().value().first()
-						if("${groupId}:${artifactId}" in removed_dep_list) {
-							assert dep.parent().remove(dep)
-						}
-					}
-				}
 			}
 		}
 	}
