@@ -72,7 +72,7 @@ dependencies {
 		}
 	}
 	
-	compileOnly "com.google.code.findbugs:jsr305:${findbugs_version}"
+	compileOnly "com.google.code.findbugs:jsr305:${jsr305_version}"
 	
 	if(project.hasProperty("modmenu_version")) {
 		modCompileOnly("io.github.prospector:modmenu:${modmenu_version}") {
@@ -80,7 +80,9 @@ dependencies {
 		}
 	}
 	
-	modApi "virtuoel:statement:${statement_version}"
+	modApi("virtuoel:statement:${statement_version}") {
+		transitive = false
+	}
 	include "virtuoel:statement:${statement_version}"
 }
 
