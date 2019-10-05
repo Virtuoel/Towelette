@@ -9,4 +9,4 @@ pluginManagement {
 	}
 }
 
-rootProject.name = archives_base_name
+rootProject.name = mod_name

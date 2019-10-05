@@ -36,7 +36,7 @@ def ENV = System.getenv()
 version = version + (ENV.BUILD_NUMBER ? ("+build." + ENV.BUILD_NUMBER) : "")
 
 minecraft {
-	
+	refmapName = "${archives_base_name}-refmap.json"
 }
 
 dependencies {
