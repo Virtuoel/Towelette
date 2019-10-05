@@ -13,9 +13,12 @@ import virtuoel.towelette.util.FluidUtils;
 @Mixin(BlockItem.class)
 public abstract class BlockItemMixin
 {
-	@Redirect(method = "getPlacementState", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getPlacementState(Lnet/minecraft/item/ItemPlacementContext;)Lnet/minecraft/block/BlockState;"))
-	public BlockState getPlacementStateGetPlacementStateProxy(Block obj, ItemPlacementContext context)
+	@Shadow
+	public final Block block; //This is deprecated however it's the most convenience
+	
+	@SoftOverride
+	public BlockState getPlacementStateGetPlacementStateProxy(ItemPlacementContext context)
 	{
-		return FluidUtils.getStateWithFluid(obj.getPlacementState(context), context);
+		return FluidUtils.getStateWithFluid(block.getPlacementState(context), context);
 	}
 }
