@@ -2,9 +2,8 @@ package virtuoel.towelette.mixin;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
@@ -13,9 +12,9 @@ import virtuoel.towelette.util.FluidUtils;
 @Mixin(BlockItem.class)
 public abstract class BlockItemMixin
 {
-	@Redirect(method = "getPlacementState", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getPlacementState(Lnet/minecraft/item/ItemPlacementContext;)Lnet/minecraft/block/BlockState;"))
-	public BlockState getPlacementStateGetPlacementStateProxy(Block obj, ItemPlacementContext context)
+	@ModifyArg(method = "place(Lnet/minecraft/item/ItemPlacementContext;)Lnet/minecraft/util/ActionResult;", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/BlockItem;place(Lnet/minecraft/item/ItemPlacementContext;Lnet/minecraft/block/BlockState;)Z"))
+	private BlockState placePlaceProxy(ItemPlacementContext context, BlockState state)
 	{
-		return FluidUtils.getStateWithFluid(obj.getPlacementState(context), context);
+		return FluidUtils.getStateWithFluid(state, context);
 	}
 }

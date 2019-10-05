@@ -35,7 +35,6 @@
 		"TallPlantMixin",
 		"TrapdoorBlockMixin",
 		"TripwireHookBlockMixin",
-		"WallStandingBlockItemMixin",
 		"WorldMixin",
 		"fluidloggable.FluidloggableMixin",
 		"fluidloggable.AllOfTheBlocksMixin",
