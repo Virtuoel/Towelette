@@ -22,7 +22,6 @@
 		"DragonEggBlockMixin",
 		"EntityMixin",
 		"FallingBlockEntityMixin",
-		"FallingBlockMixin",
 		"FireBlockMixin",
 		"FlowerPotBlockMixin",
 		"FluidMixin",
