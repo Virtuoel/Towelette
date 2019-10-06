@@ -28,9 +28,9 @@ repositories {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
+group = project.maven_group
 archivesBaseName = project.archives_base_name
 version = project.mod_version
-group = project.maven_group
 
 def ENV = System.getenv()
 version = version + (ENV.BUILD_NUMBER ? ("+build." + ENV.BUILD_NUMBER) : "")
@@ -81,10 +81,10 @@ dependencies {
 	}
 	
 	if(project.hasProperty("statement_version")) {
-		modApi("virtuoel:statement:${statement_version}") {
+		modApi("virtuoel:Statement:${statement_version}") {
 			transitive = false
 		}
-		include "virtuoel:statement:${statement_version}"
+		include "virtuoel:Statement:${statement_version}"
 	}
 	
 	if(project.hasProperty("statement_commit")) {
@@ -110,7 +110,7 @@ processResources {
 
 eclipse {
 	project {
-		name = mod_name
+		name = archives_base_name
 	}
 }
 
@@ -209,7 +209,7 @@ curseforge {
 			addGameVersion "Fabric"
 			
 			mainArtifact(remapJar) {
-				displayName = "${mod_name}-${minecraft_version}-${project.version}.jar"
+				displayName = "${archives_base_name}-${minecraft_version}-${project.version}.jar"
 				if(project.hasProperty("fabric_version")) {
 					relations {
 						requiredDependency "fabric-api"
@@ -221,7 +221,7 @@ curseforge {
 			}
 			
 			addArtifact(sourcesJar) {
-				displayName = "${mod_name}-${minecraft_version}-${project.version}-sources.jar"
+				displayName = "${archives_base_name}-${minecraft_version}-${project.version}-sources.jar"
 			}
 			
 			afterEvaluate {
