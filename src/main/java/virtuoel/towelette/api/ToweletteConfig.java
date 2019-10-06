@@ -26,28 +26,28 @@ public class ToweletteConfig
 		config.addProperty("unpushableFluids", true);
 		config.addProperty("flowingFluidlogging", false);
 		
-		final JsonObject fluidlogging = new JsonObject();
-		fluidlogging.addProperty("barrier", false);
-		fluidlogging.addProperty("beacon", false);
-		fluidlogging.addProperty("cauldron", false);
-		fluidlogging.addProperty("end_portal", false);
-		fluidlogging.addProperty("farmland", false);
-		fluidlogging.addProperty("fire", false);
-		fluidlogging.addProperty("grass_path", false);
-		fluidlogging.addProperty("leaves", false);
-		fluidlogging.addProperty("lily_pad", false);
-		fluidlogging.addProperty("nether_portal", false);
-		fluidlogging.addProperty("observer", false);
-		fluidlogging.addProperty("pistons", true);
-		fluidlogging.addProperty("redstone_block", false);
-		fluidlogging.addProperty("redstone_dust", true);
-		fluidlogging.addProperty("shulker_boxes", false);
-		fluidlogging.addProperty("slime_block", false);
-		fluidlogging.addProperty("spawner", false);
-		fluidlogging.addProperty("structure_void", false);
-		fluidlogging.addProperty("torches", true);
+		final JsonObject miscFluidlogging = new JsonObject();
+		miscFluidlogging.addProperty("barrier", false);
+		miscFluidlogging.addProperty("beacon", false);
+		miscFluidlogging.addProperty("cauldron", false);
+		miscFluidlogging.addProperty("end_portal", false);
+		miscFluidlogging.addProperty("farmland", false);
+		miscFluidlogging.addProperty("fire", false);
+		miscFluidlogging.addProperty("grass_path", false);
+		miscFluidlogging.addProperty("leaves", false);
+		miscFluidlogging.addProperty("lily_pad", false);
+		miscFluidlogging.addProperty("nether_portal", false);
+		miscFluidlogging.addProperty("observer", false);
+		miscFluidlogging.addProperty("pistons", true);
+		miscFluidlogging.addProperty("redstone_block", false);
+		miscFluidlogging.addProperty("redstone_dust", true);
+		miscFluidlogging.addProperty("shulker_boxes", false);
+		miscFluidlogging.addProperty("slime_block", false);
+		miscFluidlogging.addProperty("spawner", false);
+		miscFluidlogging.addProperty("structure_void", false);
+		miscFluidlogging.addProperty("torches", true);
 		
-		config.add("fluidlogging", fluidlogging);
+		config.add("miscFluidlogging", miscFluidlogging);
 		
 		config.addProperty("enableBlacklistAPI", true);
 		

@@ -39,7 +39,7 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 	
 	private static boolean isConfigEnabled(final Pair<String, Boolean> data)
 	{
-		return Optional.ofNullable(ToweletteConfig.DATA.get("fluidlogging"))
+		return Optional.ofNullable(ToweletteConfig.DATA.get("miscFluidlogging"))
 			.filter(JsonElement::isJsonObject)
 			.map(JsonElement::getAsJsonObject)
 			.map(o -> o.get(data.getLeft()))
@@ -72,9 +72,9 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 		addConfig(map, "LeavesBlockMixin", "leaves", false);
 		addConfig(map, "LilyPadBlockMixin", "lily_pad", false);
 		addConfig(map, "ObserverBlockMixin", "observer", false);
-		addConfig(map, "PistonBlockMixin", "pistons", false);
+		addConfig(map, "PistonBlockMixin", "pistons", true);
 		addConfig(map, "PortalBlockMixin", "nether_portal", false);
-		addConfig(map, "RedstoneBlockMixin", "redstone_block", true);
+		addConfig(map, "RedstoneBlockMixin", "redstone_block", false);
 		addConfig(map, "RedstoneWireBlockMixin", "redstone_dust", true);
 		addConfig(map, "ShulkerBoxBlockMixin", "shulker_boxes", false);
 		addConfig(map, "SlimeBlockMixin", "slime_block", false);
