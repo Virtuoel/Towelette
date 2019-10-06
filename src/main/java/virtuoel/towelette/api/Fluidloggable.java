@@ -13,20 +13,20 @@ import net.minecraft.world.IWorld;
 public interface Fluidloggable extends Waterloggable
 {
 	@Override
-	default boolean canFillWithFluid(BlockView blockView_1, BlockPos blockPos_1, BlockState blockState_1, Fluid fluid_1)
+	default boolean canFillWithFluid(BlockView world, BlockPos pos, BlockState state, Fluid fluid)
 	{
-		return !blockState_1.contains(Properties.WATERLOGGED) ? false : Waterloggable.super.canFillWithFluid(blockView_1, blockPos_1, blockState_1, fluid_1);
+		return !state.contains(Properties.WATERLOGGED) ? false : Waterloggable.super.canFillWithFluid(world, pos, state, fluid);
 	}
 	
 	@Override
-	default boolean tryFillWithFluid(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, FluidState fluidState_1)
+	default boolean tryFillWithFluid(IWorld world, BlockPos pos, BlockState blockState, FluidState fluidState)
 	{
-		return !blockState_1.contains(Properties.WATERLOGGED) ? false : Waterloggable.super.tryFillWithFluid(iWorld_1, blockPos_1, blockState_1, fluidState_1);
+		return !blockState.contains(Properties.WATERLOGGED) ? false : Waterloggable.super.tryFillWithFluid(world, pos, blockState, fluidState);
 	}
 	
 	@Override
-	default Fluid tryDrainFluid(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1)
+	default Fluid tryDrainFluid(IWorld world, BlockPos pos, BlockState state)
 	{
-		return !blockState_1.contains(Properties.WATERLOGGED) ? Fluids.EMPTY : Waterloggable.super.tryDrainFluid(iWorld_1, blockPos_1, blockState_1);
+		return !state.contains(Properties.WATERLOGGED) ? Fluids.EMPTY : Waterloggable.super.tryDrainFluid(world, pos, state);
 	}
 }
