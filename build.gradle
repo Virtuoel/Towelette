@@ -80,10 +80,19 @@ dependencies {
 		}
 	}
 	
-	modApi("virtuoel:statement:${statement_version}") {
-		transitive = false
+	if(project.hasProperty("statement_version")) {
+		modApi("virtuoel:statement:${statement_version}") {
+			transitive = false
+		}
+		include "virtuoel:statement:${statement_version}"
 	}
-	include "virtuoel:statement:${statement_version}"
+	
+	if(project.hasProperty("statement_commit")) {
+		modApi("com.github.Virtuoel:Statement:${statement_commit}") {
+			transitive = false
+		}
+		include "com.github.Virtuoel:Statement:${statement_commit}"
+	}
 }
 
 processResources {
