@@ -25,33 +25,33 @@ import virtuoel.towelette.util.FluidUtils;
 public abstract class DoorBlockMixin
 {
 	@Inject(at = @At("HEAD"), method = "activate")
-	public void onActivate(BlockState blockState_1, World world_1, BlockPos blockPos_1, PlayerEntity playerEntity_1, Hand hand_1, BlockHitResult blockHitResult_1, CallbackInfoReturnable<Boolean> info)
+	private void onActivate(BlockState state, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<Boolean> info)
 	{
-		if(blockState_1.getMaterial() != Material.METAL)
+		if(state.getMaterial() != Material.METAL)
 		{
-			FluidUtils.scheduleFluidTick(blockState_1, world_1, blockPos_1);
+			FluidUtils.scheduleFluidTick(state, world, blockPos);
 		}
 	}
 	
 	@Inject(at = @At("HEAD"), method = "neighborUpdate")
-	public void onNeighborUpdate(BlockState blockState_1, World world_1, BlockPos blockPos_1, Block block_1, BlockPos blockPos_2, boolean boolean_1, CallbackInfo info)
+	private void onNeighborUpdate(BlockState blockState, World world, BlockPos blockPos, Block block, BlockPos otherPos, boolean unknown, CallbackInfo info)
 	{
-		boolean powered = world_1.isReceivingRedstonePower(blockPos_1) || world_1.isReceivingRedstonePower(blockPos_1.offset(blockState_1.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN));
-		if(!world_1.isClient && powered != blockState_1.get(Properties.POWERED))
+		boolean powered = world.isReceivingRedstonePower(blockPos) || world.isReceivingRedstonePower(blockPos.offset(blockState.get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN));
+		if(!world.isClient && powered != blockState.get(Properties.POWERED))
 		{
-			FluidUtils.scheduleFluidTick(blockState_1, world_1, blockPos_1);
+			FluidUtils.scheduleFluidTick(blockState, world, blockPos);
 		}
 	}
 	
 	@Redirect(method = "onBreak", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean onBreakSetBlockStateProxy(World obj, BlockPos blockPos_1, BlockState blockState_1, int int_1)
+	private boolean onBreakSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
-		return obj.setBlockState(blockPos_1, obj.getFluidState(blockPos_1).getBlockState(), int_1);
+		return obj.setBlockState(pos, obj.getFluidState(pos).getBlockState(), flags);
 	}
 	
 	@Redirect(method = "onPlaced", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean onPlacedSetBlockStateProxy(World obj, BlockPos blockPos_1, BlockState blockState_1, int int_1)
+	private boolean onPlacedSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
-		return obj.setBlockState(blockPos_1, FluidUtils.getStateWithFluid(blockState_1, obj, blockPos_1), int_1);
+		return obj.setBlockState(pos, FluidUtils.getStateWithFluid(state, obj, pos), flags);
 	}
 }

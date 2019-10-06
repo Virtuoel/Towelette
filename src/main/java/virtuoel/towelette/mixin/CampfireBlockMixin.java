@@ -19,27 +19,27 @@ import virtuoel.towelette.util.FluidUtils;
 public class CampfireBlockMixin
 {
 	@Inject(at = @At("RETURN"), method = "tryFillWithFluid(Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)Z", cancellable = true)
-	public void onTryFillWithFluid(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, FluidState fluidState_1, CallbackInfoReturnable<Boolean> info)
+	private void onTryFillWithFluid(IWorld world, BlockPos blockPos, BlockState blockState, FluidState fluidState, CallbackInfoReturnable<Boolean> info)
 	{
 		if(info.getReturnValue())
 		{
-			iWorld_1.setBlockState(blockPos_1, FluidUtils.getStateWithFluid(blockState_1.with(Properties.LIT, false), fluidState_1), 3);
+			world.setBlockState(blockPos, FluidUtils.getStateWithFluid(blockState.with(Properties.LIT, false), fluidState), 3);
 		}
-		else if(FluidUtils.tryFillWithFluid(iWorld_1, blockPos_1, blockState_1.with(Properties.LIT, false), fluidState_1))
+		else if(FluidUtils.tryFillWithFluid(world, blockPos, blockState.with(Properties.LIT, false), fluidState))
 		{
-			if(blockState_1.get(Properties.LIT))
+			if(blockState.get(Properties.LIT))
 			{
-				if(iWorld_1.isClient())
+				if(world.isClient())
 				{
-					boolean signal = blockState_1.get(Properties.SIGNAL_FIRE);
-					for(int int_1 = 0; int_1 < 20; ++int_1)
+					boolean signal = blockState.get(Properties.SIGNAL_FIRE);
+					for(int i = 0; i < 20; ++i)
 					{
-						CampfireBlock.spawnSmokeParticle(iWorld_1.getWorld(), blockPos_1, signal, true);
+						CampfireBlock.spawnSmokeParticle(world.getWorld(), blockPos, signal, true);
 					}
 				}
 				else
 				{
-					iWorld_1.playSound(null, blockPos_1, SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.BLOCKS, 1.0F, 1.0F);
+					world.playSound(null, blockPos, SoundEvents.ENTITY_GENERIC_EXTINGUISH_FIRE, SoundCategory.BLOCKS, 1.0F, 1.0F);
 				}
 			}
 			info.setReturnValue(true);

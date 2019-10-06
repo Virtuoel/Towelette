@@ -13,8 +13,8 @@ import virtuoel.towelette.util.FluidUtils;
 public class AnvilBlockMixin
 {
 	@Inject(at = @At("RETURN"), method = "getLandingState", cancellable = true)
-	private static void onGetLandingState(BlockState blockState_1, CallbackInfoReturnable<BlockState> info)
+	private static void onGetLandingState(BlockState blockState, CallbackInfoReturnable<BlockState> info)
 	{
-		info.setReturnValue(FluidUtils.getStateWithFluid(info.getReturnValue(), FluidUtils.getFluidState(blockState_1)));
+		info.setReturnValue(FluidUtils.getStateWithFluid(info.getReturnValue(), FluidUtils.getFluidState(blockState)));
 	}
 }

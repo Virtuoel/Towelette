@@ -20,7 +20,7 @@ public abstract class BlockStateMixin
 	@Shadow abstract FluidState getFluidState();
 	
 	@Inject(at = @At("RETURN"), method = "getLuminance", cancellable = true)
-	public void onGetLuminance(CallbackInfoReturnable<Integer> info)
+	private void onGetLuminance(CallbackInfoReturnable<Integer> info)
 	{
 		FluidState fluidState = getFluidState();
 		if(fluidState.getFluid() != Fluids.EMPTY)
@@ -34,8 +34,8 @@ public abstract class BlockStateMixin
 	}
 	
 	@Inject(at = @At("HEAD"), method = "getStateForNeighborUpdate")
-	public void onGetStateForNeighborUpdate(Direction direction_1, BlockState blockState_1, IWorld iWorld_1, BlockPos blockPos_1, BlockPos blockPos_2, CallbackInfoReturnable<BlockState> info)
+	private void onGetStateForNeighborUpdate(Direction direction, BlockState blockState, IWorld world, BlockPos pos, BlockPos otherPos, CallbackInfoReturnable<BlockState> info)
 	{
-		FluidUtils.scheduleFluidTick((BlockState) (Object) this, iWorld_1, blockPos_1);
+		FluidUtils.scheduleFluidTick((BlockState) (Object) this, world, pos);
 	}
 }

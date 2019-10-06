@@ -14,14 +14,14 @@ import virtuoel.towelette.util.FluidUtils;
 public class CropBlockMixin
 {
 	@Redirect(method = "onScheduledTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean onScheduledTickSetBlockStateProxy(World obj, BlockPos blockPos_1, BlockState blockState_1)
+	private boolean onScheduledTickSetBlockStateProxy(World obj, BlockPos blockPos, BlockState blockState)
 	{
-		return obj.setBlockState(blockPos_1, FluidUtils.getStateWithFluid(blockState_1, obj, blockPos_1));
+		return obj.setBlockState(blockPos, FluidUtils.getStateWithFluid(blockState, obj, blockPos));
 	}
 	
 	@Redirect(method = "applyGrowth", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean applyGrowthSetBlockStateProxy(World obj, BlockPos blockPos_1, BlockState blockState_1)
+	private boolean applyGrowthSetBlockStateProxy(World obj, BlockPos blockPos, BlockState blockState)
 	{
-		return obj.setBlockState(blockPos_1, FluidUtils.getStateWithFluid(blockState_1, obj, blockPos_1));
+		return obj.setBlockState(blockPos, FluidUtils.getStateWithFluid(blockState, obj, blockPos));
 	}
 }

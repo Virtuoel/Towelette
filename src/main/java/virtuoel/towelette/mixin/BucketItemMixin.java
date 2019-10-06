@@ -30,9 +30,9 @@ public class BucketItemMixin
 	@Shadow Fluid fluid;
 	
 	@Redirect(method = "use", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
-	public BlockState onUseGetBlockStateProxy(World obj, BlockPos blockPos_1)
+	private BlockState onUseGetBlockStateProxy(World obj, BlockPos blockPos)
 	{
-		final BlockState original = obj.getBlockState(blockPos_1);
+		final BlockState original = obj.getBlockState(blockPos);
 		final FluidState state = FluidUtils.getFluidState(original);
 		if(!state.isEmpty() && !state.isStill())
 		{
@@ -42,56 +42,56 @@ public class BucketItemMixin
 	}
 	
 	@Redirect(method = "use", at = @At(value = "FIELD", ordinal = 2, target = "Lnet/minecraft/item/BucketItem;fluid:Lnet/minecraft/fluid/Fluid;"))
-	public Fluid onUseFluidProxy(BucketItem this$0, World world_1, PlayerEntity playerEntity_1, Hand hand_1)
+	private Fluid onUseFluidProxy(BucketItem this$0, World world, PlayerEntity playerEntity, Hand hand)
 	{
 		return Fluids.EMPTY;
 	}
 	
 	@Redirect(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;offset(Lnet/minecraft/util/math/Direction;)Lnet/minecraft/util/math/BlockPos;"))
-	public BlockPos onUseOffsetProxy(BlockPos obj, Direction side, World world_1, PlayerEntity playerEntity_1, Hand hand_1)
+	private BlockPos onUseOffsetProxy(BlockPos obj, Direction side, World world, PlayerEntity playerEntity, Hand hand)
 	{
-		if(world_1.getFluidState(obj).getFluid() != fluid)
+		if(world.getFluidState(obj).getFluid() != fluid)
 		{
-			final BlockState state = world_1.getBlockState(obj);
+			final BlockState state = world.getBlockState(obj);
 			final Block block = state.getBlock();
-			return block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(world_1, obj, state, fluid) ? obj : obj.offset(side);
+			return block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(world, obj, state, fluid) ? obj : obj.offset(side);
 		}
 		return obj.offset(side);
 	}
 	
 	@Redirect(method = "placeFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Material;isSolid()Z"))
-	public boolean onPlaceFluidIsSolidProxy(Material obj, @Nullable PlayerEntity playerEntity_1, World world_1, BlockPos blockPos_1, @Nullable BlockHitResult blockHitResult_1)
+	private boolean onPlaceFluidIsSolidProxy(Material obj, @Nullable PlayerEntity playerEntity, World world, BlockPos blockPos, @Nullable BlockHitResult blockHitResult)
 	{
 		final boolean solid = obj.isSolid();
-		final BlockState state = world_1.getBlockState(blockPos_1);
+		final BlockState state = world.getBlockState(blockPos);
 		final Block block = state.getBlock();
 		if(block instanceof FluidFillable)
 		{
-			return ((FluidFillable) block).canFillWithFluid(world_1, blockPos_1, state, fluid) ? solid : true;
+			return ((FluidFillable) block).canFillWithFluid(world, blockPos, state, fluid) ? solid : true;
 		}
 		return solid;
 	}
 	
 	@Redirect(method = "placeFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Material;isReplaceable()Z"))
-	public boolean onPlaceFluidIsReplaceableProxy(Material obj, @Nullable PlayerEntity playerEntity_1, World world_1, BlockPos blockPos_1, @Nullable BlockHitResult blockHitResult_1)
+	private boolean onPlaceFluidIsReplaceableProxy(Material obj, @Nullable PlayerEntity playerEntity, World world, BlockPos blockPos, @Nullable BlockHitResult blockHitResult)
 	{
 		final boolean replaceable = obj.isReplaceable();
-		final BlockState state = world_1.getBlockState(blockPos_1);
+		final BlockState state = world.getBlockState(blockPos);
 		final Block block = state.getBlock();
 		if(block instanceof FluidFillable)
 		{
-			return ((FluidFillable) block).canFillWithFluid(world_1, blockPos_1, state, fluid) || (world_1.getFluidState(blockPos_1).isEmpty() && replaceable);
+			return ((FluidFillable) block).canFillWithFluid(world, blockPos, state, fluid) || (world.getFluidState(blockPos).isEmpty() && replaceable);
 		}
 		return replaceable;
 	}
 	
 	@Redirect(method = "placeFluid", at = @At(value = "FIELD", ordinal = 3, target = "Lnet/minecraft/item/BucketItem;fluid:Lnet/minecraft/fluid/Fluid;"))
-	public Fluid onPlaceFluidFluidProxy(BucketItem this$0, @Nullable PlayerEntity playerEntity_1, World world_1, BlockPos blockPos_1, @Nullable BlockHitResult blockHitResult_1)
+	private Fluid onPlaceFluidFluidProxy(BucketItem this$0, @Nullable PlayerEntity playerEntity, World world, BlockPos blockPos, @Nullable BlockHitResult blockHitResult)
 	{
 		if(fluid != Fluids.WATER)
 		{
-			final BlockState state = world_1.getBlockState(blockPos_1);
-			return ((FluidFillable) state.getBlock()).canFillWithFluid(world_1, blockPos_1, state, fluid) ? Fluids.WATER : fluid;
+			final BlockState state = world.getBlockState(blockPos);
+			return ((FluidFillable) state.getBlock()).canFillWithFluid(world, blockPos, state, fluid) ? Fluids.WATER : fluid;
 		}
 		return Fluids.WATER;
 	}

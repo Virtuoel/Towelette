@@ -14,14 +14,14 @@ import virtuoel.towelette.util.FluidUtils;
 public abstract class TallPlantMixin
 {
 	@Redirect(method = "onBreak", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean onBreakSetBlockStateProxy(World obj, BlockPos blockPos_1, BlockState blockState_1, int int_1)
+	private boolean onBreakSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
-		return obj.setBlockState(blockPos_1, obj.getFluidState(blockPos_1).getBlockState(), int_1);
+		return obj.setBlockState(pos, obj.getFluidState(pos).getBlockState(), flags);
 	}
 	
 	@Redirect(method = { "onPlaced", "placeAt" }, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean placement_growth_SetBlockStateProxy(World obj, BlockPos blockPos_1, BlockState blockState_1, int int_1)
+	private boolean placement_growth_SetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
-		return obj.setBlockState(blockPos_1, FluidUtils.getStateWithFluid(blockState_1, obj, blockPos_1), int_1);
+		return obj.setBlockState(pos, FluidUtils.getStateWithFluid(state, obj, pos), flags);
 	}
 }

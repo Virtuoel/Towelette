@@ -14,8 +14,8 @@ import virtuoel.towelette.util.FluidUtils;
 public class FlowerPotBlockMixin
 {
 	@Redirect(method = "activate", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean activateSetBlockStateProxy(World obj, BlockPos blockPos_1, BlockState blockState_1, int int_1)
+	private boolean activateSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
-		return obj.setBlockState(blockPos_1, FluidUtils.getStateWithFluid(blockState_1, obj, blockPos_1), int_1);
+		return obj.setBlockState(pos, FluidUtils.getStateWithFluid(state, obj, pos), flags);
 	}
 }

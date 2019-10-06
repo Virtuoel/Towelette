@@ -17,17 +17,17 @@ import virtuoel.towelette.util.FluidUtils;
 public class FireBlockMixin
 {
 	@Inject(at = @At("HEAD"), method = { "getSpreadChance", "getBurnChance" }, cancellable = true)
-	public void onGetChances(BlockState blockState_1, CallbackInfoReturnable<Integer> info)
+	private void onGetChances(BlockState state, CallbackInfoReturnable<Integer> info)
 	{
-		if(FluidUtils.getFluid(blockState_1).matches(FluidTags.WATER))
+		if(FluidUtils.getFluid(state).matches(FluidTags.WATER))
 		{
 			info.setReturnValue(0);
 		}
 	}
 	
 	@Redirect(method = { "onScheduledTick", "trySpreadingFire" }, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean spreadSetBlockStateProxy(World obj, BlockPos blockPos_1, BlockState blockState_1, int int_1)
+	private boolean spreadSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
-		return obj.getFluidState(blockPos_1).isEmpty() ? obj.setBlockState(blockPos_1, blockState_1, int_1) : false;
+		return obj.getFluidState(pos).isEmpty() ? obj.setBlockState(pos, state, flags) : false;
 	}
 }

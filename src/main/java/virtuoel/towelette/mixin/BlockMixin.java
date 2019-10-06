@@ -26,7 +26,7 @@ import virtuoel.towelette.util.FluidUtils;
 public abstract class BlockMixin
 {
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;appendProperties(Lnet/minecraft/state/StateFactory$Builder;)V"))
-	public StateFactory.Builder<Block, BlockState> onConstructAppendPropertiesProxy(StateFactory.Builder<Block, BlockState> builder)
+	private StateFactory.Builder<Block, BlockState> onConstructAppendPropertiesProxy(StateFactory.Builder<Block, BlockState> builder)
 	{
 		if(this instanceof Fluidloggable)
 		{
@@ -57,13 +57,13 @@ public abstract class BlockMixin
 	}
 	
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;setDefaultState(Lnet/minecraft/block/BlockState;)V"))
-	public BlockState onConstructSetDefaultState(BlockState state)
+	private BlockState onConstructSetDefaultState(BlockState state)
 	{
 		return FluidUtils.getStateWithFluid(state, Fluids.EMPTY.getDefaultState());
 	}
 	
 	@Inject(at = @At("HEAD"), method = "getFluidState", cancellable = true)
-	public void getFluidState(BlockState state, CallbackInfoReturnable<FluidState> info)
+	private void getFluidState(BlockState state, CallbackInfoReturnable<FluidState> info)
 	{
 		info.setReturnValue(FluidUtils.getFluidState(state));
 	}

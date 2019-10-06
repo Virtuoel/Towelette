@@ -20,7 +20,7 @@ import virtuoel.towelette.util.FluidUtils;
 public abstract class PistonBlockMixin
 {
 	@Redirect(method = "move", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean moveSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
+	private boolean moveSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
 		final boolean unpushableFluids = Optional.ofNullable(ToweletteConfig.DATA.get("unpushableFluids"))
 			.filter(JsonElement::isJsonPrimitive)
@@ -30,7 +30,7 @@ public abstract class PistonBlockMixin
 	}
 	
 	@Redirect(method = "onBlockAction", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean onBlockActionSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
+	private boolean onBlockActionSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
 		return state == Blocks.AIR.getDefaultState() ? obj.clearBlockState(pos, false) : obj.setBlockState(pos, FluidUtils.getStateWithFluid(state, obj, pos), flags);
 	}

@@ -17,10 +17,10 @@ import net.minecraft.world.World;
 @Mixin(World.class)
 public abstract class WorldMixin
 {
-	@Shadow abstract FluidState getFluidState(BlockPos blockPos_1);
+	@Shadow abstract FluidState getFluidState(BlockPos pos);
 	
 	@Inject(method = "doesAreaContainFireSource", locals = LocalCapture.CAPTURE_FAILSOFT, cancellable = true, at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
-	public void doesAreaContainFireSourceGetFluidState(Box b, CallbackInfoReturnable<Boolean> info, int noop1, int noop2, int noop3, int noop4, int noop5, int noop6, BlockPos.PooledMutable pos, int noop7, int noop8, int noop9)
+	private void doesAreaContainFireSourceGetFluidState(Box box, CallbackInfoReturnable<Boolean> info, int noop1, int noop2, int noop3, int noop4, int noop5, int noop6, BlockPos.PooledMutable pos, int noop7, int noop8, int noop9)
 	{
 		if(getFluidState(pos).matches(FluidTags.LAVA))
 		{

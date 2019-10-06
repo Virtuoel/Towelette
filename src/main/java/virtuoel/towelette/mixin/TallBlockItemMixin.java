@@ -13,8 +13,8 @@ import net.minecraft.item.TallBlockItem;
 public abstract class TallBlockItemMixin
 {
 	@Inject(at = @At("HEAD"), method = "place", cancellable = true)
-	public void onPlace(ItemPlacementContext itemPlacementContext_1, BlockState blockState_1, CallbackInfoReturnable<Boolean> info)
+	private void onPlace(ItemPlacementContext context, BlockState state, CallbackInfoReturnable<Boolean> info)
 	{
-		info.setReturnValue(itemPlacementContext_1.getWorld().setBlockState(itemPlacementContext_1.getBlockPos(), blockState_1, 26));
+		info.setReturnValue(context.getWorld().setBlockState(context.getBlockPos(), state, 26));
 	}
 }

@@ -30,7 +30,7 @@ public abstract class PistonBlockEntityMixin
 	@Shadow boolean source;
 	
 	@Inject(at = @At("RETURN"), method = "<init>(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/Direction;ZZ)V")
-	public void onConstruct(BlockState state, Direction facing, boolean extending, boolean source, CallbackInfo info)
+	private void onConstruct(BlockState state, Direction facing, boolean extending, boolean source, CallbackInfo info)
 	{
 		final boolean unpushableFluids = Optional.ofNullable(ToweletteConfig.DATA.get("unpushableFluids"))
 			.filter(JsonElement::isJsonPrimitive)
@@ -43,13 +43,13 @@ public abstract class PistonBlockEntityMixin
 	}
 	
 	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getRenderingState(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
-	public BlockState tickGetRenderingStateProxy(BlockState blockState_1, IWorld iWorld_1, BlockPos blockPos_1)
+	private BlockState tickGetRenderingStateProxy(BlockState blockState, IWorld world, BlockPos blockPos)
 	{
-		return FluidUtils.getStateWithFluid(Block.getRenderingState(blockState_1, iWorld_1, blockPos_1), Fluids.EMPTY.getDefaultState());
+		return FluidUtils.getStateWithFluid(Block.getRenderingState(blockState, world, blockPos), Fluids.EMPTY.getDefaultState());
 	}
 	
 	@Redirect(method = "finish", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean finishSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
+	private boolean finishSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
 		final boolean unpushableFluids = Optional.ofNullable(ToweletteConfig.DATA.get("unpushableFluids"))
 			.filter(JsonElement::isJsonPrimitive)
@@ -59,7 +59,7 @@ public abstract class PistonBlockEntityMixin
 	}
 	
 	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean tickSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
+	private boolean tickSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
 		final boolean unpushableFluids = Optional.ofNullable(ToweletteConfig.DATA.get("unpushableFluids"))
 			.filter(JsonElement::isJsonPrimitive)

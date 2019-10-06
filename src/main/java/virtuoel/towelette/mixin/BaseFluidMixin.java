@@ -28,10 +28,10 @@ import virtuoel.towelette.util.FluidUtils;
 public abstract class BaseFluidMixin
 {
 	@Redirect(method = "flow", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;"))
-	public Block onFlowGetBlockProxy(BlockState obj, IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1, Direction direction_1, FluidState fluidState_1)
+	private Block onFlowGetBlockProxy(BlockState obj, IWorld world, BlockPos pos, BlockState blockState, Direction direction, FluidState fluidState)
 	{
 		final Block block = obj.getBlock();
-		final boolean fillable = block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(iWorld_1, blockPos_1, blockState_1, fluidState_1.getFluid());
+		final boolean fillable = block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(world, pos, blockState, fluidState.getFluid());
 		return fillable ? block : null;
 	}
 	
@@ -53,12 +53,12 @@ public abstract class BaseFluidMixin
 	}
 	
 	@Inject(at = @At("RETURN"), method = "method_15754", cancellable = true)
-	public void onMethod_15754(BlockView blockView_1, BlockPos blockPos_1, BlockState blockState_1, Fluid fluid_1, CallbackInfoReturnable<Boolean> info)
+	private void onMethod_15754(BlockView blockView, BlockPos pos, BlockState state, Fluid fluid, CallbackInfoReturnable<Boolean> info)
 	{
-		final Block block = blockState_1.getBlock();
+		final Block block = state.getBlock();
 		final boolean displaceable = info.getReturnValueZ();
 		final boolean fillable = block instanceof FluidFillable;
-		final boolean canFill = fillable && ((FluidFillable) block).canFillWithFluid(blockView_1, blockPos_1, blockState_1, fluid_1);
+		final boolean canFill = fillable && ((FluidFillable) block).canFillWithFluid(blockView, pos, state, fluid);
 		if(!displaceable)
 		{
 			if(canFill)
@@ -67,7 +67,7 @@ public abstract class BaseFluidMixin
 				return;
 			}
 			
-			final boolean empty = blockView_1.getFluidState(blockPos_1).isEmpty();
+			final boolean empty = blockView.getFluidState(pos).isEmpty();
 			if(empty && block.matches(Towelette.DISPLACEABLE) && !block.matches(Towelette.UNDISPLACEABLE))
 			{
 				info.setReturnValue(true);
@@ -76,7 +76,7 @@ public abstract class BaseFluidMixin
 		}
 		else if(fillable && !canFill)
 		{
-			final boolean empty = blockView_1.getFluidState(blockPos_1).isEmpty();
+			final boolean empty = blockView.getFluidState(pos).isEmpty();
 			if(!empty || block.matches(Towelette.UNDISPLACEABLE))
 			{
 				info.setReturnValue(false);
@@ -86,7 +86,7 @@ public abstract class BaseFluidMixin
 	}
 	
 	@Redirect(method = "onScheduledTick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean onOnScheduledTickSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags, World world, BlockPos noop, FluidState fluidState)
+	private boolean onOnScheduledTickSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags, World world, BlockPos blockPos, FluidState fluidState)
 	{
 		final BlockState existingState = world.getBlockState(pos);
 		final BlockState stateWithFluid = FluidUtils.getStateWithFluid(existingState, state != Blocks.AIR.getDefaultState() ? fluidState : Fluids.EMPTY.getDefaultState());

@@ -173,11 +173,11 @@ public class FluidUtils
 		world.getFluidTickScheduler().schedule(pos, fluid, fluid.getTickRate(world));
 	}
 	
-	public static boolean canFillWithFluid(BlockView blockView_1, BlockPos blockPos_1, BlockState blockState_1, Fluid fluid_1)
+	public static boolean canFillWithFluid(BlockView world, BlockPos pos, BlockState state, Fluid fluid)
 	{
-		if((fluid_1 == Fluids.WATER && blockState_1.contains(Properties.WATERLOGGED) && !blockState_1.get(Properties.WATERLOGGED)) || isValid(fluid_1))
+		if((fluid == Fluids.WATER && state.contains(Properties.WATERLOGGED) && !state.get(Properties.WATERLOGGED)) || isValid(fluid))
 		{
-			final FluidState fluidState = getFluidState(blockState_1);
+			final FluidState fluidState = getFluidState(state);
 			
 			if(fluidState.isEmpty() || !fluidState.isStill())
 			{
@@ -192,11 +192,11 @@ public class FluidUtils
 		return false;
 	}
 	
-	public static boolean tryFillWithFluid(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState, FluidState fluidState)
+	public static boolean tryFillWithFluid(IWorld world, BlockPos pos, BlockState blockState, FluidState fluidState)
 	{
-		if(canFillWithFluid(iWorld_1, blockPos_1, blockState, fluidState.getFluid()))
+		if(canFillWithFluid(world, pos, blockState, fluidState.getFluid()))
 		{
-			if(!iWorld_1.isClient())
+			if(!world.isClient())
 			{
 				final Fluid fluid = fluidState.getFluid();
 				
@@ -226,10 +226,10 @@ public class FluidUtils
 				
 				if(filled)
 				{
-					iWorld_1.setBlockState(blockPos_1, blockState, 3);
+					world.setBlockState(pos, blockState, 3);
 				}
 				
-				iWorld_1.getFluidTickScheduler().schedule(blockPos_1, fluid, fluid.getTickRate(iWorld_1));
+				world.getFluidTickScheduler().schedule(pos, fluid, fluid.getTickRate(world));
 			}
 			
 			return true;
@@ -240,32 +240,32 @@ public class FluidUtils
 		}
 	}
 	
-	public static Fluid tryDrainFluid(IWorld iWorld_1, BlockPos blockPos_1, BlockState blockState_1)
+	public static Fluid tryDrainFluid(IWorld world, BlockPos pos, BlockState state)
 	{
-		final FluidState fluidState = getFluidState(blockState_1);
+		final FluidState fluidState = getFluidState(state);
 		if(!fluidState.isEmpty())
 		{
-			if(blockState_1.contains(FluidProperties.FLUID))
+			if(state.contains(FluidProperties.FLUID))
 			{
-				blockState_1 = blockState_1.with(FluidProperties.FLUID, Registry.FLUID.getDefaultId());
+				state = state.with(FluidProperties.FLUID, Registry.FLUID.getDefaultId());
 			}
 			
-			if(blockState_1.contains(FluidProperties.FALLING))
+			if(state.contains(FluidProperties.FALLING))
 			{
-				blockState_1 = blockState_1.with(FluidProperties.FALLING, false);
+				state = state.with(FluidProperties.FALLING, false);
 			}
 			
-			if(blockState_1.contains(FluidProperties.LEVEL_1_8))
+			if(state.contains(FluidProperties.LEVEL_1_8))
 			{
-				blockState_1 = blockState_1.with(FluidProperties.LEVEL_1_8, 8);
+				state = state.with(FluidProperties.LEVEL_1_8, 8);
 			}
 			
-			if(blockState_1.contains(Properties.WATERLOGGED))
+			if(state.contains(Properties.WATERLOGGED))
 			{
-				blockState_1 = blockState_1.with(Properties.WATERLOGGED, false);
+				state = state.with(Properties.WATERLOGGED, false);
 			}
 			
-			iWorld_1.setBlockState(blockPos_1, blockState_1, 3);
+			world.setBlockState(pos, state, 3);
 		}
 		return fluidState.isStill() ? fluidState.getFluid() : Fluids.EMPTY;
 	}

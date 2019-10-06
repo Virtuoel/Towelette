@@ -17,14 +17,14 @@ import virtuoel.towelette.util.FluidUtils;
 public class BambooSaplingBlockMixin
 {
 	@Redirect(method = "getStateForNeighborUpdate(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/Direction;Lnet/minecraft/block/BlockState;Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/IWorld;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	public boolean getStateForNeighborUpdateSetBlockStateProxy(IWorld obj, BlockPos blockPos_1, BlockState blockState_1, int flags)
+	private boolean getStateForNeighborUpdateSetBlockStateProxy(IWorld obj, BlockPos blockPos, BlockState blockState, int flags)
 	{
-		return obj.setBlockState(blockPos_1, FluidUtils.getStateWithFluid(blockState_1, obj, blockPos_1), flags);
+		return obj.setBlockState(blockPos, FluidUtils.getStateWithFluid(blockState, obj, blockPos), flags);
 	}
 	
 	@Inject(at = @At("RETURN"), method = "getStateForNeighborUpdate(Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/Direction;Lnet/minecraft/block/BlockState;Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;", cancellable = true)
-	public void onGetStateForNeighborUpdate(BlockState blockState_1, Direction direction_1, BlockState blockState_2, IWorld iWorld_1, BlockPos blockPos_1, BlockPos blockPos_2, CallbackInfoReturnable<BlockState> info)
+	private void onGetStateForNeighborUpdate(BlockState blockState, Direction direction, BlockState otherState, IWorld world, BlockPos blockPos, BlockPos otherPos, CallbackInfoReturnable<BlockState> info)
 	{
-		info.setReturnValue(FluidUtils.getStateWithFluid(info.getReturnValue(), iWorld_1, blockPos_1));
+		info.setReturnValue(FluidUtils.getStateWithFluid(info.getReturnValue(), world, blockPos));
 	}
 }

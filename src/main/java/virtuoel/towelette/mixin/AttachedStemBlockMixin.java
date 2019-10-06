@@ -16,8 +16,8 @@ import virtuoel.towelette.util.FluidUtils;
 public class AttachedStemBlockMixin
 {
 	@Inject(at = @At("RETURN"), method = "getStateForNeighborUpdate", cancellable = true)
-	public void onGetStateForNeighborUpdate(BlockState blockState_1, Direction direction_1, BlockState blockState_2, IWorld iWorld_1, BlockPos blockPos_1, BlockPos blockPos_2, CallbackInfoReturnable<BlockState> info)
+	private void onGetStateForNeighborUpdate(BlockState state, Direction direction, BlockState otherState, IWorld world, BlockPos pos, BlockPos otherPos, CallbackInfoReturnable<BlockState> info)
 	{
-		info.setReturnValue(FluidUtils.getStateWithFluid(info.getReturnValue(), FluidUtils.getFluidState(blockState_1)));
+		info.setReturnValue(FluidUtils.getStateWithFluid(info.getReturnValue(), FluidUtils.getFluidState(state)));
 	}
 }
