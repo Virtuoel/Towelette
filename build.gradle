@@ -210,9 +210,36 @@ curseforge {
 			
 			mainArtifact(remapJar) {
 				displayName = "${archives_base_name}-${minecraft_version}-${project.version}.jar"
-				if(project.hasProperty("fabric_version")) {
-					relations {
-						requiredDependency "fabric-api"
+				
+				relations {
+					if(project.hasProperty("required_dep_slugs")) {
+						project.required_dep_slugs.split(", ").each { String slug ->
+							requiredDependency slug
+						}
+					}
+					
+					if(project.hasProperty("embedded_lib_slugs")) {
+						project.embedded_lib_slugs.split(", ").each { String slug ->
+							embeddedLibrary slug
+						}
+					}
+					
+					if(project.hasProperty("optional_dep_slugs")) {
+						project.optional_dep_slugs.split(", ").each { String slug ->
+							optionalDependency slug
+						}
+					}
+					
+					if(project.hasProperty("compatible_tool_slugs")) {
+						project.compatible_tool_slugs.split(", ").each { String slug ->
+							tool slug
+						}
+					}
+					
+					if(project.hasProperty("incompatible_slugs")) {
+						project.incompatible_slugs.split(", ").each { String slug ->
+							incompatible slug
+						}
 					}
 				}
 				
