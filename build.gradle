@@ -183,7 +183,7 @@ githubRelease {
 	}
 	
 	tagName "v${minecraft_version}-${project.version}"
-	targetCommitish { Grgit.open(dir: '.').branch.current().name }
+	targetCommitish { org.ajoberstar.grgit.Grgit.open(dir: '.').branch.current().name }
 	releaseName "${archives_base_name}-${minecraft_version}-${project.version}.jar"
 }
 
