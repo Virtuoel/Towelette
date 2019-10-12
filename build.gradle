@@ -30,12 +30,11 @@ repositories {
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
+def ENV = System.getenv()
+
 group = project.maven_group
 archivesBaseName = project.archives_base_name
-version = project.mod_version
-
-def ENV = System.getenv()
-version = version + (ENV.BUILD_NUMBER ? ("+build." + ENV.BUILD_NUMBER) : "")
+version = project.mod_version + "+" + (ENV.BUILD_NUMBER ? "build.${ENV.BUILD_NUMBER}-" : "") + project.minecraft_version
 
 minecraft {
 	refmapName = "${archives_base_name}-refmap.json"
@@ -182,9 +181,11 @@ githubRelease {
 		repo project.github_repository
 	}
 	
-	tagName "v${minecraft_version}-${project.version}"
+	tagName project.version
 	targetCommitish { org.ajoberstar.grgit.Grgit.open(dir: '.').branch.current().name }
-	releaseName "${archives_base_name}-${minecraft_version}-${project.version}.jar"
+	
+	FilenameFilter filter = { dir, filename -> filename.contains(project.version) && !filename.contains("-dev.jar") }
+	releaseAssets = jar.destinationDir.listFiles filter
 }
 
 String generateHTMLChangelog() {
@@ -225,7 +226,7 @@ curseforge {
 			addGameVersion "Fabric"
 			
 			mainArtifact(remapJar) {
-				displayName = "${archives_base_name}-${minecraft_version}-${project.version}.jar"
+				displayName = "${archives_base_name}-${project.version}.jar"
 				
 				relations {
 					if(project.hasProperty("required_dep_slugs")) {
