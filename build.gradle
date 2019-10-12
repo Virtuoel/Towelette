@@ -183,6 +183,7 @@ githubRelease {
 	
 	tagName project.version
 	targetCommitish { org.ajoberstar.grgit.Grgit.open(dir: '.').branch.current().name }
+	releaseName project.version
 	
 	FilenameFilter filter = { dir, filename -> filename.contains(project.version) && !filename.contains("-dev.jar") }
 	releaseAssets = jar.destinationDir.listFiles filter
