@@ -22,7 +22,6 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
 import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.util.FluidUtils;
 
