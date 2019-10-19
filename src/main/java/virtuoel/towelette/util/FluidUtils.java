@@ -152,11 +152,11 @@ public class FluidUtils
 	
 	public static FluidState getFluidState(BlockState blockState)
 	{
-		FluidState state = getFluidState(getFluid(blockState));
+		FluidState state = getFluid(blockState).getDefaultState();
 		
-		if(blockState.contains(FluidProperties.FALLING) && state.getEntries().containsKey(Properties.FALLING))
+		if(state.getEntries().containsKey(Properties.FALLING))
 		{
-			state = state.with(Properties.FALLING, blockState.get(FluidProperties.FALLING));
+			state = state.with(Properties.FALLING, blockState.contains(FluidProperties.FALLING) && blockState.get(FluidProperties.FALLING));
 		}
 		
 		if(blockState.contains(FluidProperties.LEVEL_1_8) && state.getEntries().containsKey(Properties.LEVEL_1_8))
@@ -165,12 +165,6 @@ public class FluidUtils
 		}
 		
 		return state;
-	}
-	
-	public static FluidState getFluidState(Fluid fluid)
-	{
-		final FluidState state = fluid.getDefaultState();
-		return state.getEntries().containsKey(Properties.FALLING) ? state.with(Properties.FALLING, false) : state;
 	}
 	
 	public static Fluid getFluid(BlockState state)
