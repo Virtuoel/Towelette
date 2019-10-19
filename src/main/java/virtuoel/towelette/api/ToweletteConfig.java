@@ -25,6 +25,7 @@ public class ToweletteConfig
 		config.addProperty("replaceableFluids", false);
 		config.addProperty("unpushableFluids", true);
 		config.addProperty("flowingFluidlogging", false);
+		config.addProperty("accurateFlowBlocking", true);
 		
 		final JsonObject miscFluidlogging = new JsonObject();
 		miscFluidlogging.addProperty("barrier", false);

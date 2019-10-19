@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import javax.annotation.Nullable;
 
+import com.google.common.math.DoubleMath;
 import com.google.gson.JsonElement;
 
 import net.minecraft.block.BlockState;
@@ -14,16 +15,63 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.BooleanBiFunction;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
 import net.minecraft.util.registry.Registry;
+import net.minecraft.util.shape.SliceVoxelShape;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteConfig;
+import virtuoel.towelette.mixin.VoxelShapeAccessor;
 
 public class FluidUtils
 {
+	public static boolean isFluidFlowBlocked(Direction direction, BlockView world, VoxelShape shape, BlockState blockState, BlockPos blockPos, VoxelShape otherShape, BlockState otherState, BlockPos otherPos)
+	{
+		final boolean accurateFlowBlocking = Optional.ofNullable(ToweletteConfig.DATA.get("accurateFlowBlocking"))
+			.filter(JsonElement::isJsonPrimitive)
+			.map(JsonElement::getAsBoolean).orElse(true);
+		
+		if(accurateFlowBlocking)
+		{
+			if (shape != VoxelShapes.fullCube() && otherShape != VoxelShapes.fullCube())
+			{
+				final FluidState fluidState = otherState.getFluidState();
+				final VoxelShape inverseShape = fluidState.isEmpty() ? VoxelShapes.empty() : VoxelShapes.combine(VoxelShapes.fullCube(), fluidState.getShape(world, otherPos), BooleanBiFunction.ONLY_FIRST);
+				final VoxelShape combinedOtherShape = VoxelShapes.combine(otherShape, inverseShape, BooleanBiFunction.OR);
+				
+				final Direction.Axis axis = direction.getAxis();
+				final boolean positiveDirection = direction.getDirection() == Direction.AxisDirection.POSITIVE;
+				VoxelShape fromShape = positiveDirection ? shape : combinedOtherShape;
+				VoxelShape toShape = positiveDirection ? combinedOtherShape : shape;
+				if (fromShape != VoxelShapes.empty() && !DoubleMath.fuzzyEquals(fromShape.getMaximum(axis), 1.0D, 1.0E-7D))
+				{
+					fromShape = VoxelShapes.empty();
+				}
+				
+				if (toShape != VoxelShapes.empty() && !DoubleMath.fuzzyEquals(toShape.getMinimum(axis), 0.0D, 1.0E-7D))
+				{
+					toShape = VoxelShapes.empty();
+				}
+				
+				return !VoxelShapes.matchesAnywhere(VoxelShapes.fullCube(), VoxelShapes.combine(new SliceVoxelShape(fromShape, axis, ((VoxelShapeAccessor) fromShape).getVoxels().getSize(axis) - 1), new SliceVoxelShape(toShape, axis, 0), BooleanBiFunction.OR), BooleanBiFunction.ONLY_FIRST);
+			}
+			else
+			{
+				return true;
+			}
+		}
+		else
+		{
+			return VoxelShapes.method_1080(shape, otherShape, direction);
+		}
+	}
+	
 	public static Identifier getFluidId(ItemPlacementContext context)
 	{
 		return getFluidId(context.getWorld().getFluidState(context.getBlockPos()));

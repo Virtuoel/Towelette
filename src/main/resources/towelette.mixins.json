@@ -34,6 +34,7 @@
 		"TallPlantMixin",
 		"TrapdoorBlockMixin",
 		"TripwireHookBlockMixin",
+		"VoxelShapeAccessor",
 		"WorldMixin",
 		"fluidloggable.FluidloggableMixin",
 		"fluidloggable.AllOfTheBlocksMixin",
