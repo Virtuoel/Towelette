@@ -42,7 +42,7 @@ public abstract class BlockStateMixin
 	}
 	
 	@Inject(at = @At("RETURN"), method = "onBlockAdded")
-	public void onOnBlockAdded(World world, BlockPos blockPos, BlockState blockState, boolean flag, CallbackInfo info)
+	private void onOnBlockAdded(World world, BlockPos blockPos, BlockState blockState, boolean flag, CallbackInfo info)
 	{
 		FluidUtils.scheduleFluidTick((BlockState) (Object) this, world, blockPos);
 	}
