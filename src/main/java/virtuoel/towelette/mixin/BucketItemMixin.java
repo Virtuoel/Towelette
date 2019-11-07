@@ -22,7 +22,6 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(BucketItem.class)
 public class BucketItemMixin
@@ -32,13 +31,12 @@ public class BucketItemMixin
 	@Redirect(method = "use", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
 	private BlockState onUseGetBlockStateProxy(World obj, BlockPos blockPos)
 	{
-		final BlockState original = obj.getBlockState(blockPos);
-		final FluidState state = FluidUtils.getFluidState(original);
+		final FluidState state = obj.getFluidState(blockPos);
 		if(!state.isEmpty() && !state.isStill())
 		{
 			return Blocks.AIR.getDefaultState();
 		}
-		return original;
+		return obj.getBlockState(blockPos);
 	}
 	
 	@Redirect(method = "use", at = @At(value = "FIELD", ordinal = 2, target = "Lnet/minecraft/item/BucketItem;fluid:Lnet/minecraft/fluid/Fluid;"))
