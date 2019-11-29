@@ -24,7 +24,7 @@ public class IdentifierProperty extends AbstractProperty<Identifier> implements 
 	}
 	
 	@Override
-	public Optional<Identifier> getValue(final String valueName)
+	public Optional<Identifier> parse(final String valueName)
 	{
 		final int underscoreIndex = valueName.lastIndexOf('_');
 		if(underscoreIndex != -1)
@@ -44,7 +44,7 @@ public class IdentifierProperty extends AbstractProperty<Identifier> implements 
 	}
 	
 	@Override
-	public String getName(Identifier value)
+	public String name(Identifier value)
 	{
 		return value.getNamespace() + "_" + value.getPath() + "_" + value.getNamespace().length();
 	}
