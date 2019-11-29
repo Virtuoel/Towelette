@@ -6,15 +6,15 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.StemBlock;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(StemBlock.class)
 public class StemBlockMixin
 {
-	@Redirect(method = "onScheduledTick", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Z"))
-	private boolean onScheduledTickSetBlockStateProxy(World obj, BlockPos pos, BlockState state)
+	@Redirect(method = "scheduledTick", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/server/world/ServerWorld;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Z"))
+	private boolean scheduledTickSetBlockStateProxy(ServerWorld obj, BlockPos pos, BlockState state)
 	{
 		return obj.setBlockState(pos, FluidUtils.getStateWithFluid(state, obj, pos));
 	}

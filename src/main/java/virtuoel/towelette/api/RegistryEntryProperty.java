@@ -34,8 +34,8 @@ public class RegistryEntryProperty<T> extends IdentifierProperty
 	}
 	
 	@Override
-	public Optional<Identifier> getValue(final String valueName)
+	public Optional<Identifier> parse(final String valueName)
 	{
-		return Optional.of(super.getValue(valueName).flatMap(registry::getOrEmpty).map(registry::getId).orElse(defaultId));
+		return Optional.of(super.parse(valueName).flatMap(registry::getOrEmpty).map(registry::getId).orElse(defaultId));
 	}
 }

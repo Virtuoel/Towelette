@@ -26,12 +26,12 @@ public abstract class PistonBlockMixin
 			.filter(JsonElement::isJsonPrimitive)
 			.map(JsonElement::getAsBoolean).orElse(true);
 		
-		return unpushableFluids && state == Blocks.AIR.getDefaultState() ? obj.clearBlockState(pos, false) : obj.setBlockState(pos, !unpushableFluids ? state : FluidUtils.getStateWithFluid(state, obj, pos), flags);
+		return unpushableFluids && state == Blocks.AIR.getDefaultState() ? obj.removeBlock(pos, false) : obj.setBlockState(pos, !unpushableFluids ? state : FluidUtils.getStateWithFluid(state, obj, pos), flags);
 	}
 	
 	@Redirect(method = "onBlockAction", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private boolean onBlockActionSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
-		return state == Blocks.AIR.getDefaultState() ? obj.clearBlockState(pos, false) : obj.setBlockState(pos, FluidUtils.getStateWithFluid(state, obj, pos), flags);
+		return state == Blocks.AIR.getDefaultState() ? obj.removeBlock(pos, false) : obj.setBlockState(pos, FluidUtils.getStateWithFluid(state, obj, pos), flags);
 	}
 }

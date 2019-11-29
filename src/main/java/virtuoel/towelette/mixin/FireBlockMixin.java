@@ -25,7 +25,7 @@ public class FireBlockMixin
 		}
 	}
 	
-	@Redirect(method = { "onScheduledTick", "trySpreadingFire" }, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
+	@Redirect(method = { "scheduledTick", "trySpreadingFire" }, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private boolean spreadSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
 		return obj.getFluidState(pos).isEmpty() ? obj.setBlockState(pos, state, flags) : false;

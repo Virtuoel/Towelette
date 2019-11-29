@@ -24,8 +24,8 @@ import virtuoel.towelette.util.FluidUtils;
 @Mixin(DoorBlock.class)
 public abstract class DoorBlockMixin
 {
-	@Inject(at = @At("HEAD"), method = "activate")
-	private void onActivate(BlockState state, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<Boolean> info)
+	@Inject(at = @At("HEAD"), method = "onUse")
+	private void onOnUse(BlockState state, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<Boolean> info)
 	{
 		if(state.getMaterial() != Material.METAL)
 		{

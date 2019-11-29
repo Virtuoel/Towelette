@@ -15,7 +15,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.state.StateFactory;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Property;
 import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.Fluidloggable;
@@ -25,14 +25,14 @@ import virtuoel.towelette.util.FluidUtils;
 @Mixin(Block.class)
 public abstract class BlockMixin
 {
-	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;appendProperties(Lnet/minecraft/state/StateFactory$Builder;)V"))
-	private StateFactory.Builder<Block, BlockState> onConstructAppendPropertiesProxy(StateFactory.Builder<Block, BlockState> builder)
+	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;appendProperties(Lnet/minecraft/state/StateManager$Builder;)V"))
+	private StateManager.Builder<Block, BlockState> onConstructAppendPropertiesProxy(StateManager.Builder<Block, BlockState> builder)
 	{
 		if(this instanceof Fluidloggable)
 		{
-			final Map<String, Property<?>> propertyMap = ((StateFactoryBuilderAccessor) builder).getPropertyMap();
+			final Map<String, Property<?>> namedProperties = ((StateManagerBuilderAccessor) builder).getNamedProperties();
 			
-			if(!propertyMap.containsKey(FluidProperties.FLUID.getName()))
+			if(!namedProperties.containsKey(FluidProperties.FLUID.getName()))
 			{
 				builder.add(FluidProperties.FLUID);
 			}
@@ -41,12 +41,12 @@ public abstract class BlockMixin
 			.filter(JsonElement::isJsonPrimitive)
 			.map(JsonElement::getAsBoolean).orElse(false))
 			{
-				if(!propertyMap.containsKey(FluidProperties.LEVEL_1_8.getName()))
+				if(!namedProperties.containsKey(FluidProperties.LEVEL_1_8.getName()))
 				{
 					builder.add(FluidProperties.LEVEL_1_8);
 				}
 				
-				if(!propertyMap.containsKey(FluidProperties.FALLING.getName()))
+				if(!namedProperties.containsKey(FluidProperties.FALLING.getName()))
 				{
 					builder.add(FluidProperties.FALLING);
 				}

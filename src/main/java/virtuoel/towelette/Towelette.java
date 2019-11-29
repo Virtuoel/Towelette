@@ -18,7 +18,7 @@ import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.state.PropertyContainer;
+import net.minecraft.state.State;
 import net.minecraft.state.property.Property;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
@@ -100,7 +100,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	}
 	
 	@Override
-	public boolean shouldDeferState(PropertyContainer<?> state)
+	public boolean shouldDeferState(State<?> state)
 	{
 		final ImmutableMap<Property<?>, Comparable<?>> entries = state.getEntries();
 		final boolean canContainFluid = entries.containsKey(FluidProperties.FLUID);
