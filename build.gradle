@@ -112,6 +112,8 @@ processResources {
 eclipse {
 	project {
 		name = archives_base_name
+		buildCommand "org.eclipse.buildship.core.gradleprojectbuilder"
+		natures "org.eclipse.buildship.core.gradleprojectnature"
 	}
 }
 
