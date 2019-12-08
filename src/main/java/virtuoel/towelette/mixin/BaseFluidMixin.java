@@ -63,32 +63,17 @@ public abstract class BaseFluidMixin
 	private void onMethod_15754(BlockView blockView, BlockPos pos, BlockState state, Fluid fluid, CallbackInfoReturnable<Boolean> info)
 	{
 		final Block block = state.getBlock();
-		final boolean displaceable = info.getReturnValueZ();
-		final boolean fillable = block instanceof FluidFillable;
-		final boolean canFill = fillable && ((FluidFillable) block).canFillWithFluid(blockView, pos, state, fluid);
-		if(!displaceable)
+		
+		if(!info.getReturnValueZ())
 		{
-			if(canFill)
+			if ((block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(blockView, pos, state, fluid)) || (block.matches(Towelette.DISPLACEABLE) && !block.matches(Towelette.UNDISPLACEABLE) && blockView.getFluidState(pos).isEmpty()))
 			{
 				info.setReturnValue(true);
-				return;
-			}
-			
-			final boolean empty = blockView.getFluidState(pos).isEmpty();
-			if(empty && block.matches(Towelette.DISPLACEABLE) && !block.matches(Towelette.UNDISPLACEABLE))
-			{
-				info.setReturnValue(true);
-				return;
 			}
 		}
-		else if(fillable && !canFill)
+		else if(block instanceof FluidFillable && (block.matches(Towelette.UNDISPLACEABLE) || !blockView.getFluidState(pos).isEmpty()))
 		{
-			final boolean empty = blockView.getFluidState(pos).isEmpty();
-			if(!empty || block.matches(Towelette.UNDISPLACEABLE))
-			{
-				info.setReturnValue(false);
-				return;
-			}
+			info.setReturnValue(false);
 		}
 	}
 	
