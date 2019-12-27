@@ -4,6 +4,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.IntProperty;
 import net.minecraft.util.registry.Registry;
+import virtuoel.statement.api.property.RegistryEntryProperty;
 
 public class FluidProperties
 {
