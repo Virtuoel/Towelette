@@ -77,21 +77,17 @@ dependencies {
 	
 	if(project.hasProperty("modmenu_version")) {
 		modCompileOnly("io.github.prospector:modmenu:${modmenu_version}") {
-			transitive = false
+			exclude group: "net.fabricmc.fabric-api"
 		}
 	}
 	
 	if(project.hasProperty("statement_version")) {
-		modApi("virtuoel:Statement:${statement_version}") {
-			transitive = false
-		}
+		modApi "virtuoel:Statement:${statement_version}"
 		include "virtuoel:Statement:${statement_version}"
 	}
 	
 	if(project.hasProperty("statement_commit")) {
-		modApi("com.github.Virtuoel:Statement:${statement_commit}") {
-			transitive = false
-		}
+		modApi "com.github.Virtuoel:Statement:${statement_commit}"
 		include "com.github.Virtuoel:Statement:${statement_commit}"
 	}
 }
