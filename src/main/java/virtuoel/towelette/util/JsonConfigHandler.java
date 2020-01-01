@@ -55,28 +55,28 @@ public class JsonConfigHandler extends ConfigHandler<JsonObject>
 	
 	private static JsonObject mergeJsonObjects(JsonObject dest, JsonObject... srcs)
 	{
-		for(JsonObject src : srcs)
+		for (final JsonObject src : srcs)
 		{
-			for(Map.Entry<String, JsonElement> srcEntry : src.entrySet())
+			for (final Map.Entry<String, JsonElement> srcEntry : src.entrySet())
 			{
 				final String key = srcEntry.getKey();
 				final JsonElement value = srcEntry.getValue();
-				if(dest.has(key))
+				if (dest.has(key))
 				{
 					final JsonElement destValue = dest.get(key);
-					if(destValue.isJsonArray() && value.isJsonArray())
+					if (destValue.isJsonArray() && value.isJsonArray())
 					{
-						JsonArray leftArr = destValue.getAsJsonArray();
-						for(JsonElement element : value.getAsJsonArray())
+						final JsonArray leftArr = destValue.getAsJsonArray();
+						for (final JsonElement element : value.getAsJsonArray())
 						{
 							leftArr.add(element);
 						}
 					}
-					else if(destValue.isJsonObject() && value.isJsonObject())
+					else if (destValue.isJsonObject() && value.isJsonObject())
 					{
 						mergeJsonObjects(destValue.getAsJsonObject(), value.getAsJsonObject());
 					}
-					else if(!value.isJsonNull())
+					else if (!value.isJsonNull())
 					{
 						dest.add(key, value);
 					}

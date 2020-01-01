@@ -45,21 +45,21 @@ public abstract class ConfigHandler<S> implements Supplier<S>
 		try
 		{
 			Files.createDirectories(configFile.getParent());
-			if(Files.exists(configFile))
+			if (Files.exists(configFile))
 			{
 				configData = readConfig(Files.lines(configFile));
 			}
 		}
-		catch(IOException e)
+		catch (IOException e)
 		{
 			logger.catching(e);
 		}
 		
 		final S defaultData = defaultConfig.get();
-		if(!Objects.equals(configData, defaultData))
+		if (!Objects.equals(configData, defaultData))
 		{
 			final S mergedData = configData == null ? defaultData : mergeConfigs(configData, defaultData);
-			if(!Objects.equals(configData, mergedData))
+			if (!Objects.equals(configData, mergedData))
 			{
 				configData = mergedData;
 				save(configData);
@@ -80,7 +80,7 @@ public abstract class ConfigHandler<S> implements Supplier<S>
 		{
 			Files.write(configFile, writeConfig(configData));
 		}
-		catch(IOException e)
+		catch (IOException e)
 		{
 			logger.warn("Failed to write config.");
 			logger.catching(e);
