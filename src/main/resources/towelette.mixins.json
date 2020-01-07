@@ -17,7 +17,6 @@
 		"BucketItemMixin",
 		"CampfireBlockMixin",
 		"CropBlockMixin",
-		"DefaultedRegistryMixin",
 		"DoorBlockMixin",
 		"DragonEggBlockMixin",
 		"EntityMixin",
