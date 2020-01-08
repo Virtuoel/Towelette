@@ -19,6 +19,7 @@ import virtuoel.towelette.api.ToweletteConfig;
 public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 {
 	private static final String MIXIN_PACKAGE = "virtuoel.towelette.mixin";
+	private static final String FLUIDLOGGABLE_PACKAGE = MIXIN_PACKAGE + ".fluidloggable";
 	
 	@Override
 	public void onLoad(String mixinPackage)
@@ -54,7 +55,7 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 	
 	private static void addConfig(final Map<String, Pair<String, Boolean>> map, final String mixinClassName, final String config, final boolean defaultValue)
 	{
-		map.put(MIXIN_PACKAGE + ".fluidloggable." + mixinClassName, Pair.of(config, defaultValue));
+		map.put(FLUIDLOGGABLE_PACKAGE + "." + mixinClassName, Pair.of(config, defaultValue));
 	}
 	
 	private static Map<String, Pair<String, Boolean>> buildMap()
@@ -93,6 +94,13 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 			throw new IllegalArgumentException(
 				String.format("Invalid package for class \"%s\": Expected \"%s\", but found \"%s\".", targetClassName, MIXIN_PACKAGE, mixinClassName)
 			);
+		}
+		else if(mixinClassName.startsWith(FLUIDLOGGABLE_PACKAGE) &&
+			!Optional.ofNullable(ToweletteConfig.DATA.get("automaticFluidlogging"))
+			.filter(JsonElement::isJsonPrimitive)
+			.map(JsonElement::getAsBoolean).orElse(false))
+		{
+			return false;
 		}
 		
 		return Optional.ofNullable(CLASS_CONFIG_MAP.get(mixinClassName)).map(ToweletteMixinConfigPlugin::isConfigEnabled).orElse(true);
