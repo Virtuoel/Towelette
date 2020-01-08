@@ -24,7 +24,7 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 	@Override
 	public void onLoad(String mixinPackage)
 	{
-		if(!mixinPackage.startsWith(MIXIN_PACKAGE))
+		if (!mixinPackage.startsWith(MIXIN_PACKAGE))
 		{
 			throw new IllegalArgumentException(
 				String.format("Invalid package: Expected \"%s\", but found \"%s\".", MIXIN_PACKAGE, mixinPackage)
@@ -89,13 +89,13 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 	@Override
 	public boolean shouldApplyMixin(String targetClassName, String mixinClassName)
 	{
-		if(!mixinClassName.startsWith(MIXIN_PACKAGE))
+		if (!mixinClassName.startsWith(MIXIN_PACKAGE))
 		{
 			throw new IllegalArgumentException(
 				String.format("Invalid package for class \"%s\": Expected \"%s\", but found \"%s\".", targetClassName, MIXIN_PACKAGE, mixinClassName)
 			);
 		}
-		else if(mixinClassName.startsWith(FLUIDLOGGABLE_PACKAGE) &&
+		else if (mixinClassName.startsWith(FLUIDLOGGABLE_PACKAGE) &&
 			!Optional.ofNullable(ToweletteConfig.DATA.get("automaticFluidlogging"))
 			.filter(JsonElement::isJsonPrimitive)
 			.map(JsonElement::getAsBoolean).orElse(false))
