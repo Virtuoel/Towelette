@@ -17,10 +17,11 @@ import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.state.State;
 import net.minecraft.state.property.Property;
 import net.minecraft.tag.Tag;
+import net.minecraft.util.IdList;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import virtuoel.statement.api.StateRefresher;
@@ -100,14 +101,22 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	}
 	
 	@Override
-	public boolean shouldDeferState(State<?> state)
+	public <S> boolean shouldDeferState(IdList<S> idList, S state)
 	{
-		final ImmutableMap<Property<?>, Comparable<?>> entries = state.getEntries();
-		final boolean canContainFluid = entries.containsKey(FluidProperties.FLUID);
-		boolean deferred = canContainFluid && !state.get(FluidProperties.FLUID).equals(Registry.FLUID.getDefaultId());
-		deferred |= canContainFluid && entries.containsKey(FluidProperties.LEVEL_1_8) && state.get(FluidProperties.LEVEL_1_8) != 8;
-		deferred |= canContainFluid && entries.containsKey(FluidProperties.FALLING) && state.get(FluidProperties.FALLING);
-		return deferred;
+		if (idList == Block.STATE_IDS)
+		{
+			final BlockState blockState = ((BlockState) state);
+			final ImmutableMap<Property<?>, Comparable<?>> entries = blockState.getEntries();
+			
+			if (entries.containsKey(FluidProperties.FLUID))
+			{
+				return (!blockState.get(FluidProperties.FLUID).equals(Registry.FLUID.getDefaultId())) ||
+					(entries.containsKey(FluidProperties.LEVEL_1_8) && blockState.get(FluidProperties.LEVEL_1_8) != 8) ||
+					(entries.containsKey(FluidProperties.FALLING) && blockState.get(FluidProperties.FALLING));
+			}
+		}
+		
+		return false;
 	}
 	
 	public static Identifier id(final String name)
