@@ -40,6 +40,7 @@ import net.minecraft.block.FenceGateBlock;
 import net.minecraft.block.FernBlock;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.FlowerPotBlock;
+import net.minecraft.block.FungiBlock;
 import net.minecraft.block.HopperBlock;
 import net.minecraft.block.HorizontalConnectingBlock;
 import net.minecraft.block.LadderBlock;
@@ -47,12 +48,14 @@ import net.minecraft.block.LanternBlock;
 import net.minecraft.block.LecternBlock;
 import net.minecraft.block.MushroomPlantBlock;
 import net.minecraft.block.NetherWartBlock;
+import net.minecraft.block.RootsBlock;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.block.SeaPickleBlock;
 import net.minecraft.block.SignBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SnowBlock;
+import net.minecraft.block.SproutsBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.StemBlock;
 import net.minecraft.block.StonecutterBlock;
@@ -64,8 +67,11 @@ import net.minecraft.block.TripwireBlock;
 import net.minecraft.block.TripwireHookBlock;
 import net.minecraft.block.TurtleEggBlock;
 import net.minecraft.block.VineBlock;
+import net.minecraft.block.WallBlock;
 import net.minecraft.block.WallMountedBlock;
 import net.minecraft.block.WallSignBlock;
+import net.minecraft.block.WeepingVinesBlock;
+import net.minecraft.block.WeepingVinesPlantBlock;
 import virtuoel.towelette.api.Fluidloggable;
 
 @Mixin({
@@ -74,24 +80,25 @@ import virtuoel.towelette.api.Fluidloggable;
 	BambooBlock.class,
 	BambooSaplingBlock.class,
 	AbstractBannerBlock.class,
+	ChestBlock.class,
+	EnderChestBlock.class,
+	SignBlock.class,
+	WallSignBlock.class,
 	AbstractSkullBlock.class,
 	BellBlock.class,
 	BrewingStandBlock.class,
 	CampfireBlock.class,
-	ChestBlock.class,
-	ComposterBlock.class,
 	ConduitBlock.class,
 	DaylightDetectorBlock.class,
 	EnchantingTableBlock.class,
-	EnderChestBlock.class,
 	HopperBlock.class,
 	LecternBlock.class,
-	SignBlock.class,
-	WallSignBlock.class,
 	CactusBlock.class,
 	CakeBlock.class,
 	CarpetBlock.class,
 	ChorusFlowerBlock.class,
+	CobwebBlock.class,
+	ComposterBlock.class,
 	ConnectingBlock.class,
 	CoralParentBlock.class,
 	DoorBlock.class,
@@ -109,22 +116,25 @@ import virtuoel.towelette.api.Fluidloggable;
 	WallMountedBlock.class,
 	LadderBlock.class,
 	LanternBlock.class,
+	AttachedStemBlock.class,
 	CropBlock.class,
 	BeetrootsBlock.class,
-	NetherWartBlock.class,
 	DeadBushBlock.class,
 	FernBlock.class,
 	FlowerBlock.class,
+	FungiBlock.class,
 	MushroomPlantBlock.class,
+	NetherWartBlock.class,
+	RootsBlock.class,
 	SaplingBlock.class,
 	SeaPickleBlock.class,
-	AttachedStemBlock.class,
 	StemBlock.class,
 	SweetBerryBushBlock.class,
 	TallPlantBlock.class,
 	ScaffoldingBlock.class,
 	SlabBlock.class,
 	SnowBlock.class,
+	SproutsBlock.class,
 	StairsBlock.class,
 	StonecutterBlock.class,
 	SugarCaneBlock.class,
@@ -132,7 +142,9 @@ import virtuoel.towelette.api.Fluidloggable;
 	TripwireHookBlock.class,
 	TurtleEggBlock.class,
 	VineBlock.class,
-	CobwebBlock.class,
+	WallBlock.class,
+	WeepingVinesBlock.class,
+	WeepingVinesPlantBlock.class,
 })
 public abstract class FluidloggableMixin implements Fluidloggable
 {
