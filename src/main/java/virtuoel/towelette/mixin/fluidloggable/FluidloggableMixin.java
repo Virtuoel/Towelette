@@ -25,7 +25,7 @@ import net.minecraft.block.CobwebBlock;
 import net.minecraft.block.CocoaBlock;
 import net.minecraft.block.ComposterBlock;
 import net.minecraft.block.ConduitBlock;
-import net.minecraft.block.ConnectedPlantBlock;
+import net.minecraft.block.ConnectingBlock;
 import net.minecraft.block.CoralParentBlock;
 import net.minecraft.block.CropBlock;
 import net.minecraft.block.DaylightDetectorBlock;
@@ -92,7 +92,7 @@ import virtuoel.towelette.api.Fluidloggable;
 	CakeBlock.class,
 	CarpetBlock.class,
 	ChorusFlowerBlock.class,
-	ConnectedPlantBlock.class,
+	ConnectingBlock.class,
 	CoralParentBlock.class,
 	DoorBlock.class,
 	EndPortalFrameBlock.class,
