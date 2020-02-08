@@ -37,6 +37,7 @@ public class ToweletteConfig
 		miscFluidlogging.addProperty("farmland", false);
 		miscFluidlogging.addProperty("fire", false);
 		miscFluidlogging.addProperty("grass_path", false);
+		miscFluidlogging.addProperty("honey_block", false);
 		miscFluidlogging.addProperty("leaves", false);
 		miscFluidlogging.addProperty("lily_pad", false);
 		miscFluidlogging.addProperty("nether_portal", false);

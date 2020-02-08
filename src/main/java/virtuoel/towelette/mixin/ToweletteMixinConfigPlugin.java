@@ -70,6 +70,7 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 		addConfig(map, "FarmlandBlockMixin", "farmland", false);
 		addConfig(map, "FireBlockMixin", "fire", false);
 		addConfig(map, "GrassPathBlockMixin", "grass_path", false);
+		addConfig(map, "HoneyBlockMixin", "honey_block", false);
 		addConfig(map, "LeavesBlockMixin", "leaves", false);
 		addConfig(map, "LilyPadBlockMixin", "lily_pad", false);
 		addConfig(map, "ObserverBlockMixin", "observer", false);

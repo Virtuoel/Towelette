@@ -44,6 +44,7 @@
 		"fluidloggable.FarmlandBlockMixin",
 		"fluidloggable.FireBlockMixin",
 		"fluidloggable.GrassPathBlockMixin",
+		"fluidloggable.HoneyBlockMixin",
 		"fluidloggable.LeavesBlockMixin",
 		"fluidloggable.LilyPadBlockMixin",
 		"fluidloggable.NetherPortalBlockMixin",
