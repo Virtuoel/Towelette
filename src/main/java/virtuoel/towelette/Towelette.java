@@ -11,10 +11,10 @@ import org.apache.logging.log4j.Logger;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.event.registry.RegistryIdRemapCallback;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -32,7 +32,9 @@ import virtuoel.towelette.api.ToweletteConfig;
 
 public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 {
-	public static final Logger LOGGER = LogManager.getLogger(ToweletteApi.MOD_ID);
+	public static final String MOD_ID = ToweletteApi.MOD_ID;
+	
+	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	
 	public static final Tag<Block> DISPLACEABLE = TagRegistry.block(id("displaceable"));
 	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
@@ -43,18 +45,18 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	public void onInitialize()
 	{
 		Optional.ofNullable(ToweletteConfig.DATA.get("blacklistedFluidIds"))
-		.filter(JsonElement::isJsonArray)
-		.map(JsonElement::getAsJsonArray)
-		.ifPresent(array ->
-		{
-			array.forEach(element ->
+			.filter(JsonElement::isJsonArray)
+			.map(JsonElement::getAsJsonArray)
+			.ifPresent(array ->
 			{
-				if(element.isJsonPrimitive())
+				array.forEach(element ->
 				{
-					FLUID_ID_BLACKLIST.add(new Identifier(element.getAsString()));
-				}
+					if(element.isJsonPrimitive())
+					{
+						FLUID_ID_BLACKLIST.add(new Identifier(element.getAsString()));
+					}
+				});
 			});
-		});
 		
 		StateRefresher.INSTANCE.refreshBlockStates(
 			FluidProperties.FLUID,
@@ -73,19 +75,14 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 				}
 			}
 		);
-		
-		StateRefresher.INSTANCE.provideTask(
-			Registry.BLOCK,
-			r -> RegistryIdRemapCallback.event(r)::register,
-			r -> s -> r.reorderBlockStates()
-		);
 	}
 	
 	private static boolean filterFluid(final Fluid fluid, final Identifier id, final BiPredicate<Fluid, Identifier> defaultPredicate)
 	{
 		final boolean entrypointBlacklists = Optional.ofNullable(ToweletteConfig.DATA.get("enableBlacklistAPI"))
-			.filter(JsonElement::isJsonPrimitive)
-			.map(JsonElement::getAsBoolean).orElse(true);
+			.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
+			.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
+			.orElse(true);
 		
 		return entrypointBlacklists ? ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidBlacklisted(fluid, id)) : defaultPredicate.test(fluid, id);
 	}
@@ -94,8 +91,9 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	public boolean isFluidBlacklisted(Fluid fluid, Identifier id)
 	{
 		final boolean allowFlowing = Optional.ofNullable(ToweletteConfig.DATA.get("flowingFluidlogging"))
-			.filter(JsonElement::isJsonPrimitive)
-			.map(JsonElement::getAsBoolean).orElse(false);
+			.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
+			.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
+			.orElse(false);
 		
 		return FLUID_ID_BLACKLIST.contains(id) || FluidProperties.FLUID.getValues().contains(id) || (!allowFlowing && !fluid.getDefaultState().isStill());
 	}
@@ -121,6 +119,6 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	
 	public static Identifier id(final String name)
 	{
-		return new Identifier(ToweletteApi.MOD_ID, name);
+		return new Identifier(MOD_ID, name);
 	}
 }

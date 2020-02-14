@@ -41,7 +41,7 @@ import net.minecraft.block.FernBlock;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.HopperBlock;
-import net.minecraft.block.HorizontalConnectedBlock;
+import net.minecraft.block.HorizontalConnectingBlock;
 import net.minecraft.block.LadderBlock;
 import net.minecraft.block.LanternBlock;
 import net.minecraft.block.LecternBlock;
@@ -100,7 +100,7 @@ import virtuoel.towelette.api.Fluidloggable;
 	AnvilBlock.class,
 	DragonEggBlock.class,
 	FlowerPotBlock.class,
-	HorizontalConnectedBlock.class,
+	HorizontalConnectingBlock.class,
 	AbstractRedstoneGateBlock.class,
 	BedBlock.class,
 	CocoaBlock.class,

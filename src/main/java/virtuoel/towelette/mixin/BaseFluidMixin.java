@@ -44,23 +44,23 @@ public abstract class BaseFluidMixin
 	
 	@Unique private final ThreadLocal<Block> towelette$cachedBlock = ThreadLocal.withInitial(() -> Blocks.AIR);
 	
-	@ModifyVariable(method = "method_15754", at = @At(value = "LOAD", ordinal = 0), allow = 1, require = 1)
-	private Block hookMethod_15754NotFillable(Block block)
+	@ModifyVariable(method = "canFill", at = @At(value = "LOAD", ordinal = 0), allow = 1, require = 1)
+	private Block hookCanFillNotFillable(Block block)
 	{
 		towelette$cachedBlock.set(block);
 		return null;
 	}
 	
-	@ModifyVariable(method = "method_15754", at = @At(value = "LOAD", ordinal = 2), allow = 1, require = 1)
-	private Block hookMethod_15754RevertBlock(Block block)
+	@ModifyVariable(method = "canFill", at = @At(value = "LOAD", ordinal = 2), allow = 1, require = 1)
+	private Block hookCanFillRevertBlock(Block block)
 	{
 		final Block cache = towelette$cachedBlock.get();
 		towelette$cachedBlock.remove();
 		return cache;
 	}
 	
-	@Inject(at = @At("RETURN"), method = "method_15754", cancellable = true)
-	private void onMethod_15754(BlockView blockView, BlockPos pos, BlockState state, Fluid fluid, CallbackInfoReturnable<Boolean> info)
+	@Inject(at = @At("RETURN"), method = "canFill", cancellable = true)
+	private void onCanFill(BlockView blockView, BlockPos pos, BlockState state, Fluid fluid, CallbackInfoReturnable<Boolean> info)
 	{
 		final Block block = state.getBlock();
 		
