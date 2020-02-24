@@ -21,18 +21,18 @@ public class CampfireBlockMixin
 	@Inject(at = @At("RETURN"), method = "tryFillWithFluid(Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)Z", cancellable = true)
 	private void onTryFillWithFluid(IWorld world, BlockPos blockPos, BlockState blockState, FluidState fluidState, CallbackInfoReturnable<Boolean> info)
 	{
-		if(info.getReturnValue())
+		if (info.getReturnValue())
 		{
 			world.setBlockState(blockPos, FluidUtils.getStateWithFluid(blockState.with(Properties.LIT, false), fluidState), 3);
 		}
-		else if(FluidUtils.tryFillWithFluid(world, blockPos, blockState.with(Properties.LIT, false), fluidState))
+		else if (FluidUtils.tryFillWithFluid(world, blockPos, blockState.with(Properties.LIT, false), fluidState))
 		{
-			if(blockState.get(Properties.LIT))
+			if (blockState.get(Properties.LIT))
 			{
-				if(world.isClient())
+				if (world.isClient())
 				{
 					boolean signal = blockState.get(Properties.SIGNAL_FIRE);
-					for(int i = 0; i < 20; ++i)
+					for (int i = 0; i < 20; ++i)
 					{
 						CampfireBlock.spawnSmokeParticle(world.getWorld(), blockPos, signal, true);
 					}

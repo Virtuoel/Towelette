@@ -24,7 +24,7 @@ public abstract class TrapdoorBlockMixin
 	@Inject(at = @At("HEAD"), method = "onUse")
 	private void onOnUse(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<Boolean> info)
 	{
-		if(state.getMaterial() != Material.METAL)
+		if (state.getMaterial() != Material.METAL)
 		{
 			FluidUtils.scheduleFluidTick(state, world, pos);
 		}
@@ -33,7 +33,7 @@ public abstract class TrapdoorBlockMixin
 	@Inject(at = @At("HEAD"), method = "neighborUpdate")
 	private void onNeighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos otherPos, boolean unknown, CallbackInfo info)
 	{
-		if(!world.isClient && world.isReceivingRedstonePower(pos) != state.get(Properties.POWERED))
+		if (!world.isClient && world.isReceivingRedstonePower(pos) != state.get(Properties.POWERED))
 		{
 			FluidUtils.scheduleFluidTick(state, world, pos);
 		}

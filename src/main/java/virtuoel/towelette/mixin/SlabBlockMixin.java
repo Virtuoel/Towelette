@@ -24,10 +24,10 @@ public abstract class SlabBlockMixin
 	@Inject(at = @At("RETURN"), method = "getPlacementState", cancellable = true)
 	private void onGetPlacementState(ItemPlacementContext context, CallbackInfoReturnable<BlockState> info)
 	{
-		if(context.getWorld().getBlockState(context.getBlockPos()).getBlock() == (SlabBlock) (Object) this)
+		if (context.getWorld().getBlockState(context.getBlockPos()).getBlock() == (SlabBlock) (Object) this)
 		{
 			final BlockState state = FluidUtils.getStateWithFluid(info.getReturnValue(), Fluids.EMPTY.getDefaultState());
-			if(state != null)
+			if (state != null)
 			{
 				info.setReturnValue(state);
 			}

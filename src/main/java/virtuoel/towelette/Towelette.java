@@ -51,7 +51,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			{
 				array.forEach(element ->
 				{
-					if(element.isJsonPrimitive())
+					if (element.isJsonPrimitive())
 					{
 						FLUID_ID_BLACKLIST.add(new Identifier(element.getAsString()));
 					}
@@ -69,7 +69,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		RegistryEntryAddedCallback.event(Registry.FLUID).register(
 			(rawId, identifier, object) ->
 			{
-				if(filterFluid(object, identifier, this::isFluidBlacklisted))
+				if (filterFluid(object, identifier, this::isFluidBlacklisted))
 				{
 					StateRefresher.INSTANCE.refreshBlockStates(FluidProperties.FLUID, ImmutableSet.of(identifier), ImmutableSet.of());
 				}

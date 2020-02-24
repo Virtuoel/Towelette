@@ -28,25 +28,25 @@ public abstract class BlockMixin
 	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;appendProperties(Lnet/minecraft/state/StateManager$Builder;)V"))
 	private StateManager.Builder<Block, BlockState> onConstructAppendPropertiesProxy(StateManager.Builder<Block, BlockState> builder)
 	{
-		if(this instanceof Fluidloggable)
+		if (this instanceof Fluidloggable)
 		{
 			final Map<String, Property<?>> namedProperties = ((StateManagerBuilderAccessor) builder).getNamedProperties();
 			
-			if(!namedProperties.containsKey(FluidProperties.FLUID.getName()))
+			if (!namedProperties.containsKey(FluidProperties.FLUID.getName()))
 			{
 				builder.add(FluidProperties.FLUID);
 			}
 			
-			if(Optional.ofNullable(ToweletteConfig.DATA.get("flowingFluidlogging"))
+			if (Optional.ofNullable(ToweletteConfig.DATA.get("flowingFluidlogging"))
 			.filter(JsonElement::isJsonPrimitive)
 			.map(JsonElement::getAsBoolean).orElse(false))
 			{
-				if(!namedProperties.containsKey(FluidProperties.LEVEL_1_8.getName()))
+				if (!namedProperties.containsKey(FluidProperties.LEVEL_1_8.getName()))
 				{
 					builder.add(FluidProperties.LEVEL_1_8);
 				}
 				
-				if(!namedProperties.containsKey(FluidProperties.FALLING.getName()))
+				if (!namedProperties.containsKey(FluidProperties.FALLING.getName()))
 				{
 					builder.add(FluidProperties.FALLING);
 				}

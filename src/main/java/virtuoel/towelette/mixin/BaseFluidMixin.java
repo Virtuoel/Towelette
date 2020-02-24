@@ -64,14 +64,14 @@ public abstract class BaseFluidMixin
 	{
 		final Block block = state.getBlock();
 		
-		if(!info.getReturnValueZ())
+		if (!info.getReturnValueZ())
 		{
 			if ((block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(blockView, pos, state, fluid)) || (block.matches(Towelette.DISPLACEABLE) && !block.matches(Towelette.UNDISPLACEABLE) && blockView.getFluidState(pos).isEmpty()))
 			{
 				info.setReturnValue(true);
 			}
 		}
-		else if(block instanceof FluidFillable && (block.matches(Towelette.UNDISPLACEABLE) || !blockView.getFluidState(pos).isEmpty()))
+		else if (block instanceof FluidFillable && (block.matches(Towelette.UNDISPLACEABLE) || !blockView.getFluidState(pos).isEmpty()))
 		{
 			info.setReturnValue(false);
 		}

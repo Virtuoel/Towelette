@@ -10,7 +10,7 @@ public interface CollidableFluid
 {
 	default void onEntityCollision(FluidState state, World world, BlockPos pos, Entity entity)
 	{
-		if(state.matches(FluidTags.LAVA))
+		if (state.matches(FluidTags.LAVA))
 		{
 			entity.setInLava();
 		}

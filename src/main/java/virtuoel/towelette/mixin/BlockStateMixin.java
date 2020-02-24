@@ -25,10 +25,10 @@ public abstract class BlockStateMixin
 	private void onGetLuminance(CallbackInfoReturnable<Integer> info)
 	{
 		FluidState fluidState = getFluidState();
-		if(fluidState.getFluid() != Fluids.EMPTY)
+		if (fluidState.getFluid() != Fluids.EMPTY)
 		{
 			BlockState fluidBlockState = fluidState.getBlockState();
-			if(fluidBlockState != (BlockState) (Object) this)
+			if (fluidBlockState != (BlockState) (Object) this)
 			{
 				info.setReturnValue(Math.max(info.getReturnValue(), fluidBlockState.getLuminance()));
 			}

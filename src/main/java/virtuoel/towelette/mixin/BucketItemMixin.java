@@ -31,7 +31,7 @@ public class BucketItemMixin
 	private BlockState onUseGetBlockStateProxy(World obj, BlockPos blockPos)
 	{
 		final FluidState state = obj.getFluidState(blockPos);
-		if(!state.isEmpty() && !state.isStill())
+		if (!state.isEmpty() && !state.isStill())
 		{
 			return Blocks.AIR.getDefaultState();
 		}
@@ -47,7 +47,7 @@ public class BucketItemMixin
 	@Redirect(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;offset(Lnet/minecraft/util/math/Direction;)Lnet/minecraft/util/math/BlockPos;"))
 	private BlockPos onUseOffsetProxy(BlockPos obj, Direction side, World world, PlayerEntity playerEntity, Hand hand)
 	{
-		if(world.getFluidState(obj).getFluid() != fluid)
+		if (world.getFluidState(obj).getFluid() != fluid)
 		{
 			final BlockState state = world.getBlockState(obj);
 			final Block block = state.getBlock();
@@ -59,7 +59,7 @@ public class BucketItemMixin
 	@Redirect(method = "placeFluid", at = @At(value = "FIELD", ordinal = 4, target = "Lnet/minecraft/item/BucketItem;fluid:Lnet/minecraft/fluid/Fluid;"))
 	private Fluid onPlaceFluidFluidProxy(BucketItem this$0, @Nullable PlayerEntity playerEntity, World world, BlockPos blockPos, @Nullable BlockHitResult blockHitResult)
 	{
-		if(fluid != Fluids.WATER)
+		if (fluid != Fluids.WATER)
 		{
 			final BlockState state = world.getBlockState(blockPos);
 			return ((FluidFillable) state.getBlock()).canFillWithFluid(world, blockPos, state, fluid) ? Fluids.WATER : fluid;

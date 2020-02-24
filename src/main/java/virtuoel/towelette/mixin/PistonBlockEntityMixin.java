@@ -43,7 +43,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity
 			.filter(JsonElement::isJsonPrimitive)
 			.map(JsonElement::getAsBoolean).orElse(true);
 		
-		if(unpushableFluids)
+		if (unpushableFluids)
 		{
 			this.pushedBlock = FluidUtils.getStateWithFluid(state, Fluids.EMPTY.getDefaultState());
 		}
