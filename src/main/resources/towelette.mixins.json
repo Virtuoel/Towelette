@@ -27,7 +27,7 @@
 		"PistonBlockEntityMixin",
 		"PistonBlockMixin",
 		"SlabBlockMixin",
-		"StateManagerBuilderAccessor",
+		"StateManagerBuilderMixin",
 		"StemBlockMixin",
 		"TallBlockItemMixin",
 		"TallPlantMixin",
