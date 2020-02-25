@@ -133,9 +133,12 @@ public class FluidUtils
 				blockState = blockState.with(Properties.WATERLOGGED, !isDoubleSlab && fluidState.getFluid() == Fluids.WATER);
 			}
 			
+			final boolean hasFluidLevel = blockState.contains(FluidProperties.LEVEL_1_8);
+			final boolean cannotFillWithFluid = isDoubleSlab || (!hasFluidLevel && !fluidState.isEmpty() && !fluidState.isStill());
+			
 			if (blockState.contains(FluidProperties.FLUID))
 			{
-				blockState = blockState.with(FluidProperties.FLUID, getFluidId(isDoubleSlab ? Fluids.EMPTY : fluidState.getFluid()));
+				blockState = blockState.with(FluidProperties.FLUID, getFluidId(cannotFillWithFluid ? Fluids.EMPTY : fluidState.getFluid()));
 			}
 			
 			if (blockState.contains(FluidProperties.FALLING))
@@ -143,11 +146,12 @@ public class FluidUtils
 				blockState = blockState.with(FluidProperties.FALLING, fluidState.getEntries().containsKey(Properties.FALLING) && fluidState.get(Properties.FALLING));
 			}
 			
-			if (blockState.contains(FluidProperties.LEVEL_1_8))
+			if (hasFluidLevel)
 			{
 				blockState = blockState.with(FluidProperties.LEVEL_1_8, fluidState.getEntries().containsKey(Properties.LEVEL_1_8) ? fluidState.get(Properties.LEVEL_1_8) : 8);
 			}
 		}
+		
 		return blockState;
 	}
 	
@@ -183,6 +187,7 @@ public class FluidUtils
 				ret = Fluids.WATER;
 			}
 		}
+		
 		return ret;
 	}
 	
@@ -198,6 +203,7 @@ public class FluidUtils
 			scheduleFluidTickImpl(state.getFluid(), world, pos);
 			return true;
 		}
+		
 		return false;
 	}
 	
@@ -208,6 +214,7 @@ public class FluidUtils
 			scheduleFluidTickImpl(fluid, world, pos);
 			return true;
 		}
+		
 		return false;
 	}
 	
@@ -237,39 +244,16 @@ public class FluidUtils
 	
 	public static boolean tryFillWithFluid(IWorld world, BlockPos pos, BlockState blockState, FluidState fluidState)
 	{
-		if (canFillWithFluid(world, pos, blockState, fluidState.getFluid()))
+		final Fluid fluid = fluidState.getFluid();
+		if (canFillWithFluid(world, pos, blockState, fluid))
 		{
 			if (!world.isClient())
 			{
-				final Fluid fluid = fluidState.getFluid();
+				final BlockState filled = getStateWithFluid(blockState, fluidState);
 				
-				boolean filled = false;
-				
-				if (fluid == Fluids.WATER && blockState.contains(Properties.WATERLOGGED))
+				if (filled != blockState)
 				{
-					blockState = blockState.with(Properties.WATERLOGGED, true);
-					filled = true;
-				}
-				
-				if (blockState.contains(FluidProperties.FLUID))
-				{
-					blockState = blockState.with(FluidProperties.FLUID, getFluidId(fluidState));
-					filled = true;
-				}
-				
-				if (filled && blockState.contains(FluidProperties.FALLING))
-				{
-					blockState = blockState.with(FluidProperties.FALLING, fluidState.getEntries().containsKey(Properties.FALLING) && fluidState.get(Properties.FALLING));
-				}
-				
-				if (filled && blockState.contains(FluidProperties.LEVEL_1_8))
-				{
-					blockState = blockState.with(FluidProperties.LEVEL_1_8, fluidState.getEntries().containsKey(Properties.LEVEL_1_8) ? fluidState.get(Properties.LEVEL_1_8) : 8);
-				}
-				
-				if (filled)
-				{
-					world.setBlockState(pos, blockState, 3);
+					world.setBlockState(pos, filled, 3);
 				}
 				
 				world.getFluidTickScheduler().schedule(pos, fluid, fluid.getTickRate(world));
