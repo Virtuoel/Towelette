@@ -40,7 +40,7 @@ import net.minecraft.block.FenceGateBlock;
 import net.minecraft.block.FernBlock;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.FlowerPotBlock;
-import net.minecraft.block.FungiBlock;
+import net.minecraft.block.FungusBlock;
 import net.minecraft.block.HopperBlock;
 import net.minecraft.block.HorizontalConnectingBlock;
 import net.minecraft.block.LadderBlock;
@@ -122,7 +122,7 @@ import virtuoel.towelette.api.Fluidloggable;
 	DeadBushBlock.class,
 	FernBlock.class,
 	FlowerBlock.class,
-	FungiBlock.class,
+	FungusBlock.class,
 	MushroomPlantBlock.class,
 	NetherWartBlock.class,
 	RootsBlock.class,
