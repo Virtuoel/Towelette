@@ -12,6 +12,7 @@ import net.minecraft.block.Material;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.state.property.Properties;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -22,7 +23,7 @@ import virtuoel.towelette.util.FluidUtils;
 public abstract class TrapdoorBlockMixin
 {
 	@Inject(at = @At("HEAD"), method = "onUse")
-	private void onOnUse(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<Boolean> info)
+	private void onOnUse(BlockState state, World world, BlockPos pos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> info)
 	{
 		if (state.getMaterial() != Material.METAL)
 		{
