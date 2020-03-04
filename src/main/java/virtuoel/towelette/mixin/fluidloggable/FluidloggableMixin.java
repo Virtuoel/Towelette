@@ -40,7 +40,6 @@ import net.minecraft.block.FenceGateBlock;
 import net.minecraft.block.FernBlock;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.FlowerPotBlock;
-import net.minecraft.block.FungusBlock;
 import net.minecraft.block.HopperBlock;
 import net.minecraft.block.HorizontalConnectingBlock;
 import net.minecraft.block.LadderBlock;
@@ -48,14 +47,12 @@ import net.minecraft.block.LanternBlock;
 import net.minecraft.block.LecternBlock;
 import net.minecraft.block.MushroomPlantBlock;
 import net.minecraft.block.NetherWartBlock;
-import net.minecraft.block.RootsBlock;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.block.SeaPickleBlock;
 import net.minecraft.block.SignBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SnowBlock;
-import net.minecraft.block.SproutsBlock;
 import net.minecraft.block.StairsBlock;
 import net.minecraft.block.StemBlock;
 import net.minecraft.block.StonecutterBlock;
@@ -67,11 +64,8 @@ import net.minecraft.block.TripwireBlock;
 import net.minecraft.block.TripwireHookBlock;
 import net.minecraft.block.TurtleEggBlock;
 import net.minecraft.block.VineBlock;
-import net.minecraft.block.WallBlock;
 import net.minecraft.block.WallMountedBlock;
 import net.minecraft.block.WallSignBlock;
-import net.minecraft.block.WeepingVinesBlock;
-import net.minecraft.block.WeepingVinesPlantBlock;
 import virtuoel.towelette.api.Fluidloggable;
 
 @Mixin({
@@ -122,10 +116,8 @@ import virtuoel.towelette.api.Fluidloggable;
 	DeadBushBlock.class,
 	FernBlock.class,
 	FlowerBlock.class,
-	FungusBlock.class,
 	MushroomPlantBlock.class,
 	NetherWartBlock.class,
-	RootsBlock.class,
 	SaplingBlock.class,
 	SeaPickleBlock.class,
 	StemBlock.class,
@@ -134,7 +126,6 @@ import virtuoel.towelette.api.Fluidloggable;
 	ScaffoldingBlock.class,
 	SlabBlock.class,
 	SnowBlock.class,
-	SproutsBlock.class,
 	StairsBlock.class,
 	StonecutterBlock.class,
 	SugarCaneBlock.class,
@@ -142,9 +133,6 @@ import virtuoel.towelette.api.Fluidloggable;
 	TripwireHookBlock.class,
 	TurtleEggBlock.class,
 	VineBlock.class,
-	WallBlock.class,
-	WeepingVinesBlock.class,
-	WeepingVinesPlantBlock.class,
 })
 public abstract class FluidloggableMixin implements Fluidloggable
 {

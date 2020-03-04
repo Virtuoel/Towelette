@@ -15,6 +15,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
 import virtuoel.towelette.api.ToweletteConfig;
+import virtuoel.towelette.util.VersionData;
 
 public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 {
@@ -96,10 +97,27 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 				String.format("Invalid package for class \"%s\": Expected \"%s\", but found \"%s\".", targetClassName, MIXIN_PACKAGE, mixinClassName)
 			);
 		}
-		else if (mixinClassName.startsWith(FLUIDLOGGABLE_PACKAGE) &&
-			!Optional.ofNullable(ToweletteConfig.DATA.get("automaticFluidlogging"))
-			.filter(JsonElement::isJsonPrimitive)
-			.map(JsonElement::getAsBoolean).orElse(false))
+		else if (mixinClassName.startsWith(FLUIDLOGGABLE_PACKAGE))
+		{
+			if (!Optional.ofNullable(ToweletteConfig.DATA.get("automaticFluidlogging"))
+				.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
+				.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
+				.orElse(false))
+			{
+				return false;
+			}
+		}
+		
+		if (
+			(mixinClassName.contains(".compat114.") && VersionData.MINOR != 14) ||
+			(mixinClassName.contains(".compat114plus.") && VersionData.MINOR < 14) ||
+			(mixinClassName.contains(".compat115.") && VersionData.MINOR != 15) ||
+			(mixinClassName.contains(".compat115plus.") && VersionData.MINOR < 15) ||
+			(mixinClassName.contains(".compat116.") && VersionData.MINOR != 16) ||
+			(mixinClassName.contains(".compat116plus.") && VersionData.MINOR < 16) ||
+			(mixinClassName.contains(".compat117.") && VersionData.MINOR != 17) ||
+			(mixinClassName.contains(".compat117plus.") && VersionData.MINOR < 17)
+		)
 		{
 			return false;
 		}

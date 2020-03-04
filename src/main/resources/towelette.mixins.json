@@ -56,7 +56,8 @@
 		"fluidloggable.SlimeBlockMixin",
 		"fluidloggable.SpawnerBlockMixin",
 		"fluidloggable.StructureVoidBlockMixin",
-		"fluidloggable.TorchBlockMixin"
+		"fluidloggable.TorchBlockMixin",
+		"fluidloggable.compat116plus.FluidloggableMixin"
 	],
 	"injectors":
 	{
