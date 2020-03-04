@@ -35,6 +35,8 @@
 		"TripwireHookBlockMixin",
 		"VoxelShapeAccessor",
 		"WorldMixin",
+		"compat116plus.WeepingVinesBlockMixin",
+		"compat116plus.WeepingVinesPlantBlockMixin",
 		"fluidloggable.FluidloggableMixin",
 		"fluidloggable.AllOfTheBlocksMixin",
 		"fluidloggable.BarrierBlockMixin",
