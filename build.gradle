@@ -225,8 +225,11 @@ curseforge {
 			id = project.properties.curseforge_id
 			
 			releaseType = project.release_type
-			addGameVersion project.release_version
-			addGameVersion "Fabric"
+			if(project.hasProperty("release_versions")) {
+				project.release_versions.split(", ").each { String gameVersion ->
+					addGameVersion gameVersion
+				}
+			}
 			
 			mainArtifact(remapJar) {
 				displayName = "${archives_base_name}-${project.version}.jar"
