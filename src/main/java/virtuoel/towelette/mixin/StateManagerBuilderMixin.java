@@ -12,6 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
+import net.minecraft.block.TallSeagrassBlock;
 import net.minecraft.state.AbstractState;
 import net.minecraft.state.State;
 import net.minecraft.state.StateManager;
@@ -32,7 +33,7 @@ public abstract class StateManagerBuilderMixin<O, S extends State<S>>
 	@Inject(at = @At("HEAD"), method = "build(Lnet/minecraft/state/StateManager$Factory;)Lnet/minecraft/state/StateManager;")
 	private <A extends AbstractState<O, S>> void onBuild(StateManager.Factory<O, S, A> factory, CallbackInfoReturnable<StateManager<O, S>> info)
 	{
-		if (owner instanceof Fluidloggable)
+		if (owner instanceof Fluidloggable && !(owner instanceof TallSeagrassBlock))
 		{
 			if (!namedProperties.containsKey(FluidProperties.FLUID.getName()))
 			{
