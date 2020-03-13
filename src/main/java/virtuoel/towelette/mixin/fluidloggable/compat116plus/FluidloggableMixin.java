@@ -5,6 +5,8 @@ import org.spongepowered.asm.mixin.Mixin;
 import net.minecraft.block.FungusBlock;
 import net.minecraft.block.RootsBlock;
 import net.minecraft.block.SproutsBlock;
+import net.minecraft.block.TwistingVinesBlock;
+import net.minecraft.block.TwistingVinesPlantBlock;
 import net.minecraft.block.WallBlock;
 import net.minecraft.block.WeepingVinesBlock;
 import net.minecraft.block.WeepingVinesPlantBlock;
@@ -14,6 +16,8 @@ import virtuoel.towelette.api.Fluidloggable;
 	FungusBlock.class,
 	RootsBlock.class,
 	SproutsBlock.class,
+	TwistingVinesBlock.class,
+	TwistingVinesPlantBlock.class,
 	WallBlock.class,
 	WeepingVinesBlock.class,
 	WeepingVinesPlantBlock.class,
