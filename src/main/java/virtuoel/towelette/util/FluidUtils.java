@@ -256,7 +256,7 @@ public class FluidUtils
 					world.setBlockState(pos, filled, 3);
 				}
 				
-				world.getFluidTickScheduler().schedule(pos, fluid, fluid.getTickRate(world));
+				world.getFluidTickScheduler().schedule(pos, fluid, ((ToweletteFluidExtensions) fluid).towelette_getTickRate(world));
 			}
 			
 			return true;

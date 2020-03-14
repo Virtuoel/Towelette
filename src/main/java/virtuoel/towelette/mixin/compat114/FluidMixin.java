@@ -11,12 +11,12 @@ import virtuoel.towelette.util.ToweletteFluidExtensions;
 @Mixin(Fluid.class)
 public abstract class FluidMixin implements ToweletteFluidExtensions
 {
-	@Shadow
-	abstract int getTickRate(CollisionView world);
+	@Shadow(remap = false)
+	abstract int method_15789(CollisionView world);
 	
 	@Override
 	public int towelette_getTickRate(IWorld world)
 	{
-		return getTickRate(world);
+		return method_15789(world);
 	}
 }
