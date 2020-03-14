@@ -220,7 +220,7 @@ public class FluidUtils
 	
 	private static void scheduleFluidTickImpl(Fluid fluid, IWorld world, BlockPos pos)
 	{
-		world.getFluidTickScheduler().schedule(pos, fluid, fluid.getTickRate(world));
+		world.getFluidTickScheduler().schedule(pos, fluid, ((ToweletteFluidExtensions) fluid).towelette_getTickRate(world));
 	}
 	
 	public static boolean canFillWithFluid(BlockView world, BlockPos pos, BlockState state, Fluid fluid)
