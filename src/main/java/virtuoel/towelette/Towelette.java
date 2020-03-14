@@ -29,6 +29,7 @@ import virtuoel.statement.api.StatementApi;
 import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteApi;
 import virtuoel.towelette.api.ToweletteConfig;
+import virtuoel.towelette.util.FluidUtils;
 
 public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 {
@@ -95,7 +96,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
 			.orElse(false);
 		
-		return FLUID_ID_BLACKLIST.contains(id) || FluidProperties.FLUID.getValues().contains(id) || (!allowFlowing && !fluid.getDefaultState().isStill());
+		return FLUID_ID_BLACKLIST.contains(id) || FluidUtils.isValid(id) || (!allowFlowing && !fluid.getDefaultState().isStill());
 	}
 	
 	@Override

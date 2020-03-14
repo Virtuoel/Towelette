@@ -6,13 +6,13 @@ import javax.annotation.Nullable;
 
 import com.google.common.math.DoubleMath;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemUsageContext;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.BooleanBiFunction;
@@ -36,8 +36,9 @@ public class FluidUtils
 		if (direction.getAxis() != Direction.Axis.Y)
 		{
 			final boolean accurateFlowBlocking = Optional.ofNullable(ToweletteConfig.DATA.get("accurateFlowBlocking"))
-				.filter(JsonElement::isJsonPrimitive)
-				.map(JsonElement::getAsBoolean).orElse(true);
+				.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
+				.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
+				.orElse(true);
 			
 			if (accurateFlowBlocking)
 			{
@@ -51,6 +52,7 @@ public class FluidUtils
 					final boolean positiveDirection = direction.getDirection() == Direction.AxisDirection.POSITIVE;
 					VoxelShape fromShape = positiveDirection ? shape : combinedOtherShape;
 					VoxelShape toShape = positiveDirection ? combinedOtherShape : shape;
+					
 					if (fromShape != VoxelShapes.empty() && !DoubleMath.fuzzyEquals(fromShape.getMaximum(axis), 1.0D, 1.0E-7D))
 					{
 						fromShape = VoxelShapes.empty();
@@ -73,25 +75,10 @@ public class FluidUtils
 		return VoxelShapes.adjacentSidesCoverSquare(shape, otherShape, direction);
 	}
 	
-	public static Identifier getFluidId(ItemPlacementContext context)
-	{
-		return getFluidId(context.getWorld().getFluidState(context.getBlockPos()));
-	}
-	
-	public static Identifier getFluidId(FluidState fluid)
-	{
-		return getFluidId(fluid.getFluid());
-	}
-	
 	public static Identifier getFluidId(Fluid fluid)
 	{
 		final Identifier id = Registry.FLUID.getId(fluid);
 		return isValid(id) ? id : Registry.FLUID.getDefaultId();
-	}
-	
-	public static boolean isValid(FluidState fluid)
-	{
-		return isValid(fluid.getFluid());
 	}
 	
 	public static boolean isValid(Fluid fluid)
@@ -138,7 +125,7 @@ public class FluidUtils
 			
 			if (blockState.contains(FluidProperties.FLUID))
 			{
-				blockState = blockState.with(FluidProperties.FLUID, getFluidId(cannotFillWithFluid ? Fluids.EMPTY : fluidState.getFluid()));
+				blockState = blockState.with(FluidProperties.FLUID, cannotFillWithFluid ? Registry.FLUID.getDefaultId() : getFluidId(fluidState.getFluid()));
 			}
 			
 			if (blockState.contains(FluidProperties.FALLING))
@@ -175,6 +162,7 @@ public class FluidUtils
 	public static Fluid getFluid(BlockState state)
 	{
 		Fluid ret = Fluids.EMPTY;
+		
 		if (state != null)
 		{
 			if (state.contains(FluidProperties.FLUID))
@@ -235,8 +223,9 @@ public class FluidUtils
 			}
 			
 			return Optional.ofNullable(ToweletteConfig.DATA.get("replaceableFluids"))
-			.filter(JsonElement::isJsonPrimitive)
-			.map(JsonElement::getAsBoolean).orElse(false);
+				.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
+				.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
+				.orElse(false);
 		}
 		
 		return false;
@@ -245,6 +234,7 @@ public class FluidUtils
 	public static boolean tryFillWithFluid(IWorld world, BlockPos pos, BlockState blockState, FluidState fluidState)
 	{
 		final Fluid fluid = fluidState.getFluid();
+		
 		if (canFillWithFluid(world, pos, blockState, fluid))
 		{
 			if (!world.isClient())
@@ -256,7 +246,7 @@ public class FluidUtils
 					world.setBlockState(pos, filled, 3);
 				}
 				
-				world.getFluidTickScheduler().schedule(pos, fluid, ((ToweletteFluidExtensions) fluid).towelette_getTickRate(world));
+				scheduleFluidTickImpl(fluid, world, pos);
 			}
 			
 			return true;
@@ -270,6 +260,7 @@ public class FluidUtils
 	public static Fluid tryDrainFluid(IWorld world, BlockPos pos, BlockState state)
 	{
 		final FluidState fluidState = getFluidState(state);
+		
 		if (!fluidState.isEmpty())
 		{
 			if (state.contains(FluidProperties.FLUID))
@@ -294,6 +285,7 @@ public class FluidUtils
 			
 			world.setBlockState(pos, state, 3);
 		}
+		
 		return fluidState.isStill() ? fluidState.getFluid() : Fluids.EMPTY;
 	}
 }
