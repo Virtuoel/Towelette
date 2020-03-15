@@ -21,7 +21,7 @@ import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.Fluidloggable;
 import virtuoel.towelette.api.ToweletteConfig;
 
-@Mixin(StateManager.Builder.class)
+@Mixin(value = StateManager.Builder.class, priority = 990)
 public abstract class StateManagerBuilderMixin<O, S extends State<S>>
 {
 	@Shadow O owner;
