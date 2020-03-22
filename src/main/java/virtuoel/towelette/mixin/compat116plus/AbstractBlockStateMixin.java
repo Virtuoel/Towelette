@@ -1,12 +1,16 @@
-package virtuoel.towelette.mixin;
+package virtuoel.towelette.mixin.compat116plus;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -16,21 +20,36 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
 
-@Mixin(BlockState.class)
-public abstract class BlockStateMixin
+@Mixin(AbstractBlock.AbstractBlockState.class)
+public abstract class AbstractBlockStateMixin
 {
 	@Shadow abstract FluidState getFluidState();
+	@Shadow @Final @Mutable int luminance;
 	
-	@Inject(at = @At("RETURN"), method = "getLuminance", cancellable = true)
+	@Unique boolean setFluidLuminance = false;
+	
+	@Inject(at = @At("HEAD"), method = "getLuminance")
 	private void onGetLuminance(CallbackInfoReturnable<Integer> info)
 	{
-		FluidState fluidState = getFluidState();
-		if (fluidState.getFluid() != Fluids.EMPTY)
+		if (!this.setFluidLuminance)
 		{
-			BlockState fluidBlockState = fluidState.getBlockState();
-			if (fluidBlockState != (BlockState) (Object) this)
+			this.setFluidLuminance = true;
+			
+			final FluidState fluidState = getFluidState();
+			
+			if (fluidState.getFluid() != Fluids.EMPTY)
 			{
-				info.setReturnValue(Math.max(info.getReturnValue(), fluidBlockState.getLuminance()));
+				final BlockState fluidBlockState = fluidState.getBlockState();
+				
+				if (fluidBlockState != (BlockState) (Object) this)
+				{
+					final int fluidLuminance = fluidBlockState.getLuminance();
+					
+					if (fluidLuminance > this.luminance)
+					{
+						this.luminance = fluidLuminance;
+					}
+				}
 			}
 		}
 	}

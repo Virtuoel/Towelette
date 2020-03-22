@@ -20,7 +20,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import virtuoel.towelette.Towelette;
 import virtuoel.towelette.util.FluidUtils;
@@ -32,14 +31,6 @@ public abstract class BaseFluidMixin
 	private boolean receivesFlowAdjacentSidesCoverSquareProxy(VoxelShape shape, VoxelShape otherShape, Direction direction, Direction noop, BlockView world, BlockPos blockPos, BlockState blockState, BlockPos otherPos, BlockState otherState)
 	{
 		return FluidUtils.isFluidFlowBlocked(direction, world, shape, blockState, blockPos, otherShape, otherState, otherPos);
-	}
-	
-	@Redirect(method = "flow", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;"))
-	private Block onFlowGetBlockProxy(BlockState obj, IWorld world, BlockPos pos, BlockState blockState, Direction direction, FluidState fluidState)
-	{
-		final Block block = obj.getBlock();
-		final boolean fillable = block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(world, pos, blockState, fluidState.getFluid());
-		return fillable ? block : null;
 	}
 	
 	@Unique private final ThreadLocal<Block> towelette$cachedBlock = ThreadLocal.withInitial(() -> Blocks.AIR);
