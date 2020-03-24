@@ -135,7 +135,7 @@ public class FluidUtils
 			
 			if (hasFluidLevel)
 			{
-				blockState = blockState.with(FluidProperties.LEVEL_1_8, fluidState.getEntries().containsKey(Properties.LEVEL_1_8) ? fluidState.get(Properties.LEVEL_1_8) : 8);
+				blockState = blockState.with(FluidProperties.LEVEL_1_8, !isDoubleSlab && fluidState.getEntries().containsKey(Properties.LEVEL_1_8) ? fluidState.get(Properties.LEVEL_1_8) : 8);
 			}
 		}
 		
