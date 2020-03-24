@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -19,12 +20,27 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
 @Mixin(AbstractBlock.AbstractBlockState.class)
-public abstract class AbstractBlockStateMixin
+public abstract class AbstractBlockStateMixin implements ToweletteBlockStateExtensions
 {
+	@Shadow abstract Block getBlock();
+	@Shadow abstract int getLuminance();
 	@Shadow abstract FluidState getFluidState();
 	@Shadow @Final @Mutable int luminance;
+	
+	@Override
+	public Block towelette_getBlock()
+	{
+		return getBlock();
+	}
+	
+	@Override
+	public int towelette_getLuminance()
+	{
+		return getLuminance();
+	}
 	
 	@Unique boolean setFluidLuminance = false;
 	

@@ -1,4 +1,4 @@
-package virtuoel.towelette.mixin.compat115plus;
+package virtuoel.towelette.mixin.compat115;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,7 +13,7 @@ import virtuoel.towelette.util.FluidUtils;
 @Mixin(StemBlock.class)
 public class StemBlockMixin
 {
-	@Redirect(method = "scheduledTick", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/server/world/ServerWorld;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Z"))
+	@Redirect(method = "method_9588", at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/class_3218;method_8501(Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;)Z", remap = false), remap = false)
 	private boolean scheduledTickSetBlockStateProxy(ServerWorld obj, BlockPos pos, BlockState state)
 	{
 		return obj.setBlockState(pos, FluidUtils.getStateWithFluid(state, obj, pos));

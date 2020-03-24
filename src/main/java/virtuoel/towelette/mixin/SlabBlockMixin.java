@@ -17,6 +17,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.IWorld;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
 @Mixin(value = SlabBlock.class, priority = 999)
 public abstract class SlabBlockMixin
@@ -24,7 +25,7 @@ public abstract class SlabBlockMixin
 	@Inject(at = @At("RETURN"), method = "getPlacementState", cancellable = true)
 	private void onGetPlacementState(ItemPlacementContext context, CallbackInfoReturnable<BlockState> info)
 	{
-		if (context.getWorld().getBlockState(context.getBlockPos()).getBlock() == (SlabBlock) (Object) this)
+		if (((ToweletteBlockStateExtensions) context.getWorld().getBlockState(context.getBlockPos())).towelette_getBlock() == (SlabBlock) (Object) this)
 		{
 			final BlockState state = FluidUtils.getStateWithFluid(info.getReturnValue(), Fluids.EMPTY.getDefaultState());
 			if (state != null)

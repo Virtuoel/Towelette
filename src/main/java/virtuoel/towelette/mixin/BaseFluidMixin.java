@@ -23,6 +23,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import virtuoel.towelette.Towelette;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
 @Mixin(BaseFluid.class)
 public abstract class BaseFluidMixin
@@ -53,7 +54,7 @@ public abstract class BaseFluidMixin
 	@Inject(at = @At("RETURN"), method = "canFill", cancellable = true)
 	private void onCanFill(BlockView blockView, BlockPos pos, BlockState state, Fluid fluid, CallbackInfoReturnable<Boolean> info)
 	{
-		final Block block = state.getBlock();
+		final Block block = ((ToweletteBlockStateExtensions) state).towelette_getBlock();
 		
 		if (!info.getReturnValueZ())
 		{
