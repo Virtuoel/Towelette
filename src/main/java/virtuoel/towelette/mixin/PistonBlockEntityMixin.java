@@ -49,10 +49,10 @@ public abstract class PistonBlockEntityMixin extends BlockEntity
 		}
 	}
 	
-	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getRenderingState(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
+	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;postProcessState(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
 	private BlockState tickGetRenderingStateProxy(BlockState blockState, IWorld world, BlockPos blockPos)
 	{
-		return FluidUtils.getStateWithFluid(Block.getRenderingState(blockState, world, blockPos), Fluids.EMPTY.getDefaultState());
+		return FluidUtils.getStateWithFluid(Block.postProcessState(blockState, world, blockPos), Fluids.EMPTY.getDefaultState());
 	}
 	
 	@ModifyArg(method = "finish", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))

@@ -8,10 +8,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.FireBlock;
-import net.minecraft.tag.FluidTags;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.TagCompatibility;
 
 @Mixin(FireBlock.class)
 public class FireBlockMixin
@@ -19,7 +19,7 @@ public class FireBlockMixin
 	@Inject(at = @At("HEAD"), method = { "getSpreadChance", "getBurnChance" }, cancellable = true)
 	private void onGetChances(BlockState state, CallbackInfoReturnable<Integer> info)
 	{
-		if (FluidUtils.getFluid(state).isIn(FluidTags.WATER))
+		if (FluidUtils.getFluid(state).isIn(TagCompatibility.FluidTags.WATER))
 		{
 			info.setReturnValue(0);
 		}
