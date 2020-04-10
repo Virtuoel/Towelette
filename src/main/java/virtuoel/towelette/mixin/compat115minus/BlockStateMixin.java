@@ -9,6 +9,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.block.Material;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
@@ -26,12 +27,20 @@ public abstract class BlockStateMixin implements ToweletteBlockStateExtensions
 	@Shadow(remap = false)
 	abstract FluidState method_11618();
 	@Shadow(remap = false)
+	abstract Material method_11620();
+	@Shadow(remap = false)
 	abstract int method_11630();
 	
 	@Override
 	public Block towelette_getBlock()
 	{
 		return method_11614();
+	}
+	
+	@Override
+	public Material towelette_getMaterial()
+	{
+		return method_11620();
 	}
 	
 	@Override

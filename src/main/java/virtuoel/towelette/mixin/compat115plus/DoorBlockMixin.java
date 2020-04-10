@@ -15,6 +15,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
 @Mixin(DoorBlock.class)
 public abstract class DoorBlockMixin
@@ -22,7 +23,7 @@ public abstract class DoorBlockMixin
 	@Inject(at = @At("HEAD"), method = "onUse")
 	private void onOnUse(BlockState state, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<ActionResult> info)
 	{
-		if (state.getMaterial() != Material.METAL)
+		if (((ToweletteBlockStateExtensions) state).towelette_getMaterial() != Material.METAL)
 		{
 			FluidUtils.scheduleFluidTick(state, world, blockPos);
 		}
