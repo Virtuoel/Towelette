@@ -3,7 +3,9 @@ package virtuoel.towelette.mixin;
 import java.util.Map;
 import java.util.Optional;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -24,8 +26,8 @@ import virtuoel.towelette.api.ToweletteConfig;
 @Mixin(value = StateManager.Builder.class, priority = 990)
 public abstract class StateManagerBuilderMixin<O, S extends State<S>>
 {
-	@Shadow O owner;
-	@Shadow Map<String, Property<?>> namedProperties;
+	@Shadow @Final @Mutable O owner;
+	@Shadow @Final @Mutable Map<String, Property<?>> namedProperties;
 	
 	@Shadow
 	abstract StateManager.Builder<O, S> add(Property<?>... properties);

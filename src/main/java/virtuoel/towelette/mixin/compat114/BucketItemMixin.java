@@ -2,7 +2,9 @@ package virtuoel.towelette.mixin.compat114;
 
 import javax.annotation.Nullable;
 
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
@@ -23,7 +25,7 @@ import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 @Mixin(BucketItem.class)
 public class BucketItemMixin
 {
-	@Shadow Fluid fluid;
+	@Shadow @Final @Mutable Fluid fluid;
 	
 	@Redirect(method = "placeFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Material;isSolid()Z"))
 	private boolean onPlaceFluidIsSolidProxy(Material obj, @Nullable PlayerEntity playerEntity, World world, BlockPos blockPos, @Nullable BlockHitResult blockHitResult)
