@@ -213,7 +213,7 @@ public class FluidUtils
 	
 	public static boolean canFillWithFluid(BlockView world, BlockPos pos, BlockState state, Fluid fluid)
 	{
-		if ((fluid == Fluids.WATER && state.contains(Properties.WATERLOGGED) && !state.get(Properties.WATERLOGGED)) || isValid(fluid))
+		if ((fluid == Fluids.WATER && state.contains(Properties.WATERLOGGED) && !state.get(Properties.WATERLOGGED)) || (state.contains(FluidProperties.FLUID) && isValid(fluid)))
 		{
 			final FluidState fluidState = getFluidState(state);
 			

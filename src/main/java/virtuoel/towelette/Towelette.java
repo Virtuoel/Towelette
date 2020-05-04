@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
@@ -24,6 +25,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.state.State;
 import net.minecraft.state.StateManager;
+import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
@@ -32,6 +34,7 @@ import net.minecraft.util.registry.Registry;
 import virtuoel.statement.api.RefreshableStateManager;
 import virtuoel.statement.api.StateRefresher;
 import virtuoel.statement.api.StatementApi;
+import virtuoel.statement.util.StatementBlockStateExtensions;
 import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteApi;
 import virtuoel.towelette.api.ToweletteConfig;
@@ -48,22 +51,208 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	
 	public static final Collection<Identifier> FLUID_ID_BLACKLIST = new HashSet<>();
 	
+	public static final Collection<Identifier> FLUIDLOGGABLE_ADDITIONS = new HashSet<>();
+	public static final Collection<Identifier> FLOWING_FLUIDLOGGABLE_ADDITIONS = new HashSet<>();
+	public static final Collection<Identifier> FLUIDLOGGABLE_REMOVALS = new HashSet<>();
+	public static final Collection<Identifier> WATERLOGGABLE_ADDITIONS = new HashSet<>();
+	public static final Collection<Identifier> WATERLOGGABLE_REMOVALS = new HashSet<>();
+	
 	@Override
 	public void onInitialize()
 	{
-		Optional.ofNullable(ToweletteConfig.DATA.get("blacklistedFluidIds"))
-			.filter(JsonElement::isJsonArray)
-			.map(JsonElement::getAsJsonArray)
-			.ifPresent(array ->
-			{
-				array.forEach(element ->
+		final BiConsumer<String, Collection<Identifier>> configIdCollectAction = (config, collection) ->
+		{
+			Optional.ofNullable(ToweletteConfig.DATA.get(config))
+				.filter(JsonElement::isJsonArray)
+				.map(JsonElement::getAsJsonArray)
+				.ifPresent(array ->
 				{
-					if (element.isJsonPrimitive())
+					array.forEach(element ->
 					{
-						FLUID_ID_BLACKLIST.add(new Identifier(element.getAsString()));
-					}
+						if (element.isJsonPrimitive())
+						{
+							collection.add(new Identifier(element.getAsString()));
+						}
+					});
 				});
+		};
+		
+		configIdCollectAction.accept("blacklistedFluidIds", FLUID_ID_BLACKLIST);
+		
+		configIdCollectAction.accept("addedFluidloggableBlocks", FLUIDLOGGABLE_ADDITIONS);
+		configIdCollectAction.accept("addedFlowingFluidloggableBlocks", FLOWING_FLUIDLOGGABLE_ADDITIONS);
+		configIdCollectAction.accept("removedFluidloggableBlocks", FLUIDLOGGABLE_REMOVALS);
+		
+		configIdCollectAction.accept("addedWaterloggableBlocks", WATERLOGGABLE_ADDITIONS);
+		configIdCollectAction.accept("removedWaterloggableBlocks", WATERLOGGABLE_REMOVALS);
+		
+		FLUIDLOGGABLE_ADDITIONS.removeAll(FLUIDLOGGABLE_REMOVALS);
+		FLOWING_FLUIDLOGGABLE_ADDITIONS.removeAll(FLUIDLOGGABLE_REMOVALS);
+		FLUIDLOGGABLE_ADDITIONS.removeAll(FLOWING_FLUIDLOGGABLE_ADDITIONS);
+		WATERLOGGABLE_ADDITIONS.removeAll(WATERLOGGABLE_REMOVALS);
+		
+		final boolean[] changedStates = { false };
+		
+		for (final Identifier id : FLUIDLOGGABLE_ADDITIONS)
+		{
+			Registry.BLOCK.getOrEmpty(id).map(Block::getStateManager).ifPresent(manager ->
+			{
+				addNewProperty(
+					manager,
+					FluidProperties.FLUID,
+					Registry.FLUID.getDefaultId(),
+					Block.STATE_IDS
+				).forEach(s -> ((StatementBlockStateExtensions) s).statement_initShapeCache());
+				
+				changedStates[0] = true;
 			});
+		}
+		
+		for (final Identifier id : FLOWING_FLUIDLOGGABLE_ADDITIONS)
+		{
+			Registry.BLOCK.getOrEmpty(id).map(Block::getStateManager).ifPresent(manager ->
+			{
+				final Collection<BlockState> addedStates = new HashSet<>();
+				
+				addedStates.addAll(addNewProperty(
+					manager,
+					FluidProperties.FLUID,
+					Registry.FLUID.getDefaultId(),
+					Block.STATE_IDS
+				));
+				
+				addedStates.addAll(addNewProperty(
+					manager,
+					FluidProperties.LEVEL_1_8,
+					8,
+					Block.STATE_IDS
+				));
+				
+				addedStates.addAll(addNewProperty(
+					manager,
+					FluidProperties.FALLING,
+					false,
+					Block.STATE_IDS
+				));
+				
+				addedStates.forEach(s -> ((StatementBlockStateExtensions) s).statement_initShapeCache());
+				
+				changedStates[0] = true;
+			});
+		}
+		
+		for (final Identifier id : FLUIDLOGGABLE_REMOVALS)
+		{
+			Registry.BLOCK.getOrEmpty(id).map(Block::getStateManager).ifPresent(stateManager ->
+			{
+				final BlockState defaultState = stateManager.getOwner().getDefaultState();
+				
+				changedStates[0] |= !removeProperty(defaultState, stateManager, FluidProperties.FLUID).isEmpty();
+				changedStates[0] |= !removeProperty(defaultState, stateManager, FluidProperties.LEVEL_1_8).isEmpty();
+				changedStates[0] |= !removeProperty(defaultState, stateManager, FluidProperties.FALLING).isEmpty();
+			});
+		}
+		
+		for (final Identifier id : WATERLOGGABLE_ADDITIONS)
+		{
+			Registry.BLOCK.getOrEmpty(id).map(Block::getStateManager).ifPresent(manager ->
+			{
+				addNewProperty(
+					manager,
+					Properties.WATERLOGGED,
+					false,
+					Block.STATE_IDS
+				).forEach(s -> ((StatementBlockStateExtensions) s).statement_initShapeCache());
+				
+				changedStates[0] = true;
+			});
+		}
+		
+		for (final Identifier id : WATERLOGGABLE_REMOVALS)
+		{
+			Registry.BLOCK.getOrEmpty(id).map(Block::getStateManager).ifPresent(stateManager ->
+			{
+				final BlockState defaultState = stateManager.getOwner().getDefaultState();
+				
+				changedStates[0] |= !removeProperty(defaultState, stateManager, Properties.WATERLOGGED).isEmpty();
+			});
+		}
+		
+		RegistryEntryAddedCallback.event(Registry.BLOCK).register(
+			(rawId, identifier, object) ->
+			{
+				final StateManager<Block, BlockState> stateManager = object.getStateManager();
+				
+				final BlockState defaultState = object.getDefaultState();
+				
+				final Collection<BlockState> addedStates = new HashSet<>();
+				
+				boolean didChange = false;
+				
+				if (WATERLOGGABLE_REMOVALS.contains(identifier))
+				{
+					didChange |= !removeProperty(defaultState, stateManager, Properties.WATERLOGGED).isEmpty();
+				}
+				else if (WATERLOGGABLE_ADDITIONS.contains(identifier))
+				{
+					addedStates.addAll(addNewProperty(
+						stateManager,
+						Properties.WATERLOGGED,
+						false,
+						Block.STATE_IDS
+					));
+					
+					didChange = true;
+				}
+				
+				if (FLUIDLOGGABLE_REMOVALS.contains(identifier))
+				{
+					didChange |= !removeProperty(defaultState, stateManager, FluidProperties.FLUID).isEmpty();
+					didChange |= !removeProperty(defaultState, stateManager, FluidProperties.LEVEL_1_8).isEmpty();
+					didChange |= !removeProperty(defaultState, stateManager, FluidProperties.FALLING).isEmpty();
+				}
+				else
+				{
+					final boolean flowing = FLOWING_FLUIDLOGGABLE_ADDITIONS.contains(identifier);
+					
+					if (flowing || FLUIDLOGGABLE_ADDITIONS.contains(identifier))
+					{
+						addedStates.addAll(addNewProperty(
+							stateManager,
+							FluidProperties.FLUID,
+							Registry.FLUID.getDefaultId(),
+							Block.STATE_IDS
+						));
+						
+						if (flowing)
+						{
+							addedStates.addAll(addNewProperty(
+								stateManager,
+								FluidProperties.LEVEL_1_8,
+								8,
+								Block.STATE_IDS
+							));
+							
+							addedStates.addAll(addNewProperty(
+								stateManager,
+								FluidProperties.FALLING,
+								false,
+								Block.STATE_IDS
+							));
+						}
+						
+						didChange = true;
+					}
+				}
+				
+				addedStates.forEach(s -> ((StatementBlockStateExtensions) s).statement_initShapeCache());
+				
+				if (didChange)
+				{
+					StateRefresher.INSTANCE.reorderBlockStates();
+				}
+			}
+		);
 		
 		StateRefresher.INSTANCE.refreshBlockStates(
 			FluidProperties.FLUID,
@@ -72,6 +261,11 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			.collect(ImmutableSet.toImmutableSet()),
 			ImmutableSet.of()
 		);
+		
+		if (changedStates[0])
+		{
+			StateRefresher.INSTANCE.reorderBlockStates();
+		}
 		
 		RegistryEntryAddedCallback.event(Registry.FLUID).register(
 			(rawId, identifier, object) ->
@@ -95,6 +289,32 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		final Collection<S> states = manager.statement_reconstructStateList(Collections.singletonMap(property, nonDefaultValues));
 		states.forEach(idList::add);
+		
+		return states;
+	}
+	
+	private static <O, S extends State<S>, V extends Comparable<V>> Collection<S> removeProperty(final S defaultState, final StateManager<O, S> stateManager, final Property<V> property)
+	{
+		@SuppressWarnings("unchecked")
+		final RefreshableStateManager<O, S> manager = ((RefreshableStateManager<O, S>) stateManager);
+		
+		final Collection<S> states;
+		
+		if (stateManager.getProperties().contains(property))
+		{
+			final V defaultValue = defaultState.get(property);
+			
+			states = stateManager.getStates().stream().filter(s -> s.get(property) != defaultValue).collect(Collectors.toList());
+		}
+		else
+		{
+			states = Collections.emptyList();
+		}
+		
+		if (manager.statement_removeProperty(property))
+		{
+			manager.statement_reconstructStateList(Collections.emptyMap());
+		}
 		
 		return states;
 	}
