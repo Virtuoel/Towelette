@@ -29,8 +29,8 @@ public abstract class PistonBlockMixin
 		return unpushableFluids && state == Blocks.AIR.getDefaultState() ? obj.removeBlock(pos, false) : obj.setBlockState(pos, !unpushableFluids ? state : FluidUtils.getStateWithFluid(state, obj, pos), flags);
 	}
 	
-	@Redirect(method = "onBlockAction", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	private boolean onBlockActionSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
+	@Redirect(method = "onSyncedBlockEvent", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
+	private boolean onSyncedBlockEventSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
 		return state == Blocks.AIR.getDefaultState() ? obj.removeBlock(pos, false) : obj.setBlockState(pos, FluidUtils.getStateWithFluid(state, obj, pos), flags);
 	}

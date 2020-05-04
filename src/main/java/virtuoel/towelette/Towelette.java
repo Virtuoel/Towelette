@@ -1,7 +1,9 @@
 package virtuoel.towelette;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
@@ -24,6 +26,7 @@ import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.IdList;
 import net.minecraft.util.registry.Registry;
+import virtuoel.statement.api.RefreshableStateManager;
 import virtuoel.statement.api.StateRefresher;
 import virtuoel.statement.api.StatementApi;
 import virtuoel.towelette.api.FluidProperties;
@@ -76,6 +79,22 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 				}
 			}
 		);
+	}
+	
+	private static <V extends Comparable<V>> Collection<BlockState> addProperty(final Block block, final Property<V> property, final V defaultValue)
+	{
+		@SuppressWarnings("unchecked")
+		final RefreshableStateManager<Block, BlockState> manager = ((RefreshableStateManager<Block, BlockState>) block.getStateManager());
+		
+		manager.statement_addProperty(property, defaultValue);
+		
+		final LinkedList<V> nonDefaultValues = new LinkedList<>(property.getValues());
+		nonDefaultValues.remove(defaultValue);
+		
+		final Collection<BlockState> states = manager.statement_reconstructStateList(Collections.singletonMap(property, nonDefaultValues));
+		states.forEach(Block.STATE_IDS::add);
+		
+		return states;
 	}
 	
 	private static boolean filterFluid(final Fluid fluid, final Identifier id, final BiPredicate<Fluid, Identifier> defaultPredicate)
