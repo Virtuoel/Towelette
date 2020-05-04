@@ -3,9 +3,10 @@ package virtuoel.towelette;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -21,6 +22,8 @@ import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.state.State;
+import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Property;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
@@ -81,18 +84,17 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		);
 	}
 	
-	private static <V extends Comparable<V>> Collection<BlockState> addProperty(final Block block, final Property<V> property, final V defaultValue)
+	private static <O, S extends State<S>, V extends Comparable<V>> Collection<S> addNewProperty(final StateManager<O, S> stateManager, final Property<V> property, final V defaultValue, final IdList<S> idList)
 	{
 		@SuppressWarnings("unchecked")
-		final RefreshableStateManager<Block, BlockState> manager = ((RefreshableStateManager<Block, BlockState>) block.getStateManager());
+		final RefreshableStateManager<O, S> manager = ((RefreshableStateManager<O, S>) stateManager);
 		
 		manager.statement_addProperty(property, defaultValue);
 		
-		final LinkedList<V> nonDefaultValues = new LinkedList<>(property.getValues());
-		nonDefaultValues.remove(defaultValue);
+		final List<V> nonDefaultValues = property.getValues().stream().filter(v -> v != defaultValue).collect(Collectors.toList());
 		
-		final Collection<BlockState> states = manager.statement_reconstructStateList(Collections.singletonMap(property, nonDefaultValues));
-		states.forEach(Block.STATE_IDS::add);
+		final Collection<S> states = manager.statement_reconstructStateList(Collections.singletonMap(property, nonDefaultValues));
+		states.forEach(idList::add);
 		
 		return states;
 	}
