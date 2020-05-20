@@ -1,13 +1,10 @@
 package virtuoel.towelette;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,18 +20,14 @@ import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.state.State;
-import net.minecraft.state.StateManager;
 import net.minecraft.state.property.Properties;
 import net.minecraft.state.property.Property;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.IdList;
 import net.minecraft.util.registry.Registry;
-import virtuoel.statement.api.RefreshableStateManager;
 import virtuoel.statement.api.StateRefresher;
 import virtuoel.statement.api.StatementApi;
-import virtuoel.statement.util.StatementBlockStateExtensions;
 import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteApi;
 import virtuoel.towelette.api.ToweletteConfig;
@@ -95,14 +88,13 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		for (final Identifier id : FLUIDLOGGABLE_ADDITIONS)
 		{
-			Registry.BLOCK.getOrEmpty(id).map(Block::getStateManager).ifPresent(manager ->
+			Registry.BLOCK.getOrEmpty(id).ifPresent(block ->
 			{
-				addNewProperty(
-					manager,
+				StateRefresher.INSTANCE.addBlockProperty(
+					block,
 					FluidProperties.FLUID,
-					Registry.FLUID.getDefaultId(),
-					Block.STATE_IDS
-				).forEach(s -> ((StatementBlockStateExtensions) s).statement_initShapeCache());
+					Registry.FLUID.getDefaultId()
+				);
 				
 				changedStates[0] = true;
 			});
@@ -110,32 +102,25 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		for (final Identifier id : FLOWING_FLUIDLOGGABLE_ADDITIONS)
 		{
-			Registry.BLOCK.getOrEmpty(id).map(Block::getStateManager).ifPresent(manager ->
+			Registry.BLOCK.getOrEmpty(id).ifPresent(block ->
 			{
-				final Collection<BlockState> addedStates = new HashSet<>();
-				
-				addedStates.addAll(addNewProperty(
-					manager,
+				StateRefresher.INSTANCE.addBlockProperty(
+					block,
 					FluidProperties.FLUID,
-					Registry.FLUID.getDefaultId(),
-					Block.STATE_IDS
-				));
+					Registry.FLUID.getDefaultId()
+				);
 				
-				addedStates.addAll(addNewProperty(
-					manager,
+				StateRefresher.INSTANCE.addBlockProperty(
+					block,
 					FluidProperties.LEVEL_1_8,
-					8,
-					Block.STATE_IDS
-				));
+					8
+				);
 				
-				addedStates.addAll(addNewProperty(
-					manager,
+				StateRefresher.INSTANCE.addBlockProperty(
+					block,
 					FluidProperties.FALLING,
-					false,
-					Block.STATE_IDS
-				));
-				
-				addedStates.forEach(s -> ((StatementBlockStateExtensions) s).statement_initShapeCache());
+					false
+				);
 				
 				changedStates[0] = true;
 			});
@@ -143,26 +128,23 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		for (final Identifier id : FLUIDLOGGABLE_REMOVALS)
 		{
-			Registry.BLOCK.getOrEmpty(id).map(Block::getStateManager).ifPresent(stateManager ->
+			Registry.BLOCK.getOrEmpty(id).ifPresent(block ->
 			{
-				final BlockState defaultState = stateManager.getOwner().getDefaultState();
-				
-				changedStates[0] |= !removeProperty(defaultState, stateManager, FluidProperties.FLUID).isEmpty();
-				changedStates[0] |= !removeProperty(defaultState, stateManager, FluidProperties.LEVEL_1_8).isEmpty();
-				changedStates[0] |= !removeProperty(defaultState, stateManager, FluidProperties.FALLING).isEmpty();
+				changedStates[0] |= !StateRefresher.INSTANCE.removeBlockProperty(block, FluidProperties.FLUID).isEmpty();
+				changedStates[0] |= !StateRefresher.INSTANCE.removeBlockProperty(block, FluidProperties.LEVEL_1_8).isEmpty();
+				changedStates[0] |= !StateRefresher.INSTANCE.removeBlockProperty(block, FluidProperties.FALLING).isEmpty();
 			});
 		}
 		
 		for (final Identifier id : WATERLOGGABLE_ADDITIONS)
 		{
-			Registry.BLOCK.getOrEmpty(id).map(Block::getStateManager).ifPresent(manager ->
+			Registry.BLOCK.getOrEmpty(id).ifPresent(block ->
 			{
-				addNewProperty(
-					manager,
+				StateRefresher.INSTANCE.addBlockProperty(
+					block,
 					Properties.WATERLOGGED,
-					false,
-					Block.STATE_IDS
-				).forEach(s -> ((StatementBlockStateExtensions) s).statement_initShapeCache());
+					false
+				);
 				
 				changedStates[0] = true;
 			});
@@ -170,46 +152,37 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		for (final Identifier id : WATERLOGGABLE_REMOVALS)
 		{
-			Registry.BLOCK.getOrEmpty(id).map(Block::getStateManager).ifPresent(stateManager ->
+			Registry.BLOCK.getOrEmpty(id).ifPresent(block ->
 			{
-				final BlockState defaultState = stateManager.getOwner().getDefaultState();
-				
-				changedStates[0] |= !removeProperty(defaultState, stateManager, Properties.WATERLOGGED).isEmpty();
+				changedStates[0] |= !StateRefresher.INSTANCE.removeBlockProperty(block, Properties.WATERLOGGED).isEmpty();
 			});
 		}
 		
 		RegistryEntryAddedCallback.event(Registry.BLOCK).register(
 			(rawId, identifier, object) ->
 			{
-				final StateManager<Block, BlockState> stateManager = object.getStateManager();
-				
-				final BlockState defaultState = object.getDefaultState();
-				
-				final Collection<BlockState> addedStates = new HashSet<>();
-				
 				boolean didChange = false;
 				
 				if (WATERLOGGABLE_REMOVALS.contains(identifier))
 				{
-					didChange |= !removeProperty(defaultState, stateManager, Properties.WATERLOGGED).isEmpty();
+					didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, Properties.WATERLOGGED).isEmpty();
 				}
 				else if (WATERLOGGABLE_ADDITIONS.contains(identifier))
 				{
-					addedStates.addAll(addNewProperty(
-						stateManager,
+					StateRefresher.INSTANCE.addBlockProperty(
+						object,
 						Properties.WATERLOGGED,
-						false,
-						Block.STATE_IDS
-					));
+						false
+					);
 					
 					didChange = true;
 				}
 				
 				if (FLUIDLOGGABLE_REMOVALS.contains(identifier))
 				{
-					didChange |= !removeProperty(defaultState, stateManager, FluidProperties.FLUID).isEmpty();
-					didChange |= !removeProperty(defaultState, stateManager, FluidProperties.LEVEL_1_8).isEmpty();
-					didChange |= !removeProperty(defaultState, stateManager, FluidProperties.FALLING).isEmpty();
+					didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, FluidProperties.FLUID).isEmpty();
+					didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, FluidProperties.LEVEL_1_8).isEmpty();
+					didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, FluidProperties.FALLING).isEmpty();
 				}
 				else
 				{
@@ -217,35 +190,30 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 					
 					if (flowing || FLUIDLOGGABLE_ADDITIONS.contains(identifier))
 					{
-						addedStates.addAll(addNewProperty(
-							stateManager,
+						StateRefresher.INSTANCE.addBlockProperty(
+							object,
 							FluidProperties.FLUID,
-							Registry.FLUID.getDefaultId(),
-							Block.STATE_IDS
-						));
+							Registry.FLUID.getDefaultId()
+						);
 						
 						if (flowing)
 						{
-							addedStates.addAll(addNewProperty(
-								stateManager,
+							StateRefresher.INSTANCE.addBlockProperty(
+								object,
 								FluidProperties.LEVEL_1_8,
-								8,
-								Block.STATE_IDS
-							));
+								8
+							);
 							
-							addedStates.addAll(addNewProperty(
-								stateManager,
+							StateRefresher.INSTANCE.addBlockProperty(
+								object,
 								FluidProperties.FALLING,
-								false,
-								Block.STATE_IDS
-							));
+								false
+							);
 						}
 						
 						didChange = true;
 					}
 				}
-				
-				addedStates.forEach(s -> ((StatementBlockStateExtensions) s).statement_initShapeCache());
 				
 				if (didChange)
 				{
@@ -276,47 +244,6 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 				}
 			}
 		);
-	}
-	
-	private static <O, S extends State<S>, V extends Comparable<V>> Collection<S> addNewProperty(final StateManager<O, S> stateManager, final Property<V> property, final V defaultValue, final IdList<S> idList)
-	{
-		@SuppressWarnings("unchecked")
-		final RefreshableStateManager<O, S> manager = ((RefreshableStateManager<O, S>) stateManager);
-		
-		manager.statement_addProperty(property, defaultValue);
-		
-		final List<V> nonDefaultValues = property.getValues().stream().filter(v -> v != defaultValue).collect(Collectors.toList());
-		
-		final Collection<S> states = manager.statement_reconstructStateList(Collections.singletonMap(property, nonDefaultValues));
-		states.forEach(idList::add);
-		
-		return states;
-	}
-	
-	private static <O, S extends State<S>, V extends Comparable<V>> Collection<S> removeProperty(final S defaultState, final StateManager<O, S> stateManager, final Property<V> property)
-	{
-		@SuppressWarnings("unchecked")
-		final RefreshableStateManager<O, S> manager = ((RefreshableStateManager<O, S>) stateManager);
-		
-		final Collection<S> states;
-		
-		if (stateManager.getProperties().contains(property))
-		{
-			final V defaultValue = defaultState.get(property);
-			
-			states = stateManager.getStates().stream().filter(s -> s.get(property) != defaultValue).collect(Collectors.toList());
-		}
-		else
-		{
-			states = Collections.emptyList();
-		}
-		
-		if (manager.statement_removeProperty(property))
-		{
-			manager.statement_reconstructStateList(Collections.emptyMap());
-		}
-		
-		return states;
 	}
 	
 	private static boolean filterFluid(final Fluid fluid, final Identifier id, final BiPredicate<Fluid, Identifier> defaultPredicate)
