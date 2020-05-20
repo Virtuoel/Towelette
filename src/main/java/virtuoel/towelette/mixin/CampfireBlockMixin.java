@@ -12,14 +12,14 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(CampfireBlock.class)
 public class CampfireBlockMixin
 {
-	@Inject(at = @At("RETURN"), method = "tryFillWithFluid(Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)Z", cancellable = true)
-	private void onTryFillWithFluid(IWorld world, BlockPos blockPos, BlockState blockState, FluidState fluidState, CallbackInfoReturnable<Boolean> info)
+	@Inject(at = @At("RETURN"), method = "tryFillWithFluid(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)Z", cancellable = true)
+	private void onTryFillWithFluid(WorldAccess world, BlockPos blockPos, BlockState blockState, FluidState fluidState, CallbackInfoReturnable<Boolean> info)
 	{
 		if (info.getReturnValue())
 		{

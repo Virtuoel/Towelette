@@ -15,7 +15,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import virtuoel.towelette.util.FluidUtils;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
@@ -41,8 +41,8 @@ public abstract class SlabBlockMixin
 		return FluidUtils.canFillWithFluid(world, blockPos, blockState, fluid);
 	}
 	
-	@Redirect(method = "tryFillWithFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Waterloggable;tryFillWithFluid(Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)Z"))
-	private boolean tryFillWithFluidProxy(Waterloggable obj, IWorld world, BlockPos blockPos, BlockState blockState, FluidState fluidState)
+	@Redirect(method = "tryFillWithFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Waterloggable;tryFillWithFluid(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/fluid/FluidState;)Z"))
+	private boolean tryFillWithFluidProxy(Waterloggable obj, WorldAccess world, BlockPos blockPos, BlockState blockState, FluidState fluidState)
 	{
 		return FluidUtils.tryFillWithFluid(world, blockPos, blockState, fluidState);
 	}

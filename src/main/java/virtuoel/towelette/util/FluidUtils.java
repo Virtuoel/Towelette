@@ -24,7 +24,7 @@ import net.minecraft.util.shape.SlicedVoxelShape;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.mixin.VoxelShapeAccessor;
@@ -179,12 +179,12 @@ public class FluidUtils
 		return ret;
 	}
 	
-	public static boolean scheduleFluidTick(BlockState state, IWorld world, BlockPos pos)
+	public static boolean scheduleFluidTick(BlockState state, WorldAccess world, BlockPos pos)
 	{
 		return scheduleFluidTick(getFluid(state), world, pos);
 	}
 	
-	public static boolean scheduleFluidTick(FluidState state, IWorld world, BlockPos pos)
+	public static boolean scheduleFluidTick(FluidState state, WorldAccess world, BlockPos pos)
 	{
 		if (!state.isEmpty())
 		{
@@ -195,7 +195,7 @@ public class FluidUtils
 		return false;
 	}
 	
-	public static boolean scheduleFluidTick(Fluid fluid, IWorld world, BlockPos pos)
+	public static boolean scheduleFluidTick(Fluid fluid, WorldAccess world, BlockPos pos)
 	{
 		if (!fluid.getDefaultState().isEmpty())
 		{
@@ -206,7 +206,7 @@ public class FluidUtils
 		return false;
 	}
 	
-	private static void scheduleFluidTickImpl(Fluid fluid, IWorld world, BlockPos pos)
+	private static void scheduleFluidTickImpl(Fluid fluid, WorldAccess world, BlockPos pos)
 	{
 		world.getFluidTickScheduler().schedule(pos, fluid, ((ToweletteFluidExtensions) fluid).towelette_getTickRate(world));
 	}
@@ -231,7 +231,7 @@ public class FluidUtils
 		return false;
 	}
 	
-	public static boolean tryFillWithFluid(IWorld world, BlockPos pos, BlockState blockState, FluidState fluidState)
+	public static boolean tryFillWithFluid(WorldAccess world, BlockPos pos, BlockState blockState, FluidState fluidState)
 	{
 		final Fluid fluid = fluidState.getFluid();
 		
@@ -257,7 +257,7 @@ public class FluidUtils
 		}
 	}
 	
-	public static Fluid tryDrainFluid(IWorld world, BlockPos pos, BlockState state)
+	public static Fluid tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state)
 	{
 		final FluidState fluidState = getFluidState(state);
 		

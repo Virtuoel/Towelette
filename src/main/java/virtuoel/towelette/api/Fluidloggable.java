@@ -6,7 +6,7 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import virtuoel.towelette.util.FluidUtils;
 
 public interface Fluidloggable extends Waterloggable
@@ -18,13 +18,13 @@ public interface Fluidloggable extends Waterloggable
 	}
 	
 	@Override
-	default boolean tryFillWithFluid(IWorld world, BlockPos pos, BlockState blockState, FluidState fluidState)
+	default boolean tryFillWithFluid(WorldAccess world, BlockPos pos, BlockState blockState, FluidState fluidState)
 	{
 		return FluidUtils.tryFillWithFluid(world, pos, blockState, fluidState);
 	}
 	
 	@Override
-	default Fluid tryDrainFluid(IWorld world, BlockPos pos, BlockState state)
+	default Fluid tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state)
 	{
 		return FluidUtils.tryDrainFluid(world, pos, state);
 	}

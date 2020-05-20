@@ -11,13 +11,13 @@ import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 
 @Mixin(FlowableFluid.class)
 public abstract class FlowableFluidMixin
 {
 	@Redirect(method = "flow", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/BlockState;getBlock()Lnet/minecraft/block/Block;"))
-	private Block onFlowGetBlockProxy(BlockState obj, IWorld world, BlockPos pos, BlockState blockState, Direction direction, FluidState fluidState)
+	private Block onFlowGetBlockProxy(BlockState obj, WorldAccess world, BlockPos pos, BlockState blockState, Direction direction, FluidState fluidState)
 	{
 		final Block block = obj.getBlock();
 		final boolean fillable = block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(world, pos, blockState, fluidState.getFluid());

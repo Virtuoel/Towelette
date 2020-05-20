@@ -12,7 +12,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(AbstractPlantStemBlock.class)
@@ -24,7 +24,7 @@ public abstract class AbstractPlantStemBlockMixin extends AbstractPlantPartBlock
 	}
 	
 	@Inject(method = "getStateForNeighborUpdate", at = @At("RETURN"), cancellable = true)
-	private void onGetStateForNeighborUpdate(BlockState state, Direction facing, BlockState neighborState, IWorld world, BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> info)
+	private void onGetStateForNeighborUpdate(BlockState state, Direction facing, BlockState neighborState, WorldAccess world, BlockPos pos, BlockPos neighborPos, CallbackInfoReturnable<BlockState> info)
 	{
 		if (!this.tickWater && facing == this.growthDirection && neighborState.getBlock() == (Object) this)
 		{

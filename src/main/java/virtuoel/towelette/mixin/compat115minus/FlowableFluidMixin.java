@@ -11,14 +11,14 @@ import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.IWorld;
+import net.minecraft.world.WorldAccess;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
 @Mixin(FlowableFluid.class)
 public abstract class FlowableFluidMixin
 {
 	@Redirect(method = "method_15745", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_2680;method_11614()Lnet/minecraft/class_2248;", remap = false), remap = false)
-	private Block onFlowGetBlockProxy(BlockState obj, IWorld world, BlockPos pos, BlockState blockState, Direction direction, FluidState fluidState)
+	private Block onFlowGetBlockProxy(BlockState obj, WorldAccess world, BlockPos pos, BlockState blockState, Direction direction, FluidState fluidState)
 	{
 		final Block block = ((ToweletteBlockStateExtensions) obj).towelette_getBlock();
 		final boolean fillable = block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(world, pos, blockState, fluidState.getFluid());
