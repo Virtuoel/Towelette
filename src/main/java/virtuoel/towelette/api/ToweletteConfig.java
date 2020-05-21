@@ -53,6 +53,11 @@ public class ToweletteConfig
 		
 		config.add("miscFluidlogging", miscFluidlogging);
 		
+		config.addProperty("onlyAllowWhitelistedFluids", false);
+		
+		final JsonArray whitelistedFluidIds = new JsonArray();
+		config.add("whitelistedFluidIds", whitelistedFluidIds);
+		
 		config.addProperty("enableBlacklistAPI", true);
 		
 		final JsonArray blacklistedFluidIds = new JsonArray();

@@ -42,6 +42,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	public static final Tag<Block> DISPLACEABLE = TagRegistry.block(id("displaceable"));
 	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
 	
+	public static final Collection<Identifier> FLUID_ID_WHITELIST = new HashSet<>();
 	public static final Collection<Identifier> FLUID_ID_BLACKLIST = new HashSet<>();
 	
 	public static final Collection<Identifier> FLUIDLOGGABLE_ADDITIONS = new HashSet<>();
@@ -69,6 +70,8 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 					});
 				});
 		};
+		
+		configIdCollectAction.accept("whitelistedFluidIds", FLUID_ID_WHITELIST);
 		
 		configIdCollectAction.accept("blacklistedFluidIds", FLUID_ID_BLACKLIST);
 		
@@ -248,6 +251,21 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	
 	private static boolean filterFluid(final Fluid fluid, final Identifier id, final BiPredicate<Fluid, Identifier> defaultPredicate)
 	{
+		if (FLUID_ID_WHITELIST.contains(id))
+		{
+			return !FluidUtils.propertyContains(id);
+		}
+		
+		final boolean onlyAllowWhitelistedFluids = Optional.ofNullable(ToweletteConfig.DATA.get("onlyAllowWhitelistedFluids"))
+			.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
+			.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
+			.orElse(false);
+		
+		if (onlyAllowWhitelistedFluids)
+		{
+			return false;
+		}
+		
 		final boolean entrypointBlacklists = Optional.ofNullable(ToweletteConfig.DATA.get("enableBlacklistAPI"))
 			.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
 			.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
@@ -259,12 +277,27 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	@Override
 	public boolean isFluidBlacklisted(Fluid fluid, Identifier id)
 	{
+		if (FLUID_ID_WHITELIST.contains(id))
+		{
+			return FluidUtils.propertyContains(id);
+		}
+		
+		final boolean onlyAllowWhitelistedFluids = Optional.ofNullable(ToweletteConfig.DATA.get("onlyAllowWhitelistedFluids"))
+			.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
+			.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
+			.orElse(false);
+		
+		if (onlyAllowWhitelistedFluids)
+		{
+			return true;
+		}
+		
 		final boolean allowFlowing = Optional.ofNullable(ToweletteConfig.DATA.get("flowingFluidlogging"))
 			.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
 			.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
 			.orElse(false);
 		
-		return FLUID_ID_BLACKLIST.contains(id) || FluidUtils.isValid(id) || (!allowFlowing && !fluid.getDefaultState().isStill());
+		return FLUID_ID_BLACKLIST.contains(id) || FluidUtils.propertyContains(id) || (!allowFlowing && !fluid.getDefaultState().isStill());
 	}
 	
 	@Override

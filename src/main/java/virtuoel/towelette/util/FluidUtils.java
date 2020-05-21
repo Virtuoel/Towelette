@@ -78,17 +78,17 @@ public class FluidUtils
 	public static Identifier getFluidId(Fluid fluid)
 	{
 		final Identifier id = Registry.FLUID.getId(fluid);
-		return isValid(id) ? id : Registry.FLUID.getDefaultId();
+		return propertyContains(id) ? id : Registry.FLUID.getDefaultId();
 	}
 	
-	public static boolean isValid(Fluid fluid)
+	public static boolean propertyContains(Fluid fluid)
 	{
-		return isValid(Registry.FLUID.getId(fluid));
+		return propertyContains(Registry.FLUID.getId(fluid));
 	}
 	
-	public static boolean isValid(Identifier id)
+	public static boolean propertyContains(Identifier id)
 	{
-		return FluidProperties.FLUID.getValues().contains(id);
+		return FluidProperties.FLUID.contains(id);
 	}
 	
 	@Nullable
@@ -213,7 +213,7 @@ public class FluidUtils
 	
 	public static boolean canFillWithFluid(BlockView world, BlockPos pos, BlockState state, Fluid fluid)
 	{
-		if ((fluid == Fluids.WATER && state.contains(Properties.WATERLOGGED) && !state.get(Properties.WATERLOGGED)) || (state.contains(FluidProperties.FLUID) && isValid(fluid)))
+		if ((fluid == Fluids.WATER && state.contains(Properties.WATERLOGGED) && !state.get(Properties.WATERLOGGED)) || (state.contains(FluidProperties.FLUID) && propertyContains(fluid)))
 		{
 			final FluidState fluidState = getFluidState(state);
 			
