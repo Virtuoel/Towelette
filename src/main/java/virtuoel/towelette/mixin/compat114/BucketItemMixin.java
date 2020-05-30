@@ -60,12 +60,7 @@ public class BucketItemMixin
 	@Redirect(method = "placeFluid", at = @At(value = "FIELD", ordinal = 3, target = "Lnet/minecraft/item/BucketItem;fluid:Lnet/minecraft/fluid/Fluid;"))
 	private Fluid onPlaceFluidFluidProxy(BucketItem this$0, @Nullable PlayerEntity playerEntity, World world, BlockPos blockPos, @Nullable BlockHitResult blockHitResult)
 	{
-		if (fluid != Fluids.WATER)
-		{
-			final BlockState state = world.getBlockState(blockPos);
-			return ((FluidFillable) ((ToweletteBlockStateExtensions) state).towelette_getBlock()).canFillWithFluid(world, blockPos, state, fluid) ? Fluids.WATER : fluid;
-		}
-		
-		return Fluids.WATER;
+		final BlockState state = world.getBlockState(blockPos);
+		return ((FluidFillable) ((ToweletteBlockStateExtensions) state).towelette_getBlock()).canFillWithFluid(world, blockPos, state, fluid) ? Fluids.WATER : Fluids.EMPTY;
 	}
 }

@@ -11,7 +11,7 @@ import net.minecraft.block.TwistingVinesPlantBlock;
 import net.minecraft.block.WallBlock;
 import net.minecraft.block.WeepingVinesBlock;
 import net.minecraft.block.WeepingVinesPlantBlock;
-import virtuoel.towelette.api.Fluidloggable;
+import virtuoel.towelette.util.AutomaticFluidloggableMarker;
 
 @Mixin({
 	ChainBlock.class,
@@ -24,7 +24,7 @@ import virtuoel.towelette.api.Fluidloggable;
 	WeepingVinesBlock.class,
 	WeepingVinesPlantBlock.class,
 })
-public abstract class FluidloggableMixin implements Fluidloggable
+public abstract class FluidloggableBlockMarkerMixin implements AutomaticFluidloggableMarker
 {
 	
 }

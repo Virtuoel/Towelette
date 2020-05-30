@@ -47,6 +47,10 @@ import net.minecraft.block.LanternBlock;
 import net.minecraft.block.LecternBlock;
 import net.minecraft.block.MushroomPlantBlock;
 import net.minecraft.block.NetherWartBlock;
+import net.minecraft.block.PistonBlock;
+import net.minecraft.block.PistonExtensionBlock;
+import net.minecraft.block.PistonHeadBlock;
+import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.block.SeaPickleBlock;
@@ -59,6 +63,7 @@ import net.minecraft.block.StonecutterBlock;
 import net.minecraft.block.SugarCaneBlock;
 import net.minecraft.block.SweetBerryBushBlock;
 import net.minecraft.block.TallPlantBlock;
+import net.minecraft.block.TorchBlock;
 import net.minecraft.block.TrapdoorBlock;
 import net.minecraft.block.TripwireBlock;
 import net.minecraft.block.TripwireHookBlock;
@@ -66,7 +71,7 @@ import net.minecraft.block.TurtleEggBlock;
 import net.minecraft.block.VineBlock;
 import net.minecraft.block.WallMountedBlock;
 import net.minecraft.block.WallSignBlock;
-import virtuoel.towelette.api.Fluidloggable;
+import virtuoel.towelette.util.AutomaticFluidloggableMarker;
 
 @Mixin({
 	AbstractPressurePlateBlock.class,
@@ -133,8 +138,13 @@ import virtuoel.towelette.api.Fluidloggable;
 	TripwireHookBlock.class,
 	TurtleEggBlock.class,
 	VineBlock.class,
+	PistonBlock.class,
+	PistonExtensionBlock.class,
+	PistonHeadBlock.class,
+	RedstoneWireBlock.class,
+	TorchBlock.class,
 })
-public abstract class FluidloggableMixin implements Fluidloggable
+public abstract class FluidloggableBlockMarkerMixin implements AutomaticFluidloggableMarker
 {
 	
 }

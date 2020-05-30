@@ -3,7 +3,6 @@ package virtuoel.towelette;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 
 import org.apache.logging.log4j.LogManager;
@@ -31,6 +30,7 @@ import virtuoel.statement.api.StatementApi;
 import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteApi;
 import virtuoel.towelette.api.ToweletteConfig;
+import virtuoel.towelette.util.AutomaticFluidloggableMarker;
 import virtuoel.towelette.util.FluidUtils;
 
 public class Towelette implements ModInitializer, ToweletteApi, StatementApi
@@ -54,33 +54,16 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	@Override
 	public void onInitialize()
 	{
-		final BiConsumer<String, Collection<Identifier>> configIdCollectAction = (config, collection) ->
-		{
-			Optional.ofNullable(ToweletteConfig.DATA.get(config))
-				.filter(JsonElement::isJsonArray)
-				.map(JsonElement::getAsJsonArray)
-				.ifPresent(array ->
-				{
-					array.forEach(element ->
-					{
-						if (element.isJsonPrimitive())
-						{
-							collection.add(new Identifier(element.getAsString()));
-						}
-					});
-				});
-		};
+		collectConfigIdArray("whitelistedFluidIds", FLUID_ID_WHITELIST);
 		
-		configIdCollectAction.accept("whitelistedFluidIds", FLUID_ID_WHITELIST);
+		collectConfigIdArray("blacklistedFluidIds", FLUID_ID_BLACKLIST);
 		
-		configIdCollectAction.accept("blacklistedFluidIds", FLUID_ID_BLACKLIST);
+		collectConfigIdArray("addedFluidloggableBlocks", FLUIDLOGGABLE_ADDITIONS);
+		collectConfigIdArray("addedFlowingFluidloggableBlocks", FLOWING_FLUIDLOGGABLE_ADDITIONS);
+		collectConfigIdArray("removedFluidloggableBlocks", FLUIDLOGGABLE_REMOVALS);
 		
-		configIdCollectAction.accept("addedFluidloggableBlocks", FLUIDLOGGABLE_ADDITIONS);
-		configIdCollectAction.accept("addedFlowingFluidloggableBlocks", FLOWING_FLUIDLOGGABLE_ADDITIONS);
-		configIdCollectAction.accept("removedFluidloggableBlocks", FLUIDLOGGABLE_REMOVALS);
-		
-		configIdCollectAction.accept("addedWaterloggableBlocks", WATERLOGGABLE_ADDITIONS);
-		configIdCollectAction.accept("removedWaterloggableBlocks", WATERLOGGABLE_REMOVALS);
+		collectConfigIdArray("addedWaterloggableBlocks", WATERLOGGABLE_ADDITIONS);
+		collectConfigIdArray("removedWaterloggableBlocks", WATERLOGGABLE_REMOVALS);
 		
 		FLUIDLOGGABLE_ADDITIONS.removeAll(FLUIDLOGGABLE_REMOVALS);
 		FLOWING_FLUIDLOGGABLE_ADDITIONS.removeAll(FLUIDLOGGABLE_REMOVALS);
@@ -88,6 +71,19 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		WATERLOGGABLE_ADDITIONS.removeAll(WATERLOGGABLE_REMOVALS);
 		
 		final boolean[] changedStates = { false };
+		
+		if (getConfigBoolean("automaticFluidlogging", true))
+		{
+			for (final Block block : Registry.BLOCK)
+			{
+				if (AutomaticFluidloggableMarker.shouldAddProperties(block))
+				{
+					addFluidProperties(block, getConfigBoolean("flowingFluidlogging", false));
+				}
+			}
+			
+			changedStates[0] = true;
+		}
 		
 		for (final Identifier id : FLUIDLOGGABLE_ADDITIONS)
 		{
@@ -107,23 +103,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		{
 			Registry.BLOCK.getOrEmpty(id).ifPresent(block ->
 			{
-				StateRefresher.INSTANCE.addBlockProperty(
-					block,
-					FluidProperties.FLUID,
-					Registry.FLUID.getDefaultId()
-				);
-				
-				StateRefresher.INSTANCE.addBlockProperty(
-					block,
-					FluidProperties.LEVEL_1_8,
-					8
-				);
-				
-				StateRefresher.INSTANCE.addBlockProperty(
-					block,
-					FluidProperties.FALLING,
-					false
-				);
+				addFluidProperties(block, true);
 				
 				changedStates[0] = true;
 			});
@@ -193,28 +173,18 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 					
 					if (flowing || FLUIDLOGGABLE_ADDITIONS.contains(identifier))
 					{
-						StateRefresher.INSTANCE.addBlockProperty(
-							object,
-							FluidProperties.FLUID,
-							Registry.FLUID.getDefaultId()
-						);
-						
-						if (flowing)
-						{
-							StateRefresher.INSTANCE.addBlockProperty(
-								object,
-								FluidProperties.LEVEL_1_8,
-								8
-							);
-							
-							StateRefresher.INSTANCE.addBlockProperty(
-								object,
-								FluidProperties.FALLING,
-								false
-							);
-						}
+						addFluidProperties(object, flowing);
 						
 						didChange = true;
+					}
+					else if (getConfigBoolean("automaticFluidlogging", true))
+					{
+						if (AutomaticFluidloggableMarker.shouldAddProperties(object))
+						{
+							addFluidProperties(object, getConfigBoolean("flowingFluidlogging", false));
+							
+							didChange = true;
+						}
 					}
 				}
 				
@@ -256,22 +226,12 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			return !FluidUtils.propertyContains(id);
 		}
 		
-		final boolean onlyAllowWhitelistedFluids = Optional.ofNullable(ToweletteConfig.DATA.get("onlyAllowWhitelistedFluids"))
-			.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
-			.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
-			.orElse(false);
-		
-		if (onlyAllowWhitelistedFluids)
+		if (getConfigBoolean("onlyAllowWhitelistedFluids", false))
 		{
 			return false;
 		}
 		
-		final boolean entrypointBlacklists = Optional.ofNullable(ToweletteConfig.DATA.get("enableBlacklistAPI"))
-			.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
-			.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
-			.orElse(true);
-		
-		return entrypointBlacklists ? ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidBlacklisted(fluid, id)) : defaultPredicate.test(fluid, id);
+		return getConfigBoolean("enableBlacklistAPI", true) ? ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidBlacklisted(fluid, id)) : defaultPredicate.test(fluid, id);
 	}
 	
 	@Override
@@ -282,22 +242,61 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			return FluidUtils.propertyContains(id);
 		}
 		
-		final boolean onlyAllowWhitelistedFluids = Optional.ofNullable(ToweletteConfig.DATA.get("onlyAllowWhitelistedFluids"))
-			.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
-			.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
-			.orElse(false);
-		
-		if (onlyAllowWhitelistedFluids)
+		if (getConfigBoolean("onlyAllowWhitelistedFluids", false))
 		{
 			return true;
 		}
 		
-		final boolean allowFlowing = Optional.ofNullable(ToweletteConfig.DATA.get("flowingFluidlogging"))
+		return FLUID_ID_BLACKLIST.contains(id) || FluidUtils.propertyContains(id) || (!getConfigBoolean("flowingFluidlogging", false) && !fluid.getDefaultState().isStill());
+	}
+	
+	private static void collectConfigIdArray(String config, Collection<Identifier> collection)
+	{
+		Optional.ofNullable(ToweletteConfig.DATA.get(config))
+			.filter(JsonElement::isJsonArray)
+			.map(JsonElement::getAsJsonArray)
+			.ifPresent(array ->
+			{
+				array.forEach(element ->
+				{
+					if (element.isJsonPrimitive())
+					{
+						collection.add(new Identifier(element.getAsString()));
+					}
+				});
+			});
+	}
+	
+	private static boolean getConfigBoolean(String config, boolean defaultValue)
+	{
+		return Optional.ofNullable(ToweletteConfig.DATA.get(config))
 			.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
 			.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
-			.orElse(false);
+			.orElse(defaultValue);
+	}
+	
+	private static void addFluidProperties(Block block, boolean flowing)
+	{
+		StateRefresher.INSTANCE.addBlockProperty(
+			block,
+			FluidProperties.FLUID,
+			Registry.FLUID.getDefaultId()
+		);
 		
-		return FLUID_ID_BLACKLIST.contains(id) || FluidUtils.propertyContains(id) || (!allowFlowing && !fluid.getDefaultState().isStill());
+		if (flowing)
+		{
+			StateRefresher.INSTANCE.addBlockProperty(
+				block,
+				FluidProperties.LEVEL_1_8,
+				8
+			);
+			
+			StateRefresher.INSTANCE.addBlockProperty(
+				block,
+				FluidProperties.FALLING,
+				false
+			);
+		}
 	}
 	
 	@Override
