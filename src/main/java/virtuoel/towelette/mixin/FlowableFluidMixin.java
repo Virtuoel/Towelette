@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FluidBlock;
 import net.minecraft.block.FluidFillable;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
@@ -63,7 +64,7 @@ public abstract class FlowableFluidMixin
 				info.setReturnValue(true);
 			}
 		}
-		else if (block instanceof FluidFillable && (block.isIn(Towelette.UNDISPLACEABLE) || !blockView.getFluidState(pos).isEmpty()))
+		else if (block instanceof FluidFillable && (block.isIn(Towelette.UNDISPLACEABLE) || (!(block instanceof FluidBlock) && !blockView.getFluidState(pos).isEmpty())))
 		{
 			info.setReturnValue(false);
 		}
