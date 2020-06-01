@@ -28,6 +28,7 @@ public class ToweletteConfig
 		config.addProperty("accurateFlowBlocking", true);
 		
 		// config.addProperty("automaticFluidlogging", true);
+		config.addProperty("automaticWaterlogging", false);
 		
 		config.addProperty("onlyAllowWhitelistedFluids", false);
 		

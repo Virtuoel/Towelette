@@ -7,10 +7,10 @@ public interface AutomaticFluidloggableMarker
 {
 	public static boolean shouldAddProperties(Block block)
 	{
-		return block instanceof AutomaticFluidloggableMarker && ((AutomaticFluidloggableMarker) block).shouldAddProperties();
+		return block instanceof AutomaticFluidloggableMarker && ((AutomaticFluidloggableMarker) block).towelette_shouldAddFluidloggableProperties();
 	}
 	
-	default boolean shouldAddProperties()
+	default boolean towelette_shouldAddFluidloggableProperties()
 	{
 		return !(this instanceof TallSeagrassBlock);
 	}

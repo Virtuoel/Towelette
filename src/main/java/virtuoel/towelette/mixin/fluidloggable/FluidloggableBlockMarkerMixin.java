@@ -72,6 +72,7 @@ import net.minecraft.block.VineBlock;
 import net.minecraft.block.WallMountedBlock;
 import net.minecraft.block.WallSignBlock;
 import virtuoel.towelette.util.AutomaticFluidloggableMarker;
+import virtuoel.towelette.util.AutomaticWaterloggableMarker;
 
 @Mixin({
 	AbstractPressurePlateBlock.class,
@@ -144,7 +145,7 @@ import virtuoel.towelette.util.AutomaticFluidloggableMarker;
 	RedstoneWireBlock.class,
 	TorchBlock.class,
 })
-public abstract class FluidloggableBlockMarkerMixin implements AutomaticFluidloggableMarker
+public abstract class FluidloggableBlockMarkerMixin implements AutomaticFluidloggableMarker, AutomaticWaterloggableMarker
 {
 	
 }

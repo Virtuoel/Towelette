@@ -31,6 +31,7 @@ import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteApi;
 import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.util.AutomaticFluidloggableMarker;
+import virtuoel.towelette.util.AutomaticWaterloggableMarker;
 import virtuoel.towelette.util.FluidUtils;
 
 public class Towelette implements ModInitializer, ToweletteApi, StatementApi
@@ -72,13 +73,23 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		final boolean[] changedStates = { false };
 		
-		if (getConfigBoolean("automaticFluidlogging", true))
+		final boolean automaticFluidlogging = getConfigBoolean("automaticFluidlogging", true);
+		final boolean automaticWaterlogging = getConfigBoolean("automaticWaterlogging", false);
+		
+		if (automaticFluidlogging || automaticWaterlogging)
 		{
+			final boolean flowingFluidlogging = getConfigBoolean("flowingFluidlogging", false);
+			
 			for (final Block block : Registry.BLOCK)
 			{
-				if (AutomaticFluidloggableMarker.shouldAddProperties(block))
+				if (automaticFluidlogging && AutomaticFluidloggableMarker.shouldAddProperties(block))
 				{
-					addFluidProperties(block, getConfigBoolean("flowingFluidlogging", false));
+					addFluidProperties(block, flowingFluidlogging);
+				}
+				
+				if (automaticWaterlogging && AutomaticWaterloggableMarker.shouldAddProperties(block))
+				{
+					StateRefresher.INSTANCE.addBlockProperty(block, Properties.WATERLOGGED, false);
 				}
 			}
 			
@@ -123,11 +134,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		{
 			Registry.BLOCK.getOrEmpty(id).ifPresent(block ->
 			{
-				StateRefresher.INSTANCE.addBlockProperty(
-					block,
-					Properties.WATERLOGGED,
-					false
-				);
+				StateRefresher.INSTANCE.addBlockProperty(block, Properties.WATERLOGGED, false);
 				
 				changedStates[0] = true;
 			});
@@ -141,59 +148,50 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			});
 		}
 		
-		RegistryEntryAddedCallback.event(Registry.BLOCK).register(
-			(rawId, identifier, object) ->
+		RegistryEntryAddedCallback.event(Registry.BLOCK).register((rawId, identifier, object) ->
+		{
+			boolean didChange = false;
+			
+			if (WATERLOGGABLE_REMOVALS.contains(identifier))
 			{
-				boolean didChange = false;
+				didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, Properties.WATERLOGGED).isEmpty();
+			}
+			else if (WATERLOGGABLE_ADDITIONS.contains(identifier) || (getConfigBoolean("automaticWaterlogging", true) && AutomaticWaterloggableMarker.shouldAddProperties(object)))
+			{
+				StateRefresher.INSTANCE.addBlockProperty(object, Properties.WATERLOGGED, false);
 				
-				if (WATERLOGGABLE_REMOVALS.contains(identifier))
+				didChange = true;
+			}
+			
+			if (FLUIDLOGGABLE_REMOVALS.contains(identifier))
+			{
+				didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, FluidProperties.FLUID).isEmpty();
+				didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, FluidProperties.LEVEL_1_8).isEmpty();
+				didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, FluidProperties.FALLING).isEmpty();
+			}
+			else
+			{
+				final boolean flowing = FLOWING_FLUIDLOGGABLE_ADDITIONS.contains(identifier);
+				
+				if (flowing || FLUIDLOGGABLE_ADDITIONS.contains(identifier))
 				{
-					didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, Properties.WATERLOGGED).isEmpty();
-				}
-				else if (WATERLOGGABLE_ADDITIONS.contains(identifier))
-				{
-					StateRefresher.INSTANCE.addBlockProperty(
-						object,
-						Properties.WATERLOGGED,
-						false
-					);
+					addFluidProperties(object, flowing);
 					
 					didChange = true;
 				}
-				
-				if (FLUIDLOGGABLE_REMOVALS.contains(identifier))
+				else if (getConfigBoolean("automaticFluidlogging", true) && AutomaticFluidloggableMarker.shouldAddProperties(object))
 				{
-					didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, FluidProperties.FLUID).isEmpty();
-					didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, FluidProperties.LEVEL_1_8).isEmpty();
-					didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, FluidProperties.FALLING).isEmpty();
-				}
-				else
-				{
-					final boolean flowing = FLOWING_FLUIDLOGGABLE_ADDITIONS.contains(identifier);
+					addFluidProperties(object, getConfigBoolean("flowingFluidlogging", false));
 					
-					if (flowing || FLUIDLOGGABLE_ADDITIONS.contains(identifier))
-					{
-						addFluidProperties(object, flowing);
-						
-						didChange = true;
-					}
-					else if (getConfigBoolean("automaticFluidlogging", true))
-					{
-						if (AutomaticFluidloggableMarker.shouldAddProperties(object))
-						{
-							addFluidProperties(object, getConfigBoolean("flowingFluidlogging", false));
-							
-							didChange = true;
-						}
-					}
-				}
-				
-				if (didChange)
-				{
-					StateRefresher.INSTANCE.reorderBlockStates();
+					didChange = true;
 				}
 			}
-		);
+			
+			if (didChange)
+			{
+				StateRefresher.INSTANCE.reorderBlockStates();
+			}
+		});
 		
 		StateRefresher.INSTANCE.refreshBlockStates(
 			FluidProperties.FLUID,
@@ -208,15 +206,13 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			StateRefresher.INSTANCE.reorderBlockStates();
 		}
 		
-		RegistryEntryAddedCallback.event(Registry.FLUID).register(
-			(rawId, identifier, object) ->
+		RegistryEntryAddedCallback.event(Registry.FLUID).register((rawId, identifier, object) ->
+		{
+			if (filterFluid(object, identifier, this::isFluidBlacklisted))
 			{
-				if (filterFluid(object, identifier, this::isFluidBlacklisted))
-				{
-					StateRefresher.INSTANCE.refreshBlockStates(FluidProperties.FLUID, ImmutableSet.of(identifier), ImmutableSet.of());
-				}
+				StateRefresher.INSTANCE.refreshBlockStates(FluidProperties.FLUID, ImmutableSet.of(identifier), ImmutableSet.of());
 			}
-		);
+		});
 	}
 	
 	private static boolean filterFluid(final Fluid fluid, final Identifier id, final BiPredicate<Fluid, Identifier> defaultPredicate)
