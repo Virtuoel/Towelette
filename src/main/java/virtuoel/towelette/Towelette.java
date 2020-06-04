@@ -2,6 +2,7 @@ package virtuoel.towelette;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
@@ -80,20 +81,41 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		{
 			final boolean flowingFluidlogging = getConfigBoolean("flowingFluidlogging", false);
 			
-			for (final Block block : Registry.BLOCK)
+			final Collection<Block> fluidloggableDefaults = new LinkedList<>();
+			final Collection<Block> waterloggableDefaults = new LinkedList<>();
+			
+			for (final Identifier id : Registry.BLOCK.getIds())
 			{
-				if (automaticFluidlogging && AutomaticFluidloggableMarker.shouldAddProperties(block))
+				final Block block = Registry.BLOCK.get(id);
+				
+				if (automaticFluidlogging && !FLUIDLOGGABLE_REMOVALS.contains(id))
+				{
+					fluidloggableDefaults.add(block);
+				}
+				
+				if (automaticWaterlogging && !WATERLOGGABLE_REMOVALS.contains(id))
+				{
+					waterloggableDefaults.add(block);
+				}
+			}
+			
+			for (final Block block : fluidloggableDefaults)
+			{
+				if (AutomaticFluidloggableMarker.shouldAddProperties(block))
 				{
 					addFluidProperties(block, flowingFluidlogging);
 				}
-				
-				if (automaticWaterlogging && AutomaticWaterloggableMarker.shouldAddProperties(block))
+			}
+			
+			for (final Block block : waterloggableDefaults)
+			{
+				if (AutomaticWaterloggableMarker.shouldAddProperties(block))
 				{
 					StateRefresher.INSTANCE.addBlockProperty(block, Properties.WATERLOGGED, false);
 				}
 			}
 			
-			changedStates[0] = true;
+			changedStates[0] = !fluidloggableDefaults.isEmpty() || !waterloggableDefaults.isEmpty();
 		}
 		
 		for (final Identifier id : FLUIDLOGGABLE_ADDITIONS)
