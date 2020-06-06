@@ -53,12 +53,12 @@ public class FluidUtils
 					VoxelShape fromShape = positiveDirection ? shape : combinedOtherShape;
 					VoxelShape toShape = positiveDirection ? combinedOtherShape : shape;
 					
-					if (fromShape != VoxelShapes.empty() && !DoubleMath.fuzzyEquals(fromShape.getMaximum(axis), 1.0D, 1.0E-7D))
+					if (fromShape != VoxelShapes.empty() && !DoubleMath.fuzzyEquals(fromShape.getMax(axis), 1.0D, 1.0E-7D))
 					{
 						fromShape = VoxelShapes.empty();
 					}
 					
-					if (toShape != VoxelShapes.empty() && !DoubleMath.fuzzyEquals(toShape.getMinimum(axis), 0.0D, 1.0E-7D))
+					if (toShape != VoxelShapes.empty() && !DoubleMath.fuzzyEquals(toShape.getMin(axis), 0.0D, 1.0E-7D))
 					{
 						toShape = VoxelShapes.empty();
 					}
