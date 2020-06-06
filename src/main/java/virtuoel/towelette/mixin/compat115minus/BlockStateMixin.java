@@ -15,7 +15,7 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.world.IWorld;
 import virtuoel.towelette.util.FluidUtils;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
@@ -66,7 +66,7 @@ public abstract class BlockStateMixin implements ToweletteBlockStateExtensions
 	}
 	
 	@Inject(at = @At("RETURN"), method = "method_11578", remap = false)
-	private void onGetStateForNeighborUpdate(Direction direction, BlockState blockState, WorldAccess world, BlockPos pos, BlockPos otherPos, CallbackInfoReturnable<BlockState> info)
+	private void onGetStateForNeighborUpdate(Direction direction, BlockState blockState, IWorld world, BlockPos pos, BlockPos otherPos, CallbackInfoReturnable<BlockState> info)
 	{
 		FluidUtils.scheduleFluidTick((BlockState) (Object) this, world, pos);
 	}

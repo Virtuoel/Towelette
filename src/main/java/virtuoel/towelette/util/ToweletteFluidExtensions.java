@@ -1,8 +1,8 @@
 package virtuoel.towelette.util;
 
-import net.minecraft.world.WorldAccess;
+import net.minecraft.world.IWorld;
 
 public interface ToweletteFluidExtensions
 {
-	int towelette_getTickRate(WorldAccess world);
+	int towelette_getTickRate(IWorld world);
 }

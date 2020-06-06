@@ -31,7 +31,6 @@
 		"TrapdoorBlockMixin",
 		"TripwireHookBlockMixin",
 		"VoxelShapeAccessor",
-		"WorldMixin",
 		"compat114.BucketItemMixin",
 		"compat114.CropBlockMixin",
 		"compat114.DoorBlockMixin",
@@ -45,22 +44,14 @@
 		"compat115minus.BlockStateMixin",
 		"compat115minus.FlowableFluidMixin",
 		"compat115minus.FluidBlockMixin",
+		"compat115minus.WorldMixin",
 		"compat115plus.BucketItemMixin",
 		"compat115plus.DoorBlockMixin",
 		"compat115plus.FlowerPotBlockMixin",
 		"compat115plus.FluidMixin",
 		"compat115plus.TrapdoorBlockMixin",
-		"compat116plus.AbstractBlockMixin",
-		"compat116plus.AbstractBlockStateMixin",
-		"compat116plus.AbstractPlantBlockMixin",
-		"compat116plus.AbstractPlantStemBlockMixin",
-		"compat116plus.CropBlockMixin",
-		"compat116plus.FlowableFluidMixin",
-		"compat116plus.RedstoneWireBlockMixin",
-		"compat116plus.StemBlockMixin",
 		"fluidloggable.BlockMixin",
-		"fluidloggable.FluidloggableBlockMarkerMixin",
-		"fluidloggable.compat116plus.FluidloggableBlockMarkerMixin"
+		"fluidloggable.FluidloggableBlockMarkerMixin"
 	],
 	"injectors":
 	{

@@ -13,7 +13,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.block.FluidFillable;
-import net.minecraft.fluid.FlowableFluid;
+import net.minecraft.fluid.BaseFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -26,7 +26,7 @@ import virtuoel.towelette.Towelette;
 import virtuoel.towelette.util.FluidUtils;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
-@Mixin(FlowableFluid.class)
+@Mixin(BaseFluid.class)
 public abstract class FlowableFluidMixin
 {
 	@Redirect(method = "receivesFlow", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/shape/VoxelShapes;adjacentSidesCoverSquare(Lnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/math/Direction;)Z"))
@@ -59,12 +59,12 @@ public abstract class FlowableFluidMixin
 		
 		if (!info.getReturnValueZ())
 		{
-			if ((block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(blockView, pos, state, fluid)) || (block.isIn(Towelette.DISPLACEABLE) && !block.isIn(Towelette.UNDISPLACEABLE) && blockView.getFluidState(pos).isEmpty()))
+			if ((block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(blockView, pos, state, fluid)) || (block.matches(Towelette.DISPLACEABLE) && !block.matches(Towelette.UNDISPLACEABLE) && blockView.getFluidState(pos).isEmpty()))
 			{
 				info.setReturnValue(true);
 			}
 		}
-		else if (block instanceof FluidFillable && (block.isIn(Towelette.UNDISPLACEABLE) || (!(block instanceof FluidBlock) && !blockView.getFluidState(pos).isEmpty())))
+		else if (block instanceof FluidFillable && (block.matches(Towelette.UNDISPLACEABLE) || (!(block instanceof FluidBlock) && !blockView.getFluidState(pos).isEmpty())))
 		{
 			info.setReturnValue(false);
 		}

@@ -19,7 +19,7 @@ public class FireBlockMixin
 	@Inject(at = @At("HEAD"), method = { "getSpreadChance", "getBurnChance" }, cancellable = true)
 	private void onGetChances(BlockState state, CallbackInfoReturnable<Integer> info)
 	{
-		if (FluidUtils.getFluid(state).isIn(TagCompatibility.FluidTags.WATER))
+		if (FluidUtils.getFluid(state).matches(TagCompatibility.FluidTags.WATER))
 		{
 			info.setReturnValue(0);
 		}

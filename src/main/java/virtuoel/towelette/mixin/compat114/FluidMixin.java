@@ -5,7 +5,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 import net.minecraft.fluid.Fluid;
 import net.minecraft.world.CollisionView;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.world.IWorld;
 import virtuoel.towelette.util.ToweletteFluidExtensions;
 
 @Mixin(Fluid.class)
@@ -15,7 +15,7 @@ public abstract class FluidMixin implements ToweletteFluidExtensions
 	abstract int method_15789(CollisionView world);
 	
 	@Override
-	public int towelette_getTickRate(WorldAccess world)
+	public int towelette_getTickRate(IWorld world)
 	{
 		return method_15789(world);
 	}

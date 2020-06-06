@@ -21,7 +21,7 @@ import net.minecraft.block.entity.PistonBlockEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.world.WorldAccess;
+import net.minecraft.world.IWorld;
 import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.util.FluidUtils;
 
@@ -49,10 +49,10 @@ public abstract class PistonBlockEntityMixin extends BlockEntity
 		}
 	}
 	
-	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;postProcessState(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
-	private BlockState tickGetRenderingStateProxy(BlockState blockState, WorldAccess world, BlockPos blockPos)
+	@Redirect(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;getRenderingState(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/IWorld;Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
+	private BlockState tickGetRenderingStateProxy(BlockState blockState, IWorld world, BlockPos blockPos)
 	{
-		return FluidUtils.getStateWithFluid(Block.postProcessState(blockState, world, blockPos), Fluids.EMPTY.getDefaultState());
+		return FluidUtils.getStateWithFluid(Block.getRenderingState(blockState, world, blockPos), Fluids.EMPTY.getDefaultState());
 	}
 	
 	@ModifyArg(method = "finish", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))

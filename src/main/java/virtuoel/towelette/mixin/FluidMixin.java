@@ -22,7 +22,7 @@ public class FluidMixin implements CollidableFluid
 			final double f = (float) pos.getY() + state.getHeight(world, pos);
 			final Box bounds = entity.getBoundingBox();
 			
-			if (bounds.minY < f || f > bounds.maxY)
+			if (bounds.y1 < f || f > bounds.y2)
 			{
 				entity.setInLava();
 			}
