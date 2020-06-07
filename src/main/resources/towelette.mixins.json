@@ -31,7 +31,6 @@
 		"TrapdoorBlockMixin",
 		"TripwireHookBlockMixin",
 		"VoxelShapeAccessor",
-		"WorldMixin",
 		"compat115plus.BucketItemMixin",
 		"compat115plus.DoorBlockMixin",
 		"compat115plus.FlowerPotBlockMixin",
