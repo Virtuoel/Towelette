@@ -29,12 +29,6 @@ public abstract class DoorBlockMixin
 		}
 	}
 	
-	@Redirect(method = "onBreak", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	private boolean onBreakSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
-	{
-		return obj.setBlockState(pos, obj.getFluidState(pos).getBlockState(), flags);
-	}
-	
 	@Redirect(method = "onPlaced", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private boolean onPlacedSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
