@@ -17,7 +17,7 @@ public class FluidMixin implements CollidableFluid
 	@Override
 	public void onEntityCollision(FluidState state, World world, BlockPos pos, Entity entity)
 	{
-		if (state.matches(TagCompatibility.FluidTags.LAVA))
+		if (state.isIn(TagCompatibility.FluidTags.LAVA))
 		{
 			final double f = (float) pos.getY() + state.getHeight(world, pos);
 			final Box bounds = entity.getBoundingBox();
