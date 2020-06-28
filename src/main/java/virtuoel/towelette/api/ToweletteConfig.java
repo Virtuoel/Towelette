@@ -34,11 +34,15 @@ public class ToweletteConfig
 		
 		final JsonArray whitelistedFluidIds = new JsonArray();
 		config.add("whitelistedFluidIds", whitelistedFluidIds);
+		final JsonArray whitelistedFluidModIds = new JsonArray();
+		config.add("whitelistedFluidModIds", whitelistedFluidModIds);
 		
 		config.addProperty("enableBlacklistAPI", true);
 		
 		final JsonArray blacklistedFluidIds = new JsonArray();
 		config.add("blacklistedFluidIds", blacklistedFluidIds);
+		final JsonArray blacklistedFluidModIds = new JsonArray();
+		config.add("blacklistedFluidModIds", blacklistedFluidModIds);
 		
 		final JsonArray addedFluidloggableBlocks = new JsonArray();
 		config.add("addedFluidloggableBlocks", addedFluidloggableBlocks);
