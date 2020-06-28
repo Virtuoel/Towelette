@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Optional;
 import java.util.function.BiPredicate;
+import java.util.function.Function;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -45,7 +46,9 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
 	
 	public static final Collection<Identifier> FLUID_ID_WHITELIST = new HashSet<>();
+	public static final Collection<String> FLUID_MOD_ID_WHITELIST = new HashSet<>();
 	public static final Collection<Identifier> FLUID_ID_BLACKLIST = new HashSet<>();
+	public static final Collection<String> FLUID_MOD_ID_BLACKLIST = new HashSet<>();
 	
 	public static final Collection<Identifier> FLUIDLOGGABLE_ADDITIONS = new HashSet<>();
 	public static final Collection<Identifier> FLOWING_FLUIDLOGGABLE_ADDITIONS = new HashSet<>();
@@ -57,8 +60,10 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	public void onInitialize()
 	{
 		collectConfigIdArray("whitelistedFluidIds", FLUID_ID_WHITELIST);
+		collectConfigStringArray("whitelistedFluidModIds", FLUID_MOD_ID_WHITELIST);
 		
 		collectConfigIdArray("blacklistedFluidIds", FLUID_ID_BLACKLIST);
+		collectConfigStringArray("blacklistedFluidModIds", FLUID_MOD_ID_BLACKLIST);
 		
 		collectConfigIdArray("addedFluidloggableBlocks", FLUIDLOGGABLE_ADDITIONS);
 		collectConfigIdArray("addedFlowingFluidloggableBlocks", FLOWING_FLUIDLOGGABLE_ADDITIONS);
@@ -239,7 +244,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	
 	private static boolean filterFluid(final Fluid fluid, final Identifier id, final BiPredicate<Fluid, Identifier> defaultPredicate)
 	{
-		if (FLUID_ID_WHITELIST.contains(id))
+		if (FLUID_MOD_ID_WHITELIST.contains(id.getNamespace()) || FLUID_ID_WHITELIST.contains(id))
 		{
 			return !FluidUtils.propertyContains(id);
 		}
@@ -255,7 +260,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	@Override
 	public boolean isFluidBlacklisted(Fluid fluid, Identifier id)
 	{
-		if (FLUID_ID_WHITELIST.contains(id))
+		if (FLUID_MOD_ID_WHITELIST.contains(id.getNamespace()) || FLUID_ID_WHITELIST.contains(id))
 		{
 			return FluidUtils.propertyContains(id);
 		}
@@ -265,10 +270,20 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			return true;
 		}
 		
-		return FLUID_ID_BLACKLIST.contains(id) || FluidUtils.propertyContains(id) || (!getConfigBoolean("flowingFluidlogging", false) && !fluid.getDefaultState().isStill());
+		return FLUID_MOD_ID_BLACKLIST.contains(id.getNamespace()) || FLUID_ID_BLACKLIST.contains(id) || FluidUtils.propertyContains(id) || (!getConfigBoolean("flowingFluidlogging", false) && !fluid.getDefaultState().isStill());
+	}
+	
+	private static void collectConfigStringArray(String config, Collection<String> collection)
+	{
+		collectConfigArray(config, collection, e -> e.getAsString());
 	}
 	
 	private static void collectConfigIdArray(String config, Collection<Identifier> collection)
+	{
+		collectConfigArray(config, collection, e -> new Identifier(e.getAsString()));
+	}
+	
+	private static <T> void collectConfigArray(String config, Collection<T> collection, Function<JsonElement, T> function)
 	{
 		Optional.ofNullable(ToweletteConfig.DATA.get(config))
 			.filter(JsonElement::isJsonArray)
@@ -279,7 +294,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 				{
 					if (element.isJsonPrimitive())
 					{
-						collection.add(new Identifier(element.getAsString()));
+						collection.add(function.apply(element));
 					}
 				});
 			});
