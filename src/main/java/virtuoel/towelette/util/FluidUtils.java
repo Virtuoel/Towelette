@@ -31,7 +31,7 @@ import virtuoel.towelette.mixin.VoxelShapeAccessor;
 
 public class FluidUtils
 {
-	public static boolean isFluidFlowBlocked(Direction direction, BlockView world, VoxelShape shape, BlockState blockState, BlockPos blockPos, VoxelShape otherShape, BlockState otherState, BlockPos otherPos)
+	public static boolean isFluidFlowBlocked(Direction direction, BlockView world, VoxelShape shape, BlockState blockState, BlockPos blockPos, VoxelShape fromShape, BlockState fromState, BlockPos fromPos)
 	{
 		if (direction.getAxis() != Direction.Axis.Y)
 		{
@@ -42,28 +42,28 @@ public class FluidUtils
 			
 			if (accurateFlowBlocking)
 			{
-				if (shape != VoxelShapes.fullCube() && otherShape != VoxelShapes.fullCube())
+				if (shape != VoxelShapes.fullCube() && fromShape != VoxelShapes.fullCube())
 				{
-					final FluidState fluidState = world.getFluidState(otherPos);
-					final VoxelShape inverseShape = fluidState.isEmpty() ? VoxelShapes.empty() : VoxelShapes.combine(VoxelShapes.fullCube(), fluidState.getShape(world, otherPos), BooleanBiFunction.ONLY_FIRST);
-					final VoxelShape combinedOtherShape = VoxelShapes.combine(otherShape, inverseShape, BooleanBiFunction.OR);
+					final FluidState fluidState = world.getFluidState(fromPos);
+					final VoxelShape inverseShape = fluidState.isEmpty() ? VoxelShapes.empty() : VoxelShapes.combine(VoxelShapes.fullCube(), fluidState.getShape(world, fromPos), BooleanBiFunction.ONLY_FIRST);
+					final VoxelShape combinedFromShape = VoxelShapes.combine(fromShape, inverseShape, BooleanBiFunction.OR);
 					
 					final Direction.Axis axis = direction.getAxis();
 					final boolean positiveDirection = direction.getDirection() == Direction.AxisDirection.POSITIVE;
-					VoxelShape fromShape = positiveDirection ? shape : combinedOtherShape;
-					VoxelShape toShape = positiveDirection ? combinedOtherShape : shape;
+					VoxelShape positiveShape = positiveDirection ? shape : combinedFromShape;
+					VoxelShape negativeShape = positiveDirection ? combinedFromShape : shape;
 					
-					if (fromShape != VoxelShapes.empty() && !DoubleMath.fuzzyEquals(fromShape.getMax(axis), 1.0D, 1.0E-7D))
+					if (positiveShape != VoxelShapes.empty() && !DoubleMath.fuzzyEquals(positiveShape.getMax(axis), 1.0D, 1.0E-7D))
 					{
-						fromShape = VoxelShapes.empty();
+						positiveShape = VoxelShapes.empty();
 					}
 					
-					if (toShape != VoxelShapes.empty() && !DoubleMath.fuzzyEquals(toShape.getMin(axis), 0.0D, 1.0E-7D))
+					if (negativeShape != VoxelShapes.empty() && !DoubleMath.fuzzyEquals(negativeShape.getMin(axis), 0.0D, 1.0E-7D))
 					{
-						toShape = VoxelShapes.empty();
+						negativeShape = VoxelShapes.empty();
 					}
 					
-					return !VoxelShapes.matchesAnywhere(VoxelShapes.fullCube(), VoxelShapes.combine(new SlicedVoxelShape(fromShape, axis, ((VoxelShapeAccessor) fromShape).getVoxels().getSize(axis) - 1), new SlicedVoxelShape(toShape, axis, 0), BooleanBiFunction.OR), BooleanBiFunction.ONLY_FIRST);
+					return !VoxelShapes.matchesAnywhere(VoxelShapes.fullCube(), VoxelShapes.combine(new SlicedVoxelShape(positiveShape, axis, ((VoxelShapeAccessor) positiveShape).getVoxels().getSize(axis) - 1), new SlicedVoxelShape(negativeShape, axis, 0), BooleanBiFunction.OR), BooleanBiFunction.ONLY_FIRST);
 				}
 				else
 				{
@@ -72,7 +72,7 @@ public class FluidUtils
 			}
 		}
 		
-		return VoxelShapes.adjacentSidesCoverSquare(shape, otherShape, direction);
+		return VoxelShapes.adjacentSidesCoverSquare(shape, fromShape, direction);
 	}
 	
 	public static Identifier getFluidId(Fluid fluid)
