@@ -30,9 +30,9 @@ import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 public abstract class FlowableFluidMixin
 {
 	@Redirect(method = "receivesFlow", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/shape/VoxelShapes;adjacentSidesCoverSquare(Lnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/shape/VoxelShape;Lnet/minecraft/util/math/Direction;)Z"))
-	private boolean receivesFlowAdjacentSidesCoverSquareProxy(VoxelShape shape, VoxelShape otherShape, Direction direction, Direction noop, BlockView world, BlockPos blockPos, BlockState blockState, BlockPos otherPos, BlockState otherState)
+	private boolean receivesFlowAdjacentSidesCoverSquareProxy(VoxelShape shape, VoxelShape fromShape, Direction face, Direction noop, BlockView world, BlockPos pos, BlockState state, BlockPos fromPos, BlockState fromState)
 	{
-		return FluidUtils.isFluidFlowBlocked(direction, world, shape, blockState, blockPos, otherShape, otherState, otherPos);
+		return FluidUtils.isFluidFlowBlocked(face, world, shape, state, pos, fromShape, fromState, fromPos);
 	}
 	
 	@Unique private final ThreadLocal<Block> towelette$cachedBlock = ThreadLocal.withInitial(() -> Blocks.AIR);
