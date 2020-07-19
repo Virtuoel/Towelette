@@ -49,6 +49,10 @@
 		"fluidloggable.FluidloggableBlockMarkerMixin",
 		"fluidloggable.compat116plus.FluidloggableBlockMarkerMixin"
 	],
+	"client":
+	[
+		"client.LavaFluidMixin"
+	],
 	"injectors":
 	{
 		"defaultRequire": 1
