@@ -8,6 +8,7 @@ import com.google.common.math.DoubleMath;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.SlabType;
 import net.minecraft.fluid.Fluid;
@@ -25,6 +26,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
+import virtuoel.towelette.api.FluidBlockingShapeProvider;
 import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.mixin.VoxelShapeAccessor;
@@ -33,6 +35,18 @@ public class FluidUtils
 {
 	public static boolean isFluidFlowBlocked(Direction direction, BlockView world, VoxelShape shape, BlockState blockState, BlockPos blockPos, VoxelShape fromShape, BlockState fromState, BlockPos fromPos)
 	{
+		final Block block = blockState.getBlock();
+		if (block instanceof FluidBlockingShapeProvider)
+		{
+			shape = ((FluidBlockingShapeProvider) block).getFluidBlockingShape(blockState, world, blockPos);
+		}
+		
+		final Block fromBlock = fromState.getBlock();
+		if (fromBlock instanceof FluidBlockingShapeProvider)
+		{
+			fromShape = ((FluidBlockingShapeProvider) fromBlock).getFluidBlockingShape(fromState, world, fromPos);
+		}
+		
 		if (direction.getAxis() != Direction.Axis.Y)
 		{
 			final boolean accurateFlowBlocking = Optional.ofNullable(ToweletteConfig.DATA.get("accurateFlowBlocking"))

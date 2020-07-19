@@ -23,6 +23,7 @@
 		"FireBlockMixin",
 		"FlowableFluidMixin",
 		"FluidMixin",
+		"HopperBlockMixin",
 		"PistonBlockEntityMixin",
 		"PistonBlockMixin",
 		"SlabBlockMixin",
