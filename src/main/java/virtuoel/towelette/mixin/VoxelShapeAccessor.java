@@ -10,5 +10,5 @@ import net.minecraft.util.shape.VoxelShape;
 public interface VoxelShapeAccessor
 {
 	@Accessor
-	VoxelSet getVoxels();
+	VoxelSet towelette_getVoxels();
 }
