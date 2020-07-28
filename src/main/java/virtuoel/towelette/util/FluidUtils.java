@@ -77,7 +77,7 @@ public class FluidUtils
 						negativeShape = VoxelShapes.empty();
 					}
 					
-					return !VoxelShapes.matchesAnywhere(VoxelShapes.fullCube(), VoxelShapes.combine(new SlicedVoxelShape(positiveShape, axis, ((VoxelShapeAccessor) positiveShape).getVoxels().getSize(axis) - 1), new SlicedVoxelShape(negativeShape, axis, 0), BooleanBiFunction.OR), BooleanBiFunction.ONLY_FIRST);
+					return !VoxelShapes.matchesAnywhere(VoxelShapes.fullCube(), VoxelShapes.combine(new SlicedVoxelShape(positiveShape, axis, ((VoxelShapeAccessor) positiveShape).towelette_getVoxels().getSize(axis) - 1), new SlicedVoxelShape(negativeShape, axis, 0), BooleanBiFunction.OR), BooleanBiFunction.ONLY_FIRST);
 				}
 				else
 				{
