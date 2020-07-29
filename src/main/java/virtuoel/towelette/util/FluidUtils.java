@@ -2,7 +2,7 @@ package virtuoel.towelette.util;
 
 import java.util.Optional;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import com.google.common.math.DoubleMath;
 import com.google.gson.JsonElement;
