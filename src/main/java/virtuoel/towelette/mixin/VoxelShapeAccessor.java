@@ -9,6 +9,6 @@ import net.minecraft.util.shape.VoxelShape;
 @Mixin(VoxelShape.class)
 public interface VoxelShapeAccessor
 {
-	@Accessor
+	@Accessor("voxels")
 	VoxelSet towelette_getVoxels();
 }
