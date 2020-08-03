@@ -225,9 +225,29 @@ public class FluidUtils
 		world.getFluidTickScheduler().schedule(pos, fluid, ((ToweletteFluidExtensions) fluid).towelette_getTickRate(world));
 	}
 	
+	private static boolean isFluidValidForState(BlockState state, Fluid fluid)
+	{
+		if (fluid == Fluids.WATER && state.getEntries().containsKey(Properties.WATERLOGGED) && !state.get(Properties.WATERLOGGED))
+		{
+			return true;
+		}
+		
+		if (state.getEntries().containsKey(FluidProperties.FLUID) && propertyContains(fluid))
+		{
+			if (!fluid.isStill(fluid.getDefaultState()) && !state.getEntries().containsKey(FluidProperties.LEVEL_1_8))
+			{
+				return false;
+			}
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public static boolean canFillWithFluid(BlockView world, BlockPos pos, BlockState state, Fluid fluid)
 	{
-		if ((fluid == Fluids.WATER && state.getEntries().containsKey(Properties.WATERLOGGED) && !state.get(Properties.WATERLOGGED)) || (state.getEntries().containsKey(FluidProperties.FLUID) && propertyContains(fluid)))
+		if (isFluidValidForState(state, fluid))
 		{
 			final FluidState fluidState = getFluidState(state);
 			
