@@ -79,7 +79,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		final boolean[] changedStates = { false };
 		
-		final boolean automaticFluidlogging = getConfigBoolean("automaticFluidlogging", true);
+		final boolean automaticFluidlogging = getConfigBoolean("automaticFluidlogging", false);
 		final boolean automaticWaterlogging = getConfigBoolean("automaticWaterlogging", false);
 		
 		if (automaticFluidlogging || automaticWaterlogging)
