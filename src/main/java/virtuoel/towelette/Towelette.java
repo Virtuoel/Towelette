@@ -206,7 +206,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 					
 					didChange = true;
 				}
-				else if (getConfigBoolean("automaticFluidlogging", true) && AutomaticFluidloggableMarker.shouldAddProperties(object))
+				else if (getConfigBoolean("automaticFluidlogging", false) && AutomaticFluidloggableMarker.shouldAddProperties(object))
 				{
 					addFluidProperties(object, getConfigBoolean("flowingFluidlogging", false));
 					
