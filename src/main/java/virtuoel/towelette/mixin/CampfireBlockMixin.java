@@ -12,6 +12,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import virtuoel.towelette.util.FluidUtils;
 
@@ -31,10 +32,13 @@ public class CampfireBlockMixin
 			{
 				if (world.isClient())
 				{
-					boolean signal = blockState.get(Properties.SIGNAL_FIRE);
-					for (int i = 0; i < 20; ++i)
+					if (world instanceof World)
 					{
-						CampfireBlock.spawnSmokeParticle(world.getWorld(), blockPos, signal, true);
+						final boolean signal = blockState.get(Properties.SIGNAL_FIRE);
+						for (int i = 0; i < 20; ++i)
+						{
+							CampfireBlock.spawnSmokeParticle((World) world, blockPos, signal, true);
+						}
 					}
 				}
 				else

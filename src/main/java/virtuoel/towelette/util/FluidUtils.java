@@ -102,7 +102,7 @@ public class FluidUtils
 	
 	public static boolean propertyContains(Identifier id)
 	{
-		return FluidProperties.FLUID.contains(id);
+		return FluidProperties.FLUID.getValues().contains(id);
 	}
 	
 	@Nullable
