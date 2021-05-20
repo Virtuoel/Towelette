@@ -101,11 +101,11 @@ dependencies {
 	}
 	
 	if(project.hasProperty("statement_version")) {
-		include modApi("virtuoel:Statement:${statement_version}", excludeFabric)
+		modApi("virtuoel:Statement:${statement_version}", excludeFabric)
 	}
 	
 	if(project.hasProperty("statement_commit")) {
-		include modApi("com.github.Virtuoel:Statement:${statement_commit}", excludeFabric)
+		modApi("com.github.Virtuoel:Statement:${statement_commit}", excludeFabric)
 	}
 }
 
