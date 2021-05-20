@@ -98,14 +98,14 @@ dependencies {
 			modCompileOnly "com.terraformersmc:modmenu:${modmenu_version}", excludeFabric
 			modRuntime "com.terraformersmc:modmenu:${modmenu_version}", excludeFabric
 		}
-	}
-	
-	if(project.hasProperty("statement_version")) {
-		modApi("virtuoel:Statement:${statement_version}", excludeFabric)
-	}
-	
-	if(project.hasProperty("statement_commit")) {
-		modApi("com.github.Virtuoel:Statement:${statement_commit}", excludeFabric)
+		
+		if(project.hasProperty("statement_version")) {
+			modApi("virtuoel:Statement:${statement_version}", excludeFabric)
+		}
+		
+		if(project.hasProperty("statement_commit")) {
+			modApi("com.github.Virtuoel:Statement:${statement_commit}", excludeFabric)
+		}
 	}
 }
 
