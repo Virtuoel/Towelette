@@ -1,10 +1,11 @@
 plugins {
-	id "fabric-loom" version "0.5-SNAPSHOT"
+	id "fabric-loom" version "0.8-SNAPSHOT"
 	id "eclipse"
 	id "maven-publish"
 	id "com.github.breadmoirai.github-release" version "2.2.12"
 	id "org.ajoberstar.grgit" version "4.1.0"
 	id "com.matthewprenger.cursegradle" version "1.4.0"
+	id "com.modrinth.minotaur" version "1.1.0"
 }
 
 repositories {
@@ -12,6 +13,10 @@ repositories {
 	maven {
 		name = "Fabric"
 		url = "https://maven.fabricmc.net/"
+	}
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/"
 	}
 	maven {
 		name = "CurseForge"
@@ -47,49 +52,52 @@ dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
 	mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
 	
-	def excludeLoader = { exclude group: "net.fabricmc", module: "fabric-loader" }
-	def excludeApi = { exclude group: "net.fabricmc.fabric-api" }
-	def excludeFabric = {
-		exclude group: "net.fabricmc", module: "fabric-loader"
-		exclude group: "net.fabricmc.fabric-api"
-	}
-	
-	modImplementation "net.fabricmc:fabric-loader:${loader_version}"
-	if(project.hasProperty("fabric_version")) {
-		if(!project.hasProperty("fabric_modules") && !project.hasProperty("api_fabric_modules") && !project.hasProperty("impl_fabric_modules")) {
-			modCompileOnly "net.fabricmc.fabric-api:fabric-api:${fabric_version}", excludeLoader
-			modRuntime "net.fabricmc.fabric-api:fabric-api:${fabric_version}", excludeLoader
+	if(project.hasProperty("loader_version")) {
+		modImplementation "net.fabricmc:fabric-loader:${loader_version}"
+		
+		def excludeLoader = { exclude group: "net.fabricmc", module: "fabric-loader" }
+		def excludeApi = { exclude group: "net.fabricmc.fabric-api" }
+		def excludeFabric = {
+			exclude group: "net.fabricmc", module: "fabric-loader"
+			exclude group: "net.fabricmc.fabric-api"
 		}
 		
-		if(project.hasProperty("fabric_modules")) {
-			project.fabric_modules.split(", ").each { String module ->
-				modCompileOnly fabricApi.module(module, project.fabric_version), excludeLoader
-				modRuntime fabricApi.module(module, project.fabric_version), excludeLoader
+		if(project.hasProperty("fabric_version")) {
+			if(!project.hasProperty("fabric_modules") && !project.hasProperty("api_fabric_modules") && !project.hasProperty("impl_fabric_modules")) {
+				modCompileOnly "net.fabricmc.fabric-api:fabric-api:${fabric_version}", excludeLoader
+				modRuntime "net.fabricmc.fabric-api:fabric-api:${fabric_version}", excludeLoader
+			}
+			
+			if(project.hasProperty("fabric_modules")) {
+				project.fabric_modules.split(", ").each { String module ->
+					modCompileOnly fabricApi.module(module, project.fabric_version), excludeLoader
+					modRuntime fabricApi.module(module, project.fabric_version), excludeLoader
+				}
+			}
+			
+			if(project.hasProperty("api_fabric_modules")) {
+				project.api_fabric_modules.split(", ").each { String module ->
+					modApi fabricApi.module(module, project.fabric_version), excludeLoader
+				}
+			}
+			
+			if(project.hasProperty("impl_fabric_modules")) {
+				project.impl_fabric_modules.split(", ").each { String module ->
+					modImplementation fabricApi.module(module, project.fabric_version), excludeLoader
+				}
+			}
+			
+			if(project.hasProperty("included_fabric_modules")) {
+				project.included_fabric_modules.split(", ").each { String module ->
+					include fabricApi.module(module, project.fabric_version)
+				}
 			}
 		}
 		
-		if(project.hasProperty("api_fabric_modules")) {
-			project.api_fabric_modules.split(", ").each { String module ->
-				modApi fabricApi.module(module, project.fabric_version), excludeLoader
-			}
+		if(project.hasProperty("modmenu_version")) {
+			modCompileOnly "com.terraformersmc:modmenu:${modmenu_version}", excludeFabric
+			modRuntime "com.terraformersmc:modmenu:${modmenu_version}", excludeFabric
 		}
-		
-		if(project.hasProperty("impl_fabric_modules")) {
-			project.impl_fabric_modules.split(", ").each { String module ->
-				modImplementation fabricApi.module(module, project.fabric_version), excludeLoader
-			}
-		}
-		
-		if(project.hasProperty("included_fabric_modules")) {
-			project.included_fabric_modules.split(", ").each { String module ->
-				include fabricApi.module(module, project.fabric_version)
-			}
-		}
-	}
-	
-	if(project.hasProperty("modmenu_version")) {
-		modCompileOnly "io.github.prospector:modmenu:${modmenu_version}", excludeFabric
-		modRuntime "io.github.prospector:modmenu:${modmenu_version}", excludeFabric
 	}
 	
 	if(project.hasProperty("statement_version")) {
@@ -136,6 +144,7 @@ jar {
 task sourcesJar(type: Jar, dependsOn: classes) {
 	classifier = "sources"
 	from sourceSets.main.allSource
+	exclude "fabric.mod.json"
 	manifest
 	{
 		attributes "Implementation-Title": project.archivesBaseName + "-sources"
@@ -183,12 +192,11 @@ githubRelease {
 		repo project.github_repository
 	}
 	
-	tagName project.version
+	tagName project.mod_version
 	targetCommitish { org.ajoberstar.grgit.Grgit.open(dir: ".").branch.current().name }
 	releaseName project.version
 	
-	def filenameFilter = { dir, filename -> filename.contains(project.version) && !filename.contains("-dev.jar") }
-	releaseAssets = jar.destinationDirectory.files().filter(filenameFilter).files
+	releaseAssets = files("${project.buildDir}/libs/${archivesBaseName}-${version}.jar", "${project.buildDir}/libs/${archivesBaseName}-${version}-sources.jar").files
 }
 
 if(project.hasProperty("fabric_version")) {
@@ -210,7 +218,14 @@ String generateHTMLChangelog() {
 		changelog_text += "<p>&nbsp;</p>\n"
 	}
 	
-	changelog_text += "<p>Last successfully tested on:</p>\n<p>Minecraft version <code>${minecraft_version}</code></p>\n<p>Yarn mappings <code>${yarn_mappings}</code></p>\n<p>Fabric Loader <code>${loader_version}</code></p>\n"
+	changelog_text += "<p>Last successfully tested on:</p>\n"
+	changelog_text += "<p>Minecraft version <code>${minecraft_version}</code></p>\n"
+	
+	if(project.hasProperty("loader_version")) {
+		changelog_text += "<p>Fabric Loader <code>${loader_version}</code></p>\n"
+	}
+	
+	changelog_text += "<p>Yarn mappings <code>${yarn_mappings}</code></p>\n"
 	
 	if(project.hasProperty("changelog_fabric_version")) {
 		changelog_text += "<p><a href=\"https://www.curseforge.com/minecraft/mc-mods/fabric-api/files/all\" rel=\"nofollow\">Fabric API <code>${changelog_fabric_version}</code></a></p>\n"
@@ -226,17 +241,23 @@ curseforge {
 	
 	if(project.hasProperty("curseforge_id")) {
 		project {
-			id = project.properties.curseforge_id
+			id = project.curseforge_id
 			
-			releaseType = project.release_type
-			if(project.hasProperty("release_versions")) {
-				project.release_versions.split(", ").each { String gameVersion ->
+			releaseType = project.curseforge_release_type
+			
+			addGameVersion "Fabric"
+			
+			def display_name_prefix = ""
+			if(project.hasProperty("curseforge_release_versions")) {
+				def game_versions = project.curseforge_release_versions.split(", ")
+				display_name_prefix = "[${game_versions[0]} - ${game_versions[-1].split("-")[0]}] "
+				game_versions.each { String gameVersion ->
 					addGameVersion gameVersion
 				}
 			}
 			
 			mainArtifact(remapJar) {
-				displayName = "${archives_base_name}-${project.version}.jar"
+				displayName = "${display_name_prefix}${archives_base_name} ${project.mod_version}"
 				
 				if(project.hasProperty("required_dep_slugs") || project.hasProperty("embedded_lib_slugs") || project.hasProperty("optional_dep_slugs") || project.hasProperty("compatible_tool_slugs") || project.hasProperty("incompatible_slugs")) {
 					relations {
@@ -277,7 +298,7 @@ curseforge {
 			}
 			
 			addArtifact(sourcesJar) {
-				displayName = "${archives_base_name}-${project.version}-sources.jar"
+				displayName = "${archives_base_name} ${project.mod_version} Source Code"
 			}
 			
 			afterEvaluate {
@@ -287,5 +308,34 @@ curseforge {
 		options {
 			forgeGradleIntegration = false
 		}
+	}
+}
+
+import com.modrinth.minotaur.TaskModrinthUpload
+
+task publishModrinth (type: TaskModrinthUpload) {
+	if(project.hasProperty("modrinth_token")) {
+		token = project.properties.modrinth_token
+	}
+	
+	if(project.hasProperty("modrinth_id")) {
+		projectId = project.modrinth_id
+		
+		releaseType = project.modrinth_release_type
+		
+		addLoader "fabric"
+		
+		if(project.hasProperty("modrinth_release_versions")) {
+			project.modrinth_release_versions.split(", ").each { String gameVersion ->
+				addGameVersion gameVersion
+			}
+		}
+		
+		versionName = "${archives_base_name} ${project.mod_version}"
+		
+		versionNumber = project.version
+		
+		uploadFile = remapJar
+		addFile sourcesJar
 	}
 }
