@@ -103,8 +103,8 @@ dependencies {
 			modApi("virtuoel:Statement:${statement_version}", excludeFabric)
 		}
 		
-		if(project.hasProperty("statement_commit")) {
-			modApi("com.github.Virtuoel:Statement:${statement_commit}", excludeFabric)
+		if(project.hasProperty("statement_tag")) {
+			modApi("com.github.Virtuoel:Statement:${statement_tag}", excludeFabric)
 		}
 	}
 }
