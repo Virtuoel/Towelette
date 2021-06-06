@@ -61,6 +61,7 @@
 		"compat116plus.RedstoneWireBlockMixin",
 		"compat116plus.StemBlockMixin",
 		"compat116plus.TallPlantBlockMixin",
+		"compat117plus.BucketItemMixin",
 		"fluidloggable.BlockMixin",
 		"fluidloggable.FluidloggableBlockMarkerMixin",
 		"fluidloggable.compat116plus.FluidloggableBlockMarkerMixin",
