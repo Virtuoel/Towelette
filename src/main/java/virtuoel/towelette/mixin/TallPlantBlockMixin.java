@@ -11,14 +11,8 @@ import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(TallPlantBlock.class)
-public abstract class TallPlantMixin
+public abstract class TallPlantBlockMixin
 {
-	@Redirect(method = "onBreakInCreative", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
-	private static boolean onBreakSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
-	{
-		return obj.setBlockState(pos, obj.getFluidState(pos).getBlockState(), flags);
-	}
-	
 	@Redirect(method = { "onPlaced", "placeAt" }, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private boolean placement_growth_SetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
