@@ -45,6 +45,7 @@
 		"compat115minus.BlockStateMixin",
 		"compat115minus.FlowableFluidMixin",
 		"compat115minus.FluidBlockMixin",
+		"compat115minus.WorldMixin",
 		"compat115plus.BucketItemMixin",
 		"compat115plus.DoorBlockMixin",
 		"compat115plus.FlowerPotBlockMixin",
