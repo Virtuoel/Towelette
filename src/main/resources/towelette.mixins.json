@@ -63,7 +63,8 @@
 		"compat116plus.TallPlantBlockMixin",
 		"fluidloggable.BlockMixin",
 		"fluidloggable.FluidloggableBlockMarkerMixin",
-		"fluidloggable.compat116plus.FluidloggableBlockMarkerMixin"
+		"fluidloggable.compat116plus.FluidloggableBlockMarkerMixin",
+		"fluidloggable.compat117plus.FluidloggableBlockMarkerMixin"
 	],
 	"client":
 	[
