@@ -34,7 +34,6 @@ import net.minecraft.block.DoorBlock;
 import net.minecraft.block.DragonEggBlock;
 import net.minecraft.block.EnchantingTableBlock;
 import net.minecraft.block.EndPortalFrameBlock;
-import net.minecraft.block.EndRodBlock;
 import net.minecraft.block.EnderChestBlock;
 import net.minecraft.block.FenceGateBlock;
 import net.minecraft.block.FernBlock;
@@ -51,6 +50,7 @@ import net.minecraft.block.PistonBlock;
 import net.minecraft.block.PistonExtensionBlock;
 import net.minecraft.block.PistonHeadBlock;
 import net.minecraft.block.RedstoneWireBlock;
+import net.minecraft.block.RodBlock;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.block.SeaPickleBlock;
@@ -103,7 +103,7 @@ import virtuoel.towelette.util.AutomaticWaterloggableMarker;
 	CoralParentBlock.class,
 	DoorBlock.class,
 	EndPortalFrameBlock.class,
-	EndRodBlock.class,
+	RodBlock.class,
 	AnvilBlock.class,
 	DragonEggBlock.class,
 	FlowerPotBlock.class,

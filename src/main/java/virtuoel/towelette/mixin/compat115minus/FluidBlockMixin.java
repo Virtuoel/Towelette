@@ -15,7 +15,7 @@ import net.minecraft.world.World;
 @Mixin(FluidBlock.class)
 public class FluidBlockMixin
 {
-	@Inject(method = "onEntityCollision", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;setInLava()V"), cancellable = true)
+	@Inject(method = "method_9548", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_1297;method_20447()V", remap = false), remap = false, cancellable = true)
 	private void onOnEntityCollision(BlockState state, World world, BlockPos pos, Entity entity, CallbackInfo info)
 	{
 		final double f = (float) pos.getY() + world.getFluidState(pos).getHeight(world, pos);
