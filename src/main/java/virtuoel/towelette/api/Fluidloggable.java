@@ -4,7 +4,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Waterloggable;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
@@ -22,11 +21,5 @@ public interface Fluidloggable extends Waterloggable
 	default boolean tryFillWithFluid(WorldAccess world, BlockPos pos, BlockState blockState, FluidState fluidState)
 	{
 		return FluidUtils.tryFillWithFluid(world, pos, blockState, fluidState);
-	}
-	
-	@Override
-	default ItemStack tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state)
-	{
-		return new ItemStack(FluidUtils.tryDrainFluid(world, pos, state).getBucketItem());
 	}
 }
