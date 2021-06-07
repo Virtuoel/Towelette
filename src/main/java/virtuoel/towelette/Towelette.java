@@ -19,10 +19,8 @@ import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.state.property.Properties;
-import net.minecraft.state.property.Property;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.IdList;
@@ -35,6 +33,7 @@ import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.util.AutomaticFluidloggableMarker;
 import virtuoel.towelette.util.AutomaticWaterloggableMarker;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 public class Towelette implements ModInitializer, ToweletteApi, StatementApi
@@ -338,14 +337,14 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	{
 		if (idList == Block.STATE_IDS)
 		{
-			final BlockState blockState = ((BlockState) state);
-			final ImmutableMap<Property<?>, Comparable<?>> entries = blockState.getEntries();
+			final ToweletteBlockStateExtensions blockState = ((ToweletteBlockStateExtensions) state);
+			final ImmutableMap<?, Comparable<?>> entries = blockState.towelette_getEntries();
 			
 			if (entries.containsKey(FluidProperties.FLUID))
 			{
-				return (!blockState.get(FluidProperties.FLUID).equals(Registry.FLUID.getDefaultId())) ||
-					(entries.containsKey(FluidProperties.LEVEL_1_8) && blockState.get(FluidProperties.LEVEL_1_8) != 8) ||
-					(entries.containsKey(FluidProperties.FALLING) && blockState.get(FluidProperties.FALLING));
+				return (!blockState.towelette_get(FluidProperties.FLUID).equals(Registry.FLUID.getDefaultId())) ||
+					(entries.containsKey(FluidProperties.LEVEL_1_8) && blockState.<Integer>towelette_get(FluidProperties.LEVEL_1_8) != 8) ||
+					(entries.containsKey(FluidProperties.FALLING) && blockState.<Boolean>towelette_get(FluidProperties.FALLING));
 			}
 		}
 		

@@ -12,6 +12,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
 import virtuoel.towelette.util.TagCompatibility;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(FireBlock.class)
 public class FireBlockMixin
@@ -28,6 +29,6 @@ public class FireBlockMixin
 	@Redirect(method = { "scheduledTick", "trySpreadingFire" }, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private boolean spreadSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
-		return obj.getFluidState(pos).isEmpty() ? obj.setBlockState(pos, state, flags) : false;
+		return ((ToweletteFluidStateExtensions) (Object) obj.getFluidState(pos)).towelette_isEmpty() ? obj.setBlockState(pos, state, flags) : false;
 	}
 }

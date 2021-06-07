@@ -9,6 +9,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(BedBlock.class)
 public abstract class BedBlockMixin
@@ -16,7 +17,7 @@ public abstract class BedBlockMixin
 	@Redirect(method = "onBreak", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private boolean onBreakSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
-		return obj.setBlockState(pos, obj.getFluidState(pos).getBlockState(), flags);
+		return obj.setBlockState(pos, ((ToweletteFluidStateExtensions) (Object) obj.getFluidState(pos)).towelette_getBlockState(), flags);
 	}
 	
 	@Redirect(method = "onPlaced", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))

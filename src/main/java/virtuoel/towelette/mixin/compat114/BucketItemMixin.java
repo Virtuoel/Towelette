@@ -20,6 +20,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(BucketItem.class)
 public class BucketItemMixin
@@ -50,7 +51,7 @@ public class BucketItemMixin
 		
 		if (block instanceof FluidFillable)
 		{
-			return ((FluidFillable) block).canFillWithFluid(world, blockPos, state, fluid) || (world.getFluidState(blockPos).isEmpty() && replaceable);
+			return ((FluidFillable) block).canFillWithFluid(world, blockPos, state, fluid) || (((ToweletteFluidStateExtensions) (Object) world.getFluidState(blockPos)).towelette_isEmpty() && replaceable);
 		}
 		
 		return replaceable;

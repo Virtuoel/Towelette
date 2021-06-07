@@ -8,6 +8,7 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.TallPlantBlock;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(TallPlantBlock.class)
 public abstract class TallPlantBlockMixin
@@ -15,6 +16,6 @@ public abstract class TallPlantBlockMixin
 	@Redirect(method = "onBreak", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private boolean onBreakSetBlockStateProxy(World obj, BlockPos pos, BlockState state, int flags)
 	{
-		return obj.setBlockState(pos, obj.getFluidState(pos).getBlockState(), flags);
+		return obj.setBlockState(pos, ((ToweletteFluidStateExtensions) (Object) obj.getFluidState(pos)).towelette_getBlockState(), flags);
 	}
 }

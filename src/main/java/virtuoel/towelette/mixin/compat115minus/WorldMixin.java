@@ -14,6 +14,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import virtuoel.towelette.util.TagCompatibility;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(World.class)
 public abstract class WorldMixin
@@ -23,7 +24,7 @@ public abstract class WorldMixin
 	@Inject(method = "method_8425", locals = LocalCapture.CAPTURE_FAILHARD, cancellable = true, at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/class_1937;method_8320(Lnet/minecraft/class_2338;)Lnet/minecraft/class_2680;", remap = false), remap = false)
 	private void doesAreaContainFireSourceGetFluidState(Box box, CallbackInfoReturnable<Boolean> info, int noop1, int noop2, int noop3, int noop4, int noop5, int noop6, @Coerce BlockPos pos, int noop7, int noop8, int noop9)
 	{
-		if (method_8316(pos).isIn(TagCompatibility.FluidTags.LAVA))
+		if (((ToweletteFluidStateExtensions) (Object) method_8316(pos)).towelette_isIn(TagCompatibility.FluidTags.LAVA))
 		{
 			info.setReturnValue(true);
 		}

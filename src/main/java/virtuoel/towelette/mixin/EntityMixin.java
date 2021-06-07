@@ -15,17 +15,20 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import virtuoel.towelette.api.CollidableFluid;
+import virtuoel.towelette.util.ToweletteEntityExtensions;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(Entity.class)
-public abstract class EntityMixin
+public abstract class EntityMixin implements ToweletteEntityExtensions
 {
 	@Shadow World world;
 	
 	@Inject(method = "checkBlockCollision", locals = LocalCapture.CAPTURE_FAILSOFT, at = @At(value = "INVOKE", shift = Shift.AFTER, target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
 	private void checkBlockCollisionGetFluidState(CallbackInfo info, Box noop1, @Coerce BlockPos noop2, @Coerce BlockPos noop3, @Coerce BlockPos pos, int noop4, int noop5, int noop6)
 	{
-		final FluidState state = world.getFluidState(pos);
+		final FluidState fluidState = world.getFluidState(pos);
+		final ToweletteFluidStateExtensions state = (ToweletteFluidStateExtensions) (Object) fluidState;
 		
-		((CollidableFluid) state.getFluid()).onEntityCollision(state, world, pos, (Entity) (Object) this);
+		((CollidableFluid) state.towelette_getFluid()).onEntityCollision(fluidState, world, pos, (Entity) (Object) this);
 	}
 }

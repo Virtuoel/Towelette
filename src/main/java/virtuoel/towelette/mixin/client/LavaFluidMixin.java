@@ -12,6 +12,7 @@ import net.minecraft.fluid.LavaFluid;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
 @Mixin(LavaFluid.class)
 public abstract class LavaFluidMixin
@@ -19,7 +20,7 @@ public abstract class LavaFluidMixin
 	@Inject(at = @At("HEAD"), method = "randomDisplayTick", cancellable = true)
 	private void onRandomDisplayTick(World world, BlockPos pos, FluidState state, Random random, CallbackInfo info)
 	{
-		if (world.getBlockState(pos).isSideSolidFullSquare(world, pos, Direction.UP))
+		if (((ToweletteBlockStateExtensions) world.getBlockState(pos)).towelette_isSideSolidFullSquare(world, pos, Direction.UP))
 		{
 			info.cancel();
 		}

@@ -54,18 +54,19 @@ public abstract class FlowableFluidMixin
 	}
 	
 	@Inject(at = @At("RETURN"), method = "canFill", cancellable = true)
-	private void onCanFill(BlockView blockView, BlockPos pos, BlockState state, Fluid fluid, CallbackInfoReturnable<Boolean> info)
+	private void onCanFill(BlockView blockView, BlockPos pos, BlockState blockState, Fluid fluid, CallbackInfoReturnable<Boolean> info)
 	{
-		final Block block = ((ToweletteBlockStateExtensions) state).towelette_getBlock();
+		final ToweletteBlockStateExtensions state = ((ToweletteBlockStateExtensions) blockState);
+		final Block block = state.towelette_getBlock();
 		
 		if (!info.getReturnValueZ())
 		{
-			if ((block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(blockView, pos, state, fluid)) || (state.isIn(Towelette.DISPLACEABLE) && !state.isIn(Towelette.UNDISPLACEABLE) && ((ToweletteFluidStateExtensions) (Object) blockView.getFluidState(pos)).towelette_isEmpty()))
+			if ((block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(blockView, pos, blockState, fluid)) || (state.towelette_isIn(Towelette.DISPLACEABLE) && !state.towelette_isIn(Towelette.UNDISPLACEABLE) && ((ToweletteFluidStateExtensions) (Object) blockView.getFluidState(pos)).towelette_isEmpty()))
 			{
 				info.setReturnValue(true);
 			}
 		}
-		else if (block instanceof FluidFillable && (state.isIn(Towelette.UNDISPLACEABLE) || (!(block instanceof FluidBlock) && !((ToweletteFluidStateExtensions) (Object) blockView.getFluidState(pos)).towelette_isEmpty())))
+		else if (block instanceof FluidFillable && (state.towelette_isIn(Towelette.UNDISPLACEABLE) || (!(block instanceof FluidBlock) && !((ToweletteFluidStateExtensions) (Object) blockView.getFluidState(pos)).towelette_isEmpty())))
 		{
 			info.setReturnValue(false);
 		}

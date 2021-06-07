@@ -6,6 +6,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.BlockView;
@@ -19,6 +20,8 @@ public abstract class FluidStateMixin implements ToweletteFluidStateExtensions
 	@Shadow abstract boolean isStill();
 	@Shadow abstract VoxelShape getShape(BlockView world, BlockPos pos);
 	@Shadow abstract BlockState getBlockState();
+	@Shadow abstract boolean isIn(Tag<Fluid> tag);
+	@Shadow abstract float getHeight(BlockView world, BlockPos pos);
 	
 	@Override
 	public Fluid towelette_getFluid()
@@ -48,5 +51,18 @@ public abstract class FluidStateMixin implements ToweletteFluidStateExtensions
 	public BlockState towelette_getBlockState()
 	{
 		return getBlockState();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <O> boolean towelette_isIn(Tag<O> tag)
+	{
+		return isIn((Tag<Fluid>) tag);
+	}
+	
+	@Override
+	public float towelette_getHeight(BlockView world, BlockPos pos)
+	{
+		return getHeight(world, pos);
 	}
 }

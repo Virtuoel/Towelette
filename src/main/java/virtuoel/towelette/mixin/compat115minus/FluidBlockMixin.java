@@ -11,6 +11,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(FluidBlock.class)
 public class FluidBlockMixin
@@ -18,7 +19,7 @@ public class FluidBlockMixin
 	@Inject(method = "method_9548", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_1297;method_20447()V", remap = false), remap = false, cancellable = true)
 	private void onOnEntityCollision(BlockState state, World world, BlockPos pos, Entity entity, CallbackInfo info)
 	{
-		final double f = (float) pos.getY() + world.getFluidState(pos).getHeight(world, pos);
+		final double f = (float) pos.getY() + ((ToweletteFluidStateExtensions) (Object) world.getFluidState(pos)).towelette_getHeight(world, pos);
 		final Box bounds = entity.getBoundingBox();
 		
 		if (bounds.minY >= f || f <= bounds.maxY)

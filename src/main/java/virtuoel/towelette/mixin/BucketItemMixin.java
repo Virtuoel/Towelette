@@ -11,7 +11,6 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.FluidFillable;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BucketItem;
 import net.minecraft.util.Hand;
@@ -19,6 +18,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(BucketItem.class)
 public class BucketItemMixin
@@ -28,8 +28,8 @@ public class BucketItemMixin
 	@Redirect(method = "use", at = @At(value = "INVOKE", ordinal = 0, target = "Lnet/minecraft/world/World;getBlockState(Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/block/BlockState;"))
 	private BlockState onUseGetBlockStateProxy(World obj, BlockPos blockPos)
 	{
-		final FluidState state = obj.getFluidState(blockPos);
-		if (!state.isEmpty() && !state.isStill())
+		final ToweletteFluidStateExtensions state = (ToweletteFluidStateExtensions) (Object) obj.getFluidState(blockPos);
+		if (!state.towelette_isEmpty() && !state.towelette_isStill())
 		{
 			return Blocks.AIR.getDefaultState();
 		}
@@ -45,7 +45,7 @@ public class BucketItemMixin
 	@Redirect(method = "use", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/math/BlockPos;offset(Lnet/minecraft/util/math/Direction;)Lnet/minecraft/util/math/BlockPos;"))
 	private BlockPos onUseOffsetProxy(BlockPos obj, Direction side, World world, PlayerEntity playerEntity, Hand hand)
 	{
-		if (world.getFluidState(obj).getFluid() != fluid)
+		if (((ToweletteFluidStateExtensions) (Object) world.getFluidState(obj)).towelette_getFluid() != fluid)
 		{
 			final BlockState state = world.getBlockState(obj);
 			final Block block = ((ToweletteBlockStateExtensions) state).towelette_getBlock();

@@ -13,4 +13,5 @@ public interface ToweletteFluidStateExtensions extends ToweletteStateExtensions
 	boolean towelette_isEmpty();
 	VoxelShape towelette_getShape(BlockView world, BlockPos pos);
 	BlockState towelette_getBlockState();
+	float towelette_getHeight(BlockView world, BlockPos pos);
 }

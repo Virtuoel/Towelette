@@ -15,6 +15,7 @@ import net.minecraft.block.entity.PistonBlockEntity;
 import net.minecraft.util.math.BlockPos;
 import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(PistonBlockEntity.class)
 public abstract class PistonBlockEntityMixin extends BlockEntity
@@ -31,6 +32,6 @@ public abstract class PistonBlockEntityMixin extends BlockEntity
 			.filter(JsonElement::isJsonPrimitive)
 			.map(JsonElement::getAsBoolean).orElse(true);
 		
-		return state == Blocks.AIR.getDefaultState() ? this.world.getFluidState(pos).getBlockState() : !unpushableFluids ? state : FluidUtils.getStateWithFluid(state, this.world, pos);
+		return state == Blocks.AIR.getDefaultState() ? ((ToweletteFluidStateExtensions) (Object) this.world.getFluidState(pos)).towelette_getBlockState() : !unpushableFluids ? state : FluidUtils.getStateWithFluid(state, this.world, pos);
 	}
 }

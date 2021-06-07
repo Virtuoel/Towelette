@@ -12,6 +12,7 @@ import net.minecraft.state.property.Properties;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
 @Mixin(TrapdoorBlock.class)
 public abstract class TrapdoorBlockMixin
@@ -19,7 +20,7 @@ public abstract class TrapdoorBlockMixin
 	@Inject(at = @At("HEAD"), method = "neighborUpdate")
 	private void onNeighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos otherPos, boolean unknown, CallbackInfo info)
 	{
-		if (!world.isClient && world.isReceivingRedstonePower(pos) != state.get(Properties.POWERED))
+		if (!world.isClient && world.isReceivingRedstonePower(pos) != ((ToweletteBlockStateExtensions) state).<Boolean>towelette_get(Properties.POWERED))
 		{
 			FluidUtils.scheduleFluidTick(state, world, pos);
 		}

@@ -16,8 +16,10 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
+import net.minecraft.tag.Tag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import virtuoel.towelette.util.FluidUtils;
@@ -32,6 +34,8 @@ public abstract class AbstractBlockStateMixin implements ToweletteBlockStateExte
 	@Shadow abstract int getLuminance();
 	@Shadow abstract FluidState getFluidState();
 	@Shadow @Final @Mutable int luminance;
+	@Shadow abstract boolean isIn(Tag<Block> tag);
+	@Shadow abstract boolean isSideSolidFullSquare(BlockView world, BlockPos pos, Direction direction);
 	
 	@Override
 	public Block towelette_getBlock()
@@ -49,6 +53,19 @@ public abstract class AbstractBlockStateMixin implements ToweletteBlockStateExte
 	public int towelette_getLuminance()
 	{
 		return getLuminance();
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public <O> boolean towelette_isIn(Tag<O> tag)
+	{
+		return isIn((Tag<Block>) tag);
+	}
+	
+	@Override
+	public boolean towelette_isSideSolidFullSquare(BlockView world, BlockPos pos, Direction direction)
+	{
+		return isSideSolidFullSquare(world, pos, direction);
 	}
 	
 	@Unique boolean setFluidLuminance = false;
