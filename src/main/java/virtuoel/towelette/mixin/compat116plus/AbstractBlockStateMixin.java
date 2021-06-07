@@ -22,6 +22,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import virtuoel.towelette.util.FluidUtils;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(AbstractBlock.AbstractBlockState.class)
 public abstract class AbstractBlockStateMixin implements ToweletteBlockStateExtensions
@@ -59,11 +60,11 @@ public abstract class AbstractBlockStateMixin implements ToweletteBlockStateExte
 		{
 			this.setFluidLuminance = true;
 			
-			final FluidState fluidState = getFluidState();
+			final ToweletteFluidStateExtensions fluidState = (ToweletteFluidStateExtensions) (Object) getFluidState();
 			
-			if (fluidState.getFluid() != Fluids.EMPTY)
+			if (fluidState.towelette_getFluid() != Fluids.EMPTY)
 			{
-				final BlockState fluidBlockState = fluidState.getBlockState();
+				final BlockState fluidBlockState = fluidState.towelette_getBlockState();
 				
 				if (fluidBlockState != (BlockState) (Object) this)
 				{

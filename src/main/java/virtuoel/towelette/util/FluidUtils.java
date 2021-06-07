@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.jetbrains.annotations.Nullable;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.math.DoubleMath;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
@@ -58,8 +59,8 @@ public class FluidUtils
 			{
 				if (shape != VoxelShapes.fullCube() && fromShape != VoxelShapes.fullCube())
 				{
-					final FluidState fluidState = world.getFluidState(fromPos);
-					final VoxelShape inverseShape = fluidState.isEmpty() ? VoxelShapes.empty() : VoxelShapes.combine(VoxelShapes.fullCube(), fluidState.getShape(world, fromPos), BooleanBiFunction.ONLY_FIRST);
+					final ToweletteFluidStateExtensions fluidState = (ToweletteFluidStateExtensions) (Object) world.getFluidState(fromPos);
+					final VoxelShape inverseShape = fluidState.towelette_isEmpty() ? VoxelShapes.empty() : VoxelShapes.combine(VoxelShapes.fullCube(), fluidState.towelette_getShape(world, fromPos), BooleanBiFunction.ONLY_FIRST);
 					final VoxelShape combinedFromShape = VoxelShapes.combine(fromShape, inverseShape, BooleanBiFunction.OR);
 					
 					final Direction.Axis axis = direction.getAxis();
@@ -114,7 +115,9 @@ public class FluidUtils
 	@Nullable
 	public static BlockState getStateWithFluid(@Nullable BlockState state, BlockView world, BlockPos pos)
 	{
-		if (state != null && (state.getEntries().containsKey(Properties.WATERLOGGED) || state.getEntries().containsKey(FluidProperties.FLUID)))
+		final ImmutableMap<?, Comparable<?>> blockEntries = ((ToweletteBlockStateExtensions) state).towelette_getEntries();
+		
+		if (state != null && (blockEntries.containsKey(Properties.WATERLOGGED) || blockEntries.containsKey(FluidProperties.FLUID)))
 		{
 			return getStateWithFluid(state, world.getFluidState(pos));
 		}
@@ -123,55 +126,66 @@ public class FluidUtils
 	}
 	
 	@Nullable
-	public static BlockState getStateWithFluid(@Nullable BlockState blockState, FluidState state)
+	public static BlockState getStateWithFluid(@Nullable BlockState block, FluidState fluid)
 	{
-		if (blockState != null)
+		if (block != null)
 		{
-			final ToweletteFluidStateExtensions fluidState = (ToweletteFluidStateExtensions) (Object) state;
-			final boolean isDoubleSlab = blockState.getEntries().containsKey(Properties.SLAB_TYPE) && blockState.get(Properties.SLAB_TYPE) == SlabType.DOUBLE;
+			final ToweletteFluidStateExtensions fluidState = (ToweletteFluidStateExtensions) (Object) fluid;
+			final ImmutableMap<?, Comparable<?>> fluidEntries = fluidState.towelette_getEntries();
+			ToweletteStateExtensions blockState = ((ToweletteBlockStateExtensions) block);
+			final ImmutableMap<?, Comparable<?>> blockEntries = blockState.towelette_getEntries();
 			
-			if (blockState.getEntries().containsKey(Properties.WATERLOGGED))
+			final boolean isDoubleSlab = blockEntries.containsKey(Properties.SLAB_TYPE) && blockState.<SlabType>towelette_get(Properties.SLAB_TYPE) == SlabType.DOUBLE;
+			
+			if (blockEntries.containsKey(Properties.WATERLOGGED))
 			{
-				blockState = blockState.with(Properties.WATERLOGGED, !isDoubleSlab && fluidState.towelette_getFluid() == Fluids.WATER);
+				blockState = blockState.towelette_with(Properties.WATERLOGGED, !isDoubleSlab && fluidState.towelette_getFluid() == Fluids.WATER);
 			}
 			
-			final boolean hasFluidLevel = blockState.getEntries().containsKey(FluidProperties.LEVEL_1_8);
+			final boolean hasFluidLevel = blockEntries.containsKey(FluidProperties.LEVEL_1_8);
 			final boolean cannotFillWithFluid = isDoubleSlab || (!hasFluidLevel && !fluidState.towelette_isEmpty() && !fluidState.towelette_isStill());
 			
-			if (blockState.getEntries().containsKey(FluidProperties.FLUID))
+			if (blockEntries.containsKey(FluidProperties.FLUID))
 			{
-				blockState = blockState.with(FluidProperties.FLUID, cannotFillWithFluid ? Registry.FLUID.getDefaultId() : getFluidId(fluidState.towelette_getFluid()));
+				blockState = blockState.towelette_with(FluidProperties.FLUID, cannotFillWithFluid ? Registry.FLUID.getDefaultId() : getFluidId(fluidState.towelette_getFluid()));
 			}
 			
-			if (blockState.getEntries().containsKey(FluidProperties.FALLING))
+			if (blockEntries.containsKey(FluidProperties.FALLING))
 			{
-				blockState = blockState.with(FluidProperties.FALLING, state.getEntries().containsKey(Properties.FALLING) && state.get(Properties.FALLING));
+				blockState = blockState.towelette_with(FluidProperties.FALLING, fluidEntries.containsKey(Properties.FALLING) && fluidState.<Boolean>towelette_get(Properties.FALLING));
 			}
 			
 			if (hasFluidLevel)
 			{
-				blockState = blockState.with(FluidProperties.LEVEL_1_8, !isDoubleSlab && state.getEntries().containsKey(Properties.LEVEL_1_8) ? state.get(Properties.LEVEL_1_8) : 8);
+				blockState = blockState.towelette_with(FluidProperties.LEVEL_1_8, !isDoubleSlab && fluidEntries.containsKey(Properties.LEVEL_1_8) ? fluidState.towelette_get(Properties.LEVEL_1_8) : 8);
 			}
+			
+			return blockState.towelette_cast();
 		}
 		
-		return blockState;
+		return null;
 	}
 	
-	public static FluidState getFluidState(BlockState blockState)
+	public static FluidState getFluidState(BlockState block)
 	{
-		FluidState state = getFluid(blockState).getDefaultState();
+		FluidState fluid = getFluid(block).getDefaultState();
 		
-		if (state.getEntries().containsKey(Properties.FALLING))
+		ToweletteStateExtensions fluidState = (ToweletteStateExtensions) (Object) fluid;
+		final ImmutableMap<?, Comparable<?>> fluidEntries = fluidState.towelette_getEntries();
+		ToweletteBlockStateExtensions blockState = ((ToweletteBlockStateExtensions) block);
+		final ImmutableMap<?, Comparable<?>> blockEntries = blockState.towelette_getEntries();
+		
+		if (fluidEntries.containsKey(Properties.FALLING))
 		{
-			state = state.with(Properties.FALLING, blockState.getEntries().containsKey(FluidProperties.FALLING) && blockState.get(FluidProperties.FALLING));
+			fluidState = fluidState.towelette_with(Properties.FALLING, blockEntries.containsKey(FluidProperties.FALLING) && blockState.<Boolean>towelette_get(FluidProperties.FALLING));
 		}
 		
-		if (blockState.getEntries().containsKey(FluidProperties.LEVEL_1_8) && state.getEntries().containsKey(Properties.LEVEL_1_8))
+		if (blockEntries.containsKey(FluidProperties.LEVEL_1_8) && fluidEntries.containsKey(Properties.LEVEL_1_8))
 		{
-			state = state.with(Properties.LEVEL_1_8, blockState.get(FluidProperties.LEVEL_1_8));
+			fluidState = fluidState.towelette_with(Properties.LEVEL_1_8, blockState.<Integer>towelette_get(FluidProperties.LEVEL_1_8));
 		}
 		
-		return state;
+		return fluidState.<FluidState>towelette_cast();
 	}
 	
 	public static Fluid getFluid(BlockState state)
@@ -180,12 +194,15 @@ public class FluidUtils
 		
 		if (state != null)
 		{
-			if (state.getEntries().containsKey(FluidProperties.FLUID))
+			ToweletteBlockStateExtensions blockState = ((ToweletteBlockStateExtensions) state);
+			final ImmutableMap<?, Comparable<?>> blockEntries = blockState.towelette_getEntries();
+			
+			if (blockEntries.containsKey(FluidProperties.FLUID))
 			{
-				ret = Registry.FLUID.get(state.get(FluidProperties.FLUID));
+				ret = Registry.FLUID.get(blockState.<Identifier>towelette_get(FluidProperties.FLUID));
 			}
 			
-			if (ret.getDefaultState().isEmpty() && state.getEntries().containsKey(Properties.WATERLOGGED) && state.get(Properties.WATERLOGGED))
+			if (((ToweletteFluidStateExtensions) (Object) ret.getDefaultState()).towelette_isEmpty() && blockEntries.containsKey(Properties.WATERLOGGED) && blockState.<Boolean>towelette_get(Properties.WATERLOGGED))
 			{
 				ret = Fluids.WATER;
 			}
@@ -213,7 +230,7 @@ public class FluidUtils
 	
 	public static boolean scheduleFluidTick(Fluid fluid, WorldAccess world, BlockPos pos)
 	{
-		if (!fluid.getDefaultState().isEmpty())
+		if (!((ToweletteFluidStateExtensions) (Object) fluid.getDefaultState()).towelette_isEmpty())
 		{
 			scheduleFluidTickImpl(fluid, world, pos);
 			return true;
@@ -229,14 +246,17 @@ public class FluidUtils
 	
 	private static boolean isFluidValidForState(BlockState state, Fluid fluid)
 	{
-		if (fluid == Fluids.WATER && state.getEntries().containsKey(Properties.WATERLOGGED) && !state.get(Properties.WATERLOGGED))
+		ToweletteBlockStateExtensions blockState = ((ToweletteBlockStateExtensions) state);
+		final ImmutableMap<?, Comparable<?>> blockEntries = blockState.towelette_getEntries();
+		
+		if (fluid == Fluids.WATER && blockEntries.containsKey(Properties.WATERLOGGED) && !blockState.<Boolean>towelette_get(Properties.WATERLOGGED))
 		{
 			return true;
 		}
 		
-		if (state.getEntries().containsKey(FluidProperties.FLUID) && propertyContains(fluid))
+		if (blockEntries.containsKey(FluidProperties.FLUID) && propertyContains(fluid))
 		{
-			if (!fluid.isStill(fluid.getDefaultState()) && !state.getEntries().containsKey(FluidProperties.LEVEL_1_8))
+			if (!fluid.isStill(fluid.getDefaultState()) && !blockEntries.containsKey(FluidProperties.LEVEL_1_8))
 			{
 				return false;
 			}
@@ -295,33 +315,36 @@ public class FluidUtils
 	
 	public static Fluid tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state)
 	{
-		final FluidState fluidState = getFluidState(state);
+		final ToweletteFluidStateExtensions fluidState = (ToweletteFluidStateExtensions) (Object) getFluidState(state);
 		
-		if (!fluidState.isEmpty())
+		if (!fluidState.towelette_isEmpty())
 		{
-			if (state.getEntries().containsKey(FluidProperties.FLUID))
+			ToweletteStateExtensions blockState = ((ToweletteStateExtensions) state);
+			final ImmutableMap<?, Comparable<?>> blockEntries = blockState.towelette_getEntries();
+			
+			if (blockEntries.containsKey(FluidProperties.FLUID))
 			{
-				state = state.with(FluidProperties.FLUID, Registry.FLUID.getDefaultId());
+				blockState = blockState.towelette_with(FluidProperties.FLUID, Registry.FLUID.getDefaultId());
 			}
 			
-			if (state.getEntries().containsKey(FluidProperties.FALLING))
+			if (blockEntries.containsKey(FluidProperties.FALLING))
 			{
-				state = state.with(FluidProperties.FALLING, false);
+				blockState = blockState.towelette_with(FluidProperties.FALLING, false);
 			}
 			
-			if (state.getEntries().containsKey(FluidProperties.LEVEL_1_8))
+			if (blockEntries.containsKey(FluidProperties.LEVEL_1_8))
 			{
-				state = state.with(FluidProperties.LEVEL_1_8, 8);
+				blockState = blockState.towelette_with(FluidProperties.LEVEL_1_8, 8);
 			}
 			
-			if (state.getEntries().containsKey(Properties.WATERLOGGED))
+			if (blockEntries.containsKey(Properties.WATERLOGGED))
 			{
-				state = state.with(Properties.WATERLOGGED, false);
+				blockState = blockState.towelette_with(Properties.WATERLOGGED, false);
 			}
 			
-			world.setBlockState(pos, state, 3);
+			world.setBlockState(pos, blockState.towelette_cast(), 3);
 		}
 		
-		return fluidState.isStill() ? fluidState.getFluid() : Fluids.EMPTY;
+		return fluidState.towelette_isStill() ? fluidState.towelette_getFluid() : Fluids.EMPTY;
 	}
 }
