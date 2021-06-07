@@ -35,6 +35,7 @@ import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.util.AutomaticFluidloggableMarker;
 import virtuoel.towelette.util.AutomaticWaterloggableMarker;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 {
@@ -270,7 +271,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			return true;
 		}
 		
-		return FLUID_MOD_ID_BLACKLIST.contains(id.getNamespace()) || FLUID_ID_BLACKLIST.contains(id) || FluidUtils.propertyContains(id) || (!getConfigBoolean("flowingFluidlogging", false) && !fluid.getDefaultState().isStill());
+		return FLUID_MOD_ID_BLACKLIST.contains(id.getNamespace()) || FLUID_ID_BLACKLIST.contains(id) || FluidUtils.propertyContains(id) || (!getConfigBoolean("flowingFluidlogging", false) && !((ToweletteFluidStateExtensions) (Object) fluid.getDefaultState()).towelette_isStill());
 	}
 	
 	private static void collectConfigStringArray(String config, Collection<String> collection)

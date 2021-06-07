@@ -18,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import virtuoel.towelette.util.FluidUtils;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(BlockState.class)
 public abstract class BlockStateMixin implements ToweletteBlockStateExtensions
@@ -52,11 +53,11 @@ public abstract class BlockStateMixin implements ToweletteBlockStateExtensions
 	@Inject(at = @At("RETURN"), method = "method_11630", cancellable = true, remap = false)
 	private void onGetLuminance(CallbackInfoReturnable<Integer> info)
 	{
-		final FluidState fluidState = method_11618();
+		final ToweletteFluidStateExtensions fluidState = (ToweletteFluidStateExtensions) (Object)method_11618();
 		
-		if (fluidState.getFluid() != Fluids.EMPTY)
+		if (fluidState.towelette_getFluid() != Fluids.EMPTY)
 		{
-			final BlockState fluidBlockState = fluidState.getBlockState();
+			final BlockState fluidBlockState = fluidState.towelette_getBlockState();
 			
 			if (fluidBlockState != (BlockState) (Object) this)
 			{

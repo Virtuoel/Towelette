@@ -25,6 +25,7 @@ import net.minecraft.world.World;
 import virtuoel.towelette.Towelette;
 import virtuoel.towelette.util.FluidUtils;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
+import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(FlowableFluid.class)
 public abstract class FlowableFluidMixin
@@ -59,12 +60,12 @@ public abstract class FlowableFluidMixin
 		
 		if (!info.getReturnValueZ())
 		{
-			if ((block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(blockView, pos, state, fluid)) || (state.isIn(Towelette.DISPLACEABLE) && !state.isIn(Towelette.UNDISPLACEABLE) && blockView.getFluidState(pos).isEmpty()))
+			if ((block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(blockView, pos, state, fluid)) || (state.isIn(Towelette.DISPLACEABLE) && !state.isIn(Towelette.UNDISPLACEABLE) && ((ToweletteFluidStateExtensions) (Object) blockView.getFluidState(pos)).towelette_isEmpty()))
 			{
 				info.setReturnValue(true);
 			}
 		}
-		else if (block instanceof FluidFillable && (state.isIn(Towelette.UNDISPLACEABLE) || (!(block instanceof FluidBlock) && !blockView.getFluidState(pos).isEmpty())))
+		else if (block instanceof FluidFillable && (state.isIn(Towelette.UNDISPLACEABLE) || (!(block instanceof FluidBlock) && !((ToweletteFluidStateExtensions) (Object) blockView.getFluidState(pos)).towelette_isEmpty())))
 		{
 			info.setReturnValue(false);
 		}

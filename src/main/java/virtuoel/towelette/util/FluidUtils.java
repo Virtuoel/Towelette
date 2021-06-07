@@ -36,13 +36,13 @@ public class FluidUtils
 {
 	public static boolean isFluidFlowBlocked(Direction direction, BlockView world, VoxelShape shape, BlockState blockState, BlockPos blockPos, VoxelShape fromShape, BlockState fromState, BlockPos fromPos)
 	{
-		final Block block = blockState.getBlock();
+		final Block block = ((ToweletteBlockStateExtensions) blockState).towelette_getBlock();
 		if (block instanceof FluidBlockingShapeProvider)
 		{
 			shape = ((FluidBlockingShapeProvider) block).getFluidBlockingShape(blockState, world, blockPos);
 		}
 		
-		final Block fromBlock = fromState.getBlock();
+		final Block fromBlock = ((ToweletteBlockStateExtensions) fromState).towelette_getBlock();
 		if (fromBlock instanceof FluidBlockingShapeProvider)
 		{
 			fromShape = ((FluidBlockingShapeProvider) fromBlock).getFluidBlockingShape(fromState, world, fromPos);
@@ -289,7 +289,7 @@ public class FluidUtils
 	
 	public static boolean tryFillWithFluid(WorldAccess world, BlockPos pos, BlockState blockState, FluidState fluidState)
 	{
-		final Fluid fluid = fluidState.getFluid();
+		final Fluid fluid = ((ToweletteFluidStateExtensions) (Object) fluidState).towelette_getFluid();
 		
 		if (canFillWithFluid(world, pos, blockState, fluid))
 		{
