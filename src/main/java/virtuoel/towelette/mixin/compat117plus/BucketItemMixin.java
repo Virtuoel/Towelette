@@ -39,10 +39,10 @@ public class BucketItemMixin extends Item
 		super(null);
 	}
 	
-	@Unique Optional<SoundEvent> sound = null;
+	@Unique Optional<SoundEvent> sound = Optional.empty();
 	
 	@Inject(method = "use", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/block/FluidDrainable;tryDrainFluid(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Lnet/minecraft/item/ItemStack;"))
-	private void asdf(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack, BlockHitResult blockHitResult, BlockPos blockPos, BlockPos blockPos2, BlockState blockState, FluidDrainable fluidDrainable, World world2)
+	private void onUse(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack, BlockHitResult blockHitResult, BlockPos blockPos, BlockPos blockPos2, BlockState blockState, FluidDrainable fluidDrainable, World world2)
 	{
 		final FluidState looking = world.getFluidState(blockPos);
 		sound = looking.getFluid().getBucketFillSound();
@@ -52,7 +52,7 @@ public class BucketItemMixin extends Item
 	private Optional<SoundEvent> useGetBucketFillSoundProxy(FluidDrainable obj)
 	{
 		final Optional<SoundEvent> s = sound;
-		sound = null;
+		sound = Optional.empty();
 		return s.isPresent() ? s : obj.getBucketFillSound();
 	}
 }
