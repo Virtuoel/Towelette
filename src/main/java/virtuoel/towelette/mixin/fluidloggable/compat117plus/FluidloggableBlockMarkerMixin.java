@@ -12,6 +12,7 @@ import net.minecraft.block.CaveVinesBodyBlock;
 import net.minecraft.block.CaveVinesHeadBlock;
 import net.minecraft.block.GlowLichenBlock;
 import net.minecraft.block.HangingRootsBlock;
+import net.minecraft.block.LightBlock;
 import net.minecraft.block.PointedDripstoneBlock;
 import net.minecraft.block.SculkSensorBlock;
 import net.minecraft.block.SmallDripleafBlock;
@@ -30,6 +31,7 @@ import virtuoel.towelette.util.AutomaticWaterloggableMarker;
 	CaveVinesHeadBlock.class,
 	GlowLichenBlock.class,
 	HangingRootsBlock.class,
+	LightBlock.class,
 	PointedDripstoneBlock.class,
 	SculkSensorBlock.class,
 	SmallDripleafBlock.class,
