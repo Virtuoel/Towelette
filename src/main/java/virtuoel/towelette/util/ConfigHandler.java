@@ -3,6 +3,7 @@ package virtuoel.towelette.util;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -23,8 +24,8 @@ public abstract class ConfigHandler<S> implements Supplier<S>
 	public ConfigHandler(String namespace, String path, Supplier<S> defaultConfig)
 	{
 		this.namespace = namespace;
-		logger = LogManager.getLogger(namespace);
-		configFile = FabricLoader.getInstance().getConfigDir().resolve(path);
+		this.logger = LogManager.getLogger(namespace);
+		this.configFile = FabricLoader.getInstance().getConfigDir().resolve(namespace).resolve(path).normalize();
 		this.defaultConfig = defaultConfig;
 	}
 	
@@ -47,7 +48,26 @@ public abstract class ConfigHandler<S> implements Supplier<S>
 			Files.createDirectories(configFile.getParent());
 			if (Files.exists(configFile))
 			{
-				configData = readConfig(Files.lines(configFile));
+				try (final Stream<String> lines = Files.lines(configFile))
+				{
+					configData = readConfig(lines);
+				}
+				catch (Exception e)
+				{
+					final Path configBackup = FabricLoader.getInstance().getConfigDir().resolve(namespace).resolve(configFile.getFileName().toString() + ".bak").normalize();
+					logger.warn("Failed to read config for {}. A backup is being made at \"{}\". Resetting to default config.", namespace, configBackup.toString());
+					logger.catching(e);
+					
+					try
+					{
+						Files.copy(configFile, configBackup, StandardCopyOption.REPLACE_EXISTING);
+					}
+					catch (IOException e2)
+					{
+						logger.warn("Failed to backup old config for {}.", namespace);
+						logger.catching(e2);
+					}
+				}
 			}
 		}
 		catch (IOException e)
@@ -82,7 +102,7 @@ public abstract class ConfigHandler<S> implements Supplier<S>
 		}
 		catch (IOException e)
 		{
-			logger.warn("Failed to write config.");
+			logger.warn("Failed to write config for {}:", namespace);
 			logger.catching(e);
 		}
 	}

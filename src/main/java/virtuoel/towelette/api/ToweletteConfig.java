@@ -12,7 +12,7 @@ public class ToweletteConfig
 	public static final Supplier<JsonObject> HANDLER =
 		new JsonConfigHandler(
 			ToweletteApi.MOD_ID,
-			ToweletteApi.MOD_ID + "/config.json",
+			"config.json",
 			ToweletteConfig::createDefaultConfig
 		);
 	
