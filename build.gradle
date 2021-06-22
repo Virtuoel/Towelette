@@ -105,6 +105,10 @@ dependencies {
 		if(project.hasProperty("statement_tag")) {
 			modApi("com.github.Virtuoel:Statement:${statement_tag}", excludeFabric)
 		}
+		
+		if(project.hasProperty("statement_compat_tag")) {
+			modApi("com.github.Virtuoel:Statement:${statement_compat_tag}", excludeFabric)
+		}
 	}
 }
 
