@@ -1,12 +1,8 @@
 package virtuoel.towelette.mixin;
 
-import java.util.Optional;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-
-import com.google.gson.JsonElement;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -28,9 +24,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity
 	@ModifyArg(method = "finish", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private BlockState finishSetBlockStateProxy(BlockPos pos, BlockState state, int flags)
 	{
-		final boolean unpushableFluids = Optional.ofNullable(ToweletteConfig.DATA.get("unpushableFluids"))
-			.filter(JsonElement::isJsonPrimitive)
-			.map(JsonElement::getAsBoolean).orElse(true);
+		final boolean unpushableFluids = ToweletteConfig.COMMON.unpushableFluids.get();
 		
 		return state == Blocks.AIR.getDefaultState() ? ((ToweletteFluidStateExtensions) (Object) this.world.getFluidState(pos)).towelette_getBlockState() : !unpushableFluids ? state : FluidUtils.getStateWithFluid(state, this.world, pos);
 	}

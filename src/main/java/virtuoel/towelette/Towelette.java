@@ -3,17 +3,15 @@ package virtuoel.towelette;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Optional;
+import java.util.List;
 import java.util.function.BiPredicate;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
@@ -59,18 +57,18 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	@Override
 	public void onInitialize()
 	{
-		collectConfigIdArray("whitelistedFluidIds", FLUID_ID_WHITELIST);
-		collectConfigStringArray("whitelistedFluidModIds", FLUID_MOD_ID_WHITELIST);
+		FLUID_ID_WHITELIST.addAll(configIdArray(ToweletteConfig.COMMON.whitelistedFluidIds));
+		FLUID_MOD_ID_WHITELIST.addAll(ToweletteConfig.COMMON.whitelistedFluidModIds.get());
 		
-		collectConfigIdArray("blacklistedFluidIds", FLUID_ID_BLACKLIST);
-		collectConfigStringArray("blacklistedFluidModIds", FLUID_MOD_ID_BLACKLIST);
+		FLUID_ID_BLACKLIST.addAll(configIdArray(ToweletteConfig.COMMON.blacklistedFluidIds));
+		FLUID_MOD_ID_BLACKLIST.addAll(ToweletteConfig.COMMON.blacklistedFluidModIds.get());
 		
-		collectConfigIdArray("addedFluidloggableBlocks", FLUIDLOGGABLE_ADDITIONS);
-		collectConfigIdArray("addedFlowingFluidloggableBlocks", FLOWING_FLUIDLOGGABLE_ADDITIONS);
-		collectConfigIdArray("removedFluidloggableBlocks", FLUIDLOGGABLE_REMOVALS);
+		FLUIDLOGGABLE_ADDITIONS.addAll(configIdArray(ToweletteConfig.COMMON.addedFluidloggableBlocks));
+		FLOWING_FLUIDLOGGABLE_ADDITIONS.addAll(configIdArray(ToweletteConfig.COMMON.addedFlowingFluidloggableBlocks));
+		FLUIDLOGGABLE_REMOVALS.addAll(configIdArray(ToweletteConfig.COMMON.removedFluidloggableBlocks));
 		
-		collectConfigIdArray("addedWaterloggableBlocks", WATERLOGGABLE_ADDITIONS);
-		collectConfigIdArray("removedWaterloggableBlocks", WATERLOGGABLE_REMOVALS);
+		WATERLOGGABLE_ADDITIONS.addAll(configIdArray(ToweletteConfig.COMMON.addedWaterloggableBlocks));
+		WATERLOGGABLE_REMOVALS.addAll(configIdArray(ToweletteConfig.COMMON.removedWaterloggableBlocks));
 		
 		FLUIDLOGGABLE_ADDITIONS.removeAll(FLUIDLOGGABLE_REMOVALS);
 		FLOWING_FLUIDLOGGABLE_ADDITIONS.removeAll(FLUIDLOGGABLE_REMOVALS);
@@ -79,12 +77,12 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		final boolean[] changedStates = { false };
 		
-		final boolean automaticFluidlogging = getConfigBoolean("automaticFluidlogging", false);
-		final boolean automaticWaterlogging = getConfigBoolean("automaticWaterlogging", false);
+		final boolean automaticFluidlogging = ToweletteConfig.COMMON.automaticFluidlogging.get();
+		final boolean automaticWaterlogging = ToweletteConfig.COMMON.automaticWaterlogging.get();
 		
 		if (automaticFluidlogging || automaticWaterlogging)
 		{
-			final boolean flowingFluidlogging = getConfigBoolean("flowingFluidlogging", false);
+			final boolean flowingFluidlogging = ToweletteConfig.COMMON.flowingFluidlogging.get();
 			
 			final Collection<Block> fluidloggableDefaults = new LinkedList<>();
 			final Collection<Block> waterloggableDefaults = new LinkedList<>();
@@ -183,7 +181,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			{
 				didChange |= !StateRefresher.INSTANCE.removeBlockProperty(object, Properties.WATERLOGGED).isEmpty();
 			}
-			else if (WATERLOGGABLE_ADDITIONS.contains(identifier) || (getConfigBoolean("automaticWaterlogging", true) && AutomaticWaterloggableMarker.shouldAddProperties(object)))
+			else if (WATERLOGGABLE_ADDITIONS.contains(identifier) || (ToweletteConfig.COMMON.automaticWaterlogging.get() && AutomaticWaterloggableMarker.shouldAddProperties(object)))
 			{
 				StateRefresher.INSTANCE.addBlockProperty(object, Properties.WATERLOGGED, false);
 				
@@ -206,9 +204,9 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 					
 					didChange = true;
 				}
-				else if (getConfigBoolean("automaticFluidlogging", false) && AutomaticFluidloggableMarker.shouldAddProperties(object))
+				else if (ToweletteConfig.COMMON.automaticFluidlogging.get() && AutomaticFluidloggableMarker.shouldAddProperties(object))
 				{
-					addFluidProperties(object, getConfigBoolean("flowingFluidlogging", false));
+					addFluidProperties(object, ToweletteConfig.COMMON.flowingFluidlogging.get());
 					
 					didChange = true;
 				}
@@ -249,12 +247,12 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			return !FluidUtils.propertyContains(id);
 		}
 		
-		if (getConfigBoolean("onlyAllowWhitelistedFluids", false))
+		if (ToweletteConfig.COMMON.onlyAllowWhitelistedFluids.get())
 		{
 			return false;
 		}
 		
-		return getConfigBoolean("enableBlacklistAPI", true) ? ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidBlacklisted(fluid, id)) : defaultPredicate.test(fluid, id);
+		return ToweletteConfig.COMMON.enableBlacklistAPI.get() ? ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidBlacklisted(fluid, id)) : defaultPredicate.test(fluid, id);
 	}
 	
 	@Override
@@ -265,47 +263,17 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			return FluidUtils.propertyContains(id);
 		}
 		
-		if (getConfigBoolean("onlyAllowWhitelistedFluids", false))
+		if (ToweletteConfig.COMMON.onlyAllowWhitelistedFluids.get())
 		{
 			return true;
 		}
 		
-		return FLUID_MOD_ID_BLACKLIST.contains(id.getNamespace()) || FLUID_ID_BLACKLIST.contains(id) || FluidUtils.propertyContains(id) || (!getConfigBoolean("flowingFluidlogging", false) && !((ToweletteFluidStateExtensions) (Object) fluid.getDefaultState()).towelette_isStill());
+		return FLUID_MOD_ID_BLACKLIST.contains(id.getNamespace()) || FLUID_ID_BLACKLIST.contains(id) || FluidUtils.propertyContains(id) || (!ToweletteConfig.COMMON.flowingFluidlogging.get() && !((ToweletteFluidStateExtensions) (Object) fluid.getDefaultState()).towelette_isStill());
 	}
 	
-	private static void collectConfigStringArray(String config, Collection<String> collection)
+	private static List<Identifier> configIdArray(Supplier<List<String>> config)
 	{
-		collectConfigArray(config, collection, e -> e.getAsString());
-	}
-	
-	private static void collectConfigIdArray(String config, Collection<Identifier> collection)
-	{
-		collectConfigArray(config, collection, e -> new Identifier(e.getAsString()));
-	}
-	
-	private static <T> void collectConfigArray(String config, Collection<T> collection, Function<JsonElement, T> function)
-	{
-		Optional.ofNullable(ToweletteConfig.DATA.get(config))
-			.filter(JsonElement::isJsonArray)
-			.map(JsonElement::getAsJsonArray)
-			.ifPresent(array ->
-			{
-				array.forEach(element ->
-				{
-					if (element.isJsonPrimitive())
-					{
-						collection.add(function.apply(element));
-					}
-				});
-			});
-	}
-	
-	private static boolean getConfigBoolean(String config, boolean defaultValue)
-	{
-		return Optional.ofNullable(ToweletteConfig.DATA.get(config))
-			.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
-			.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
-			.orElse(defaultValue);
+		return config.get().stream().map(Identifier::new).toList();
 	}
 	
 	private static void addFluidProperties(Block block, boolean flowing)

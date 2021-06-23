@@ -1,13 +1,9 @@
 package virtuoel.towelette.util;
 
-import java.util.Optional;
-
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.math.DoubleMath;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonPrimitive;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -50,10 +46,7 @@ public class FluidUtils
 		
 		if (direction.getAxis() != Direction.Axis.Y)
 		{
-			final boolean accurateFlowBlocking = Optional.ofNullable(ToweletteConfig.DATA.get("accurateFlowBlocking"))
-				.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
-				.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
-				.orElse(true);
+			final boolean accurateFlowBlocking = ToweletteConfig.COMMON.accurateFlowBlocking.get();
 			
 			if (accurateFlowBlocking)
 			{
@@ -278,10 +271,7 @@ public class FluidUtils
 				return true;
 			}
 			
-			return Optional.ofNullable(ToweletteConfig.DATA.get("replaceableFluids"))
-				.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
-				.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
-				.orElse(false);
+			return ToweletteConfig.COMMON.replaceableFluids.get();
 		}
 		
 		return false;

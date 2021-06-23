@@ -1,7 +1,5 @@
 package virtuoel.towelette.mixin.compat117plus;
 
-import java.util.Optional;
-
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -10,8 +8,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import com.google.gson.JsonElement;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -40,9 +36,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity
 	@Inject(at = @At("RETURN"), method = "<init>(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;Lnet/minecraft/block/BlockState;Lnet/minecraft/util/math/Direction;ZZ)V")
 	private void onConstruct(BlockPos pos, BlockState state, BlockState pushedBlock, Direction facing, boolean extending, boolean source, CallbackInfo info)
 	{
-		final boolean unpushableFluids = Optional.ofNullable(ToweletteConfig.DATA.get("unpushableFluids"))
-			.filter(JsonElement::isJsonPrimitive)
-			.map(JsonElement::getAsBoolean).orElse(true);
+		final boolean unpushableFluids = ToweletteConfig.COMMON.unpushableFluids.get();
 		
 		if (unpushableFluids)
 		{
@@ -61,9 +55,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity
 	@Inject(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private static void onTick(World world, BlockPos pos, BlockState state, PistonBlockEntity blockEntity, CallbackInfo info)
 	{
-		final boolean unpushableFluids = Optional.ofNullable(ToweletteConfig.DATA.get("unpushableFluids"))
-			.filter(JsonElement::isJsonPrimitive)
-			.map(JsonElement::getAsBoolean).orElse(true);
+		final boolean unpushableFluids = ToweletteConfig.COMMON.unpushableFluids.get();
 		
 		if (unpushableFluids && state == Blocks.AIR.getDefaultState())
 		{
