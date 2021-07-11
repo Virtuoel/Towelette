@@ -54,6 +54,11 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	public static final Collection<Identifier> WATERLOGGABLE_ADDITIONS = new HashSet<>();
 	public static final Collection<Identifier> WATERLOGGABLE_REMOVALS = new HashSet<>();
 	
+	public Towelette()
+	{
+		ToweletteConfig.BUILDER.config.get();
+	}
+	
 	@Override
 	public void onInitialize()
 	{
