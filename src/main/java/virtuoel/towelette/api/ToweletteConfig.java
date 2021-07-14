@@ -51,7 +51,10 @@ public class ToweletteConfig
 			this.accurateFlowBlocking = builder.booleanConfig("accurateFlowBlocking", true);
 			
 			this.automaticFluidlogging = builder.customConfig(
-				c -> {},
+				c ->
+				{
+				//	c.addProperty("automaticFluidlogging", true);
+				},
 				config -> () -> Optional.ofNullable(config.get().get("automaticFluidlogging"))
 					.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
 					.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
