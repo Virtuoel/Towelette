@@ -22,7 +22,7 @@
 		"fabricloader": ">=0.8.0",
 		"fabric-registry-sync-v0": "*",
 		"fabric-tag-extensions-v0": "*",
-		"statement": "*"
+		"statement": ">=4.1.0"
 	},
 	"entrypoints":
 	{
