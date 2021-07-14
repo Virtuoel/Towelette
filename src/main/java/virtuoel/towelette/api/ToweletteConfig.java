@@ -1,9 +1,13 @@
 package virtuoel.towelette.api;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import org.jetbrains.annotations.ApiStatus;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 
 import virtuoel.kanos_config.api.JsonConfigBuilder;
 
@@ -46,7 +50,13 @@ public class ToweletteConfig
 			this.flowingFluidlogging = builder.booleanConfig("flowingFluidlogging", false);
 			this.accurateFlowBlocking = builder.booleanConfig("accurateFlowBlocking", true);
 			
-			this.automaticFluidlogging = builder.booleanConfig("automaticFluidlogging", true);
+			this.automaticFluidlogging = builder.customConfig(
+				c -> {},
+				config -> () -> Optional.ofNullable(config.get().get("automaticFluidlogging"))
+					.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
+					.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
+					.orElse(false)
+			);
 			this.automaticWaterlogging = builder.booleanConfig("automaticWaterlogging", false);
 			
 			this.onlyAllowWhitelistedFluids = builder.booleanConfig("onlyAllowWhitelistedFluids", false);
