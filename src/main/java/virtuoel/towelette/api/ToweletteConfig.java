@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import virtuoel.towelette.util.JsonConfigBuilder;
+import virtuoel.kanos_config.api.JsonConfigBuilder;
 
 public class ToweletteConfig
 {
