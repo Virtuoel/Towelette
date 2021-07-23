@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -278,7 +279,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	
 	private static List<Identifier> configIdArray(Supplier<List<String>> config)
 	{
-		return config.get().stream().map(Identifier::new).toList();
+		return config.get().stream().map(Identifier::new).collect(Collectors.toList());
 	}
 	
 	private static void addFluidProperties(Block block, boolean flowing)
