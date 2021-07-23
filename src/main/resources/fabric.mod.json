@@ -22,8 +22,7 @@
 		"fabricloader": ">=0.11.6",
 		"fabric-registry-sync-v0": "*",
 		"fabric-tag-extensions-v0": "*",
-		"statement": ">=4.1.1",
-		"kanos_config": "*"
+		"statement": ">=4.1.1"
 	},
 	"entrypoints":
 	{
