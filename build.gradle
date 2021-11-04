@@ -1,5 +1,5 @@
 plugins {
-	id "fabric-loom" version "0.9.+"
+	id "fabric-loom" version "0.10.+"
 	id "eclipse"
 	id "maven-publish"
 	id "com.github.breadmoirai.github-release" version "2.2.12"
@@ -47,7 +47,9 @@ if(project.hasProperty("forge_version")) {
 	version += "-forge"
 	
 	loom {
-		mixinConfig "${archives_base_name.replaceAll( /([A-Z])/, /_$1/ ).toLowerCase().replaceAll( /^_/, '' )}.mixins.json"
+		forge {
+			mixinConfig "${archives_base_name.replaceAll( /([A-Z])/, /_$1/ ).toLowerCase().replaceAll( /^_/, '' )}.mixins.json"
+		}
 	}
 }
 
@@ -85,13 +87,13 @@ dependencies {
 		if(project.hasProperty("fabric_api_version")) {
 			if(!project.hasProperty("fabric_modules") && !project.hasProperty("api_fabric_modules") && !project.hasProperty("impl_fabric_modules")) {
 				modCompileOnly "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}", excludeLoader
-				modRuntime "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}", excludeLoader
+				modLocalRuntime "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}", excludeLoader
 			}
 			
 			if(project.hasProperty("fabric_modules")) {
 				project.fabric_modules.split(", ").each { String module ->
 					modCompileOnly fabricApi.module(module, project.fabric_api_version), excludeLoader
-					modRuntime fabricApi.module(module, project.fabric_api_version), excludeLoader
+					modLocalRuntime fabricApi.module(module, project.fabric_api_version), excludeLoader
 				}
 			}
 			
@@ -116,7 +118,7 @@ dependencies {
 		
 		if(project.hasProperty("modmenu_version")) {
 			modCompileOnly "com.terraformersmc:modmenu:${modmenu_version}", excludeFabric
-			modRuntime "com.terraformersmc:modmenu:${modmenu_version}", excludeFabric
+			modLocalRuntime "com.terraformersmc:modmenu:${modmenu_version}", excludeFabric
 		}
 		
 		if(project.hasProperty("statement_version")) {
@@ -133,10 +135,6 @@ processResources {
 	inputs.property "version", project.version
 	
 	filesMatching("fabric.mod.json") {
-		expand "version": project.version
-	}
-	
-	filesMatching("META-INF/mods.toml") {
 		expand "version": project.version
 	}
 }
@@ -301,7 +299,7 @@ curseforge {
 				def game_versions = project.curseforge_release_versions.split(", ")
 				display_name_prefix = "[${game_versions[0]} - ${game_versions[-1].split("-")[0]}] "
 				if(game_versions[0] == game_versions[-1].split("-")[0]) {
-					display_name_prefix = "[${game_versions[0]}]"
+					display_name_prefix = "[${game_versions[0]}] "
 				}
 				game_versions.each { String gameVersion ->
 					addGameVersion gameVersion
@@ -309,7 +307,7 @@ curseforge {
 			}
 			
 			if(project.hasProperty("forge_version")) {
-				display_name_prefix += " [Forge] "
+				display_name_prefix += "[Forge] "
 			}
 			
 			mainArtifact(remapJar) {
