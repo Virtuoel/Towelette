@@ -1,10 +1,16 @@
 package virtuoel.towelette.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Optional;
+import java.util.function.Function;
+
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.math.DoubleMath;
 
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.enums.SlabType;
@@ -234,7 +240,46 @@ public class FluidUtils
 	
 	private static void scheduleFluidTickImpl(Fluid fluid, WorldAccess world, BlockPos pos)
 	{
-		world.getFluidTickScheduler().schedule(pos, fluid, ((ToweletteFluidExtensions) fluid).towelette_getTickRate(world));
+		final int rate = ((ToweletteFluidExtensions) fluid).towelette_getTickRate(world);
+		((ToweletteWorldAccessExtensions) world).towelette_scheduleFluidTick(pos, fluid, rate);
+	}
+	
+	public static final Optional<Function<Object, Object>> FLUID_TICK_SCHEDULER_GETTER;
+	
+	static
+	{
+		if (VersionData.MINOR <= 17)
+		{
+			Method m = null;
+			try
+			{
+				final String getFluidTickScheduler = FabricLoader.getInstance().getMappingResolver().mapMethodName("intermediary", "net.minecraft.class_1936", "method_8405", "()Lnet/minecraft/class_1951;");
+				m = WorldAccess.class.getMethod(getFluidTickScheduler);
+			}
+			catch (NoSuchMethodException | SecurityException e)
+			{
+				
+			}
+			
+			final Method method = m;
+			final Function<Object, Object> getter = w ->
+			{
+				try
+				{
+					return method.invoke(w);
+				}
+				catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
+				{
+					return null;
+				}
+			};
+			
+			FLUID_TICK_SCHEDULER_GETTER = method == null ? Optional.empty() : Optional.of(getter);
+		}
+		else
+		{
+			FLUID_TICK_SCHEDULER_GETTER = Optional.empty();
+		}
 	}
 	
 	private static boolean isFluidValidForState(BlockState state, Fluid fluid)
