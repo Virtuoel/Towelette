@@ -29,6 +29,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
+import virtuoel.statement.util.VersionUtils;
 import virtuoel.towelette.api.FluidBlockingShapeProvider;
 import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteConfig;
@@ -248,7 +249,7 @@ public class FluidUtils
 	
 	static
 	{
-		if (VersionData.MINOR <= 17)
+		if (VersionUtils.MINOR <= 17)
 		{
 			Method m = null;
 			try
