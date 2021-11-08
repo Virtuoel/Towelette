@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
 import virtuoel.kanos_config.api.JsonConfigBuilder;
+import virtuoel.towelette.util.ModContainerUtils;
 
 public class ToweletteConfig
 {
@@ -53,7 +54,10 @@ public class ToweletteConfig
 			this.automaticFluidlogging = builder.customConfig(
 				c ->
 				{
-				//	c.addProperty("automaticFluidlogging", true);
+					if (ModContainerUtils.isModUserAdded(ToweletteApi.MOD_ID))
+					{
+						c.addProperty("automaticFluidlogging", true);
+					}
 				},
 				config -> () -> Optional.ofNullable(config.get().get("automaticFluidlogging"))
 					.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
