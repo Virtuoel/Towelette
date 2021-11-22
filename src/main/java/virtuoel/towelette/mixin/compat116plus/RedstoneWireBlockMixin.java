@@ -15,8 +15,8 @@ import virtuoel.towelette.util.FluidUtils;
 @Mixin(RedstoneWireBlock.class)
 public class RedstoneWireBlockMixin
 {
-	@Inject(at = @At("RETURN"), method = "method_27843", cancellable = true)
-	private void onMethod_27843(BlockView blockView, BlockState blockState, BlockPos blockPos, CallbackInfoReturnable<BlockState> info)
+	@Inject(at = @At("RETURN"), method = "getDefaultWireState", cancellable = true)
+	private void onGetDefaultWireState(BlockView blockView, BlockState blockState, BlockPos blockPos, CallbackInfoReturnable<BlockState> info)
 	{
 		final FluidState state = blockView.getFluidState(blockPos);
 		
