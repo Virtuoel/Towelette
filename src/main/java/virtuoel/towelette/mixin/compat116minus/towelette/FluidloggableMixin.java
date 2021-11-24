@@ -12,6 +12,11 @@ import virtuoel.towelette.util.FluidUtils;
 @Mixin(Fluidloggable.class)
 public interface FluidloggableMixin
 {
+	default Fluid tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state)
+	{
+		return method_9700(world, pos, state);
+	}
+	
 	default Fluid method_9700(WorldAccess world, BlockPos pos, BlockState state)
 	{
 		return FluidUtils.tryDrainFluid(world, pos, state);

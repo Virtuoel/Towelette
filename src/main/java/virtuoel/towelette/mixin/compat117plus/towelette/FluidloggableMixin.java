@@ -16,6 +16,11 @@ public interface FluidloggableMixin
 {
 	default ItemStack tryDrainFluid(WorldAccess world, BlockPos pos, BlockState state)
 	{
+		return method_9700(world, pos, state);
+	}
+	
+	default ItemStack method_9700(WorldAccess world, BlockPos pos, BlockState state)
+	{
 		final Item item = FluidUtils.tryDrainFluid(world, pos, state).getBucketItem();
 		return item == Items.AIR ? ItemStack.EMPTY : new ItemStack(item);
 	}
