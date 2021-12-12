@@ -16,7 +16,6 @@ import com.google.common.collect.ImmutableSet;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
-import net.fabricmc.fabric.api.tag.TagRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.state.property.Properties;
@@ -32,6 +31,7 @@ import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.util.AutomaticFluidloggableMarker;
 import virtuoel.towelette.util.AutomaticWaterloggableMarker;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.TagCompatibility;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
@@ -41,8 +41,8 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	
-	public static final Tag<Block> DISPLACEABLE = TagRegistry.block(id("displaceable"));
-	public static final Tag<Block> UNDISPLACEABLE = TagRegistry.block(id("undisplaceable"));
+	public static final Tag<Block> DISPLACEABLE = TagCompatibility.getBlockTag(id("displaceable"));
+	public static final Tag<Block> UNDISPLACEABLE = TagCompatibility.getBlockTag(id("undisplaceable"));
 	
 	public static final Collection<Identifier> FLUID_ID_WHITELIST = new HashSet<>();
 	public static final Collection<String> FLUID_MOD_ID_WHITELIST = new HashSet<>();
