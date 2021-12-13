@@ -52,6 +52,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity
 	@ModifyArg(method = "method_16896", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_1937;method_8652(Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;I)Z", remap = false), remap = false)
 	private BlockState tickSetBlockStateProxy(BlockPos pos, BlockState state, int flags)
 	{
+		/*
 		final boolean unpushableFluids = ToweletteConfig.COMMON.unpushableFluids.get();
 		
 		if (unpushableFluids && state == Blocks.AIR.getDefaultState())
@@ -62,6 +63,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity
 		{
 			return FluidUtils.getStateWithFluid(state, this.world, pos);
 		}
+		*/
 		
 		return state;
 	}

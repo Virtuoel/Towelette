@@ -72,7 +72,7 @@ public abstract class PistonBlockEntityMixin extends BlockEntity
 	{
 		if (pushed != null)
 		{
-			state = pushed;
+	//		state = pushed;
 			pushed = null;
 		}
 		
