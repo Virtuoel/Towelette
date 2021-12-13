@@ -24,14 +24,16 @@ public class TagCompatibility
 		public static final Tag<Fluid> LAVA = getFluidTag(new Identifier("minecraft", "lava"));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Tag<Block> getBlockTag(Identifier id)
 	{
-		return getTag(id, () -> () -> TagFactory.BLOCK.create(id), TAG_REGISTRY_BLOCK);
+		return getTag(id, () -> () -> (Tag<Block>) (Object) TagFactory.BLOCK.create(id), TAG_REGISTRY_BLOCK);
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Tag<Fluid> getFluidTag(Identifier id)
 	{
-		return getTag(id, () -> () -> TagFactory.FLUID.create(id), TAG_REGISTRY_FLUID);
+		return getTag(id, () -> () -> (Tag<Fluid>) (Object) TagFactory.FLUID.create(id), TAG_REGISTRY_FLUID);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -41,7 +43,7 @@ public class TagCompatibility
 		{
 			return tagFunc.get().get();
 		}
-		catch (Exception e)
+		catch (Throwable t)
 		{
 			return oldMethod.map(m -> {
 				try
@@ -53,7 +55,7 @@ public class TagCompatibility
 					return null;
 				}
 			})
-			.orElseThrow();
+			.orElseThrow(RuntimeException::new);
 		}
 	}
 }
