@@ -10,6 +10,7 @@ import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
+import virtuoel.statement.util.ReflectionUtils;
 
 public class TagCompatibility
 {
