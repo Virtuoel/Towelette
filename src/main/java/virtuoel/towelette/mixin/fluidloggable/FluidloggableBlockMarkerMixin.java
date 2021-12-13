@@ -139,9 +139,9 @@ import virtuoel.towelette.util.AutomaticWaterloggableMarker;
 	TripwireHookBlock.class,
 	TurtleEggBlock.class,
 	VineBlock.class,
-	PistonBlock.class,
-	PistonExtensionBlock.class,
-	PistonHeadBlock.class,
+//	PistonBlock.class,
+//	PistonExtensionBlock.class,
+//	PistonHeadBlock.class,
 	RedstoneWireBlock.class,
 	TorchBlock.class,
 })
