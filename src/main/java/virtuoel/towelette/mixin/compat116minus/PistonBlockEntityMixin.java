@@ -54,6 +54,15 @@ public abstract class PistonBlockEntityMixin extends BlockEntity
 	{
 		final boolean unpushableFluids = ToweletteConfig.COMMON.unpushableFluids.get();
 		
-		return (unpushableFluids && state == Blocks.AIR.getDefaultState()) ? ((ToweletteFluidStateExtensions) (Object) this.world.getFluidState(pos)).towelette_getBlockState() : (!unpushableFluids && !field_12202) ? state : FluidUtils.getStateWithFluid(state, this.world, pos);
+		if (unpushableFluids && state == Blocks.AIR.getDefaultState())
+		{
+			return ((ToweletteFluidStateExtensions) (Object) this.world.getFluidState(pos)).towelette_getBlockState();
+		}
+		else if (unpushableFluids || field_12202)
+		{
+			return FluidUtils.getStateWithFluid(state, this.world, pos);
+		}
+		
+		return state;
 	}
 }
