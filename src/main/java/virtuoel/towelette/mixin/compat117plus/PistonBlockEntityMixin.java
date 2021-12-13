@@ -70,6 +70,12 @@ public abstract class PistonBlockEntityMixin extends BlockEntity
 	@ModifyArg(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private static BlockState tickSetBlockStateProxy(BlockPos pos, BlockState state, int flags)
 	{
-		return pushed == null ? state : pushed;
+		if (pushed != null)
+		{
+			state = pushed;
+			pushed = null;
+		}
+		
+		return state;
 	}
 }
