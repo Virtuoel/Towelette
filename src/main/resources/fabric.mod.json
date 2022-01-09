@@ -21,7 +21,7 @@
 	{
 		"fabricloader": ">=0.12.12",
 		"fabric-api-base": "*",
-		"statement": ">=4.2.0",
+		"statement": ">=4.2.1",
 		"fabric-registry-sync-v0": "*",
 		"fabric-tag-extensions-v0": "*"
 	},
