@@ -47,7 +47,7 @@ public class CampfireBlockMixin
 	@Inject(at = @At("HEAD"), method = "canBeLit", cancellable = true)
 	private static void onCanBeLit(BlockState state, CallbackInfoReturnable<Boolean> info)
 	{
-		if (FluidUtils.getFluid(state).isIn(TagCompatibility.FluidTags.WATER))
+		if (TagCompatibility.isIn(FluidUtils.getFluid(state), TagCompatibility.FluidTags.WATER))
 		{
 			info.setReturnValue(false);
 		}

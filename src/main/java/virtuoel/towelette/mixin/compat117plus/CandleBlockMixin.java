@@ -16,7 +16,6 @@ import net.minecraft.world.WorldAccess;
 import virtuoel.towelette.util.FluidUtils;
 import virtuoel.towelette.util.TagCompatibility;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
-import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(CandleBlock.class)
 public class CandleBlockMixin
@@ -24,7 +23,7 @@ public class CandleBlockMixin
 	@Inject(at = @At("RETURN"), method = "getPlacementState", cancellable = true)
 	private void onGetPlacementState(ItemPlacementContext context, CallbackInfoReturnable<BlockState> info)
 	{
-		if (((ToweletteFluidStateExtensions) (Object) context.getWorld().getFluidState(context.getBlockPos())).towelette_isIn(TagCompatibility.FluidTags.WATER))
+		if (TagCompatibility.isIn(context.getWorld().getFluidState(context.getBlockPos()), TagCompatibility.FluidTags.WATER))
 		{
 			info.setReturnValue(((ToweletteBlockStateExtensions) info.getReturnValue()).towelette_with(Properties.LIT, false).towelette_cast());
 		}
@@ -52,7 +51,7 @@ public class CandleBlockMixin
 	@Inject(at = @At("HEAD"), method = "canBeLit", cancellable = true)
 	private static void onCanBeLit(BlockState state, CallbackInfoReturnable<Boolean> info)
 	{
-		if (FluidUtils.getFluid(state).isIn(TagCompatibility.FluidTags.WATER))
+		if (TagCompatibility.isIn(FluidUtils.getFluid(state), TagCompatibility.FluidTags.WATER))
 		{
 			info.setReturnValue(false);
 		}

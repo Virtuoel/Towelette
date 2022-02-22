@@ -11,7 +11,6 @@ import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.state.property.Properties;
 import virtuoel.towelette.util.TagCompatibility;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
-import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
 @Mixin(CampfireBlock.class)
 public class CampfireBlockMixin
@@ -19,7 +18,7 @@ public class CampfireBlockMixin
 	@Inject(at = @At("RETURN"), method = "getPlacementState", cancellable = true)
 	private void onGetPlacementState(ItemPlacementContext context, CallbackInfoReturnable<BlockState> info)
 	{
-		if (((ToweletteFluidStateExtensions) (Object) context.getWorld().getFluidState(context.getBlockPos())).towelette_isIn(TagCompatibility.FluidTags.WATER))
+		if (TagCompatibility.isIn(context.getWorld().getFluidState(context.getBlockPos()), TagCompatibility.FluidTags.WATER))
 		{
 			info.setReturnValue(((ToweletteBlockStateExtensions) info.getReturnValue()).towelette_with(Properties.LIT, false).towelette_cast());
 		}

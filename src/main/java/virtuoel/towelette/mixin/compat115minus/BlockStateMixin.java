@@ -12,7 +12,6 @@ import net.minecraft.block.BlockState;
 import net.minecraft.block.Material;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
@@ -34,8 +33,6 @@ public abstract class BlockStateMixin implements ToweletteBlockStateExtensions
 	@Shadow(remap = false)
 	abstract int method_11630();
 	@Shadow(remap = false)
-	abstract boolean method_11602(Tag<Block> tag);
-	@Shadow(remap = false)
 	abstract boolean method_20827(BlockView world, BlockPos pos, Direction direction);
 	
 	@Override
@@ -54,13 +51,6 @@ public abstract class BlockStateMixin implements ToweletteBlockStateExtensions
 	public int towelette_getLuminance()
 	{
 		return method_11630();
-	}
-	
-	@SuppressWarnings("unchecked")
-	@Override
-	public <O> boolean towelette_isIn(Tag<O> tag)
-	{
-		return method_11602((Tag<Block>) tag);
 	}
 	
 	@Override

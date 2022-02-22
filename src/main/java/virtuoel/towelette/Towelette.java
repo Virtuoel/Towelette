@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -19,7 +20,6 @@ import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.state.property.Properties;
-import net.minecraft.tag.Tag;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.IdList;
 import net.minecraft.util.registry.Registry;
@@ -41,8 +41,8 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	
 	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
 	
-	public static final Tag<Block> DISPLACEABLE = TagCompatibility.getBlockTag(id("displaceable"));
-	public static final Tag<Block> UNDISPLACEABLE = TagCompatibility.getBlockTag(id("undisplaceable"));
+	public static final Optional<Object> DISPLACEABLE = TagCompatibility.getBlockTag(id("displaceable"));
+	public static final Optional<Object> UNDISPLACEABLE = TagCompatibility.getBlockTag(id("undisplaceable"));
 	
 	public static final Collection<Identifier> FLUID_ID_WHITELIST = new HashSet<>();
 	public static final Collection<String> FLUID_MOD_ID_WHITELIST = new HashSet<>();

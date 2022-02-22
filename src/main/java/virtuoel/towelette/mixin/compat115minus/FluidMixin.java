@@ -19,10 +19,9 @@ public class FluidMixin implements CollidableFluid
 	@Override
 	public void onEntityCollision(FluidState state, World world, BlockPos pos, Entity entity)
 	{
-		final ToweletteFluidStateExtensions fluidState = ((ToweletteFluidStateExtensions) (Object) state);
-		if (fluidState.towelette_isIn(TagCompatibility.FluidTags.LAVA))
+		if (TagCompatibility.isIn(state, TagCompatibility.FluidTags.LAVA))
 		{
-			final double f = (float) pos.getY() + fluidState.towelette_getHeight(world, pos);
+			final double f = (float) pos.getY() + ((ToweletteFluidStateExtensions) (Object) state).towelette_getHeight(world, pos);
 			final Box bounds = entity.getBoundingBox();
 			
 			if (bounds.minY < f || f > bounds.maxY)
