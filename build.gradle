@@ -85,7 +85,11 @@ if(project.hasProperty("fabric_version")) {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${minecraft_version}"
-	mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
+	mappings loom.layered {
+		project.yarn_mappings.split(", ").each { String mapping ->
+			mappings "net.fabricmc:yarn:${mapping}:v2"
+		}
+	}
 	
 	if(project.hasProperty("forge_version")) {
 		forge "net.minecraftforge:forge:${forge_version}"
@@ -153,6 +157,10 @@ processResources {
 	filesMatching("fabric.mod.json") {
 		expand "version": project.version
 	}
+	
+	filesMatching("META-INF/mods.toml") {
+		expand "file": [ jarVersion: project.version ]
+	}
 }
 
 def proj = project
@@ -179,6 +187,15 @@ tasks.withType(JavaCompile) {
 	options.encoding = "UTF-8"
 }
 
+tasks.withType(AbstractArchiveTask) {
+	preserveFileTimestamps = false
+	reproducibleFileOrder = true
+}
+
+java {
+	withSourcesJar()
+}
+
 jar {
 	from "LICENSE"
 	manifest
@@ -191,9 +208,7 @@ jar {
 	}
 }
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-	classifier = "sources"
-	from sourceSets.main.allSource
+tasks.named("sourcesJar") {
 	exclude "fabric.mod.json"
 	exclude "META-INF/mods.toml"
 	manifest
@@ -258,6 +273,11 @@ githubRelease {
 	releaseName project.version
 	
 	releaseAssets = files("${project.buildDir}/libs/${archivesBaseName}-${version}.jar", "${project.buildDir}/libs/${archivesBaseName}-${version}-sources.jar").files
+}
+
+tasks.named("githubRelease") {
+	dependsOn remapJar
+	dependsOn remapSourcesJar
 }
 
 if(project.hasProperty("fabric_api_version")) {
@@ -411,13 +431,18 @@ curseforge {
 			addArtifact(sourcesJar) {
 				displayName = "${archives_base_name} ${project.mod_version} Source Code"
 			}
-			
-			afterEvaluate {
-				uploadTask.dependsOn remapSourcesJar
-			}
 		}
 		options {
 			forgeGradleIntegration = false
+		}
+	}
+}
+
+if(project.hasProperty("curseforge_id")) {
+	afterEvaluate {
+		tasks.named("curseforge${project.curseforge_id}") {
+			dependsOn remapJar
+			dependsOn remapSourcesJar
 		}
 	}
 }
@@ -473,4 +498,9 @@ modrinth {
 		uploadFile = remapJar
 		additionalFiles = files("${project.buildDir}/libs/${archivesBaseName}-${version}-sources.jar").files
 	}
+}
+
+tasks.named("modrinth") {
+	dependsOn remapJar
+	dependsOn remapSourcesJar
 }
