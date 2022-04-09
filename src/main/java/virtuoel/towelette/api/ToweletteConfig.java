@@ -52,13 +52,15 @@ public class ToweletteConfig
 			this.accurateFlowBlocking = builder.booleanConfig("accurateFlowBlocking", true);
 			
 			this.automaticFluidlogging = builder.customConfig(
-				c ->
+				"automaticFluidlogging",
+				config -> v ->
 				{
 					if (ModContainerUtils.isModUserAdded(ToweletteApi.MOD_ID))
 					{
-						c.addProperty("automaticFluidlogging", true);
+						config.get().addProperty("automaticFluidlogging", v);
 					}
 				},
+				true,
 				config -> () -> Optional.ofNullable(config.get().get("automaticFluidlogging"))
 					.filter(JsonElement::isJsonPrimitive).map(JsonElement::getAsJsonPrimitive)
 					.filter(JsonPrimitive::isBoolean).map(JsonPrimitive::getAsBoolean)
