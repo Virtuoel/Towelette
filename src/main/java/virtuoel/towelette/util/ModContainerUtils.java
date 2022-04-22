@@ -21,7 +21,7 @@ public class ModContainerUtils
 			{
 				final ModContainer c = FabricLoader.getInstance().getModContainer(modId).get();
 				
-				if (c == null)
+				if (c == null || c.getContainingMod().isPresent())
 				{
 					return false;
 				}
