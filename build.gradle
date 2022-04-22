@@ -315,7 +315,7 @@ String generateHTMLChangelog() {
 		changelog_text += "<p>Fabric Loader <code>${fabric_loader_version}</code></p>\n"
 	}
 	
-		changelog_text += "<p>Yarn mappings <code>${yarn_mappings}</code></p>\n"
+	changelog_text += "<p>Yarn mappings <code>${yarn_mappings}</code></p>\n"
 	
 	if(project.hasProperty("changelog_fabric_api_version")) {
 		changelog_text += "<p><a href=\"https://www.curseforge.com/minecraft/mc-mods/fabric-api/files/all\" rel=\"nofollow\">Fabric API <code>${changelog_fabric_api_version}</code></a></p>\n"
@@ -350,7 +350,7 @@ String generateMarkdownChangelog() {
 		changelog_text += "Fabric Loader " + '`' + "${fabric_loader_version}" + '`' + "  \n"
 	}
 	
-		changelog_text += "Yarn mappings " + '`' + "${yarn_mappings}" + '`' + "  \n"
+	changelog_text += "Yarn mappings " + '`' + "${yarn_mappings}" + '`' + "  \n"
 	
 	if(project.hasProperty("changelog_fabric_api_version")) {
 		changelog_text += "[Fabric API " + '`' + "${changelog_fabric_api_version}" + '`' + "](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files/all)  \n"
