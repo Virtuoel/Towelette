@@ -8,6 +8,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
+import net.fabricmc.loader.api.metadata.ModOrigin;
 
 public class ModContainerUtils
 {
@@ -19,16 +20,17 @@ public class ModContainerUtils
 		{
 			try
 			{
-				final ModContainer c = FabricLoader.getInstance().getModContainer(modId).get();
-				
-				if (c == null || c.getContainingMod().isPresent())
-				{
-					return false;
-				}
-				
 				if (USER_ADDED_IDS_CACHE.containsKey(modId))
 				{
 					return USER_ADDED_IDS_CACHE.getBoolean(modId);
+				}
+				
+				final ModContainer c = FabricLoader.getInstance().getModContainer(modId).get();
+				
+				if (c == null || c.getOrigin().getKind() == ModOrigin.Kind.NESTED)
+				{
+					USER_ADDED_IDS_CACHE.put(modId, false);
+					return false;
 				}
 				
 				final Path gameDir = FabricLoader.getInstance().getGameDir().toRealPath();
