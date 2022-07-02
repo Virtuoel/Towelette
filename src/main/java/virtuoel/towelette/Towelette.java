@@ -44,10 +44,10 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	public static final Optional<Object> DISPLACEABLE = TagCompatibility.getBlockTag(id("displaceable"));
 	public static final Optional<Object> UNDISPLACEABLE = TagCompatibility.getBlockTag(id("undisplaceable"));
 	
-	public static final Collection<Identifier> FLUID_ID_WHITELIST = new HashSet<>();
-	public static final Collection<String> FLUID_MOD_ID_WHITELIST = new HashSet<>();
-	public static final Collection<Identifier> FLUID_ID_BLACKLIST = new HashSet<>();
-	public static final Collection<String> FLUID_MOD_ID_BLACKLIST = new HashSet<>();
+	public static final Collection<Identifier> ALLOWED_FLUID_IDS = new HashSet<>();
+	public static final Collection<String> ALLOWED_FLUID_MOD_IDS = new HashSet<>();
+	public static final Collection<Identifier> DENIED_FLUID_IDS = new HashSet<>();
+	public static final Collection<String> DENIED_FLUID_MOD_IDS = new HashSet<>();
 	
 	public static final Collection<Identifier> FLUIDLOGGABLE_ADDITIONS = new HashSet<>();
 	public static final Collection<Identifier> FLOWING_FLUIDLOGGABLE_ADDITIONS = new HashSet<>();
@@ -63,11 +63,11 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	@Override
 	public void onInitialize()
 	{
-		FLUID_ID_WHITELIST.addAll(configIdArray(ToweletteConfig.COMMON.whitelistedFluidIds));
-		FLUID_MOD_ID_WHITELIST.addAll(ToweletteConfig.COMMON.whitelistedFluidModIds.get());
+		ALLOWED_FLUID_IDS.addAll(configIdArray(ToweletteConfig.COMMON.allowedFluidIds));
+		ALLOWED_FLUID_MOD_IDS.addAll(ToweletteConfig.COMMON.allowedFluidModIds.get());
 		
-		FLUID_ID_BLACKLIST.addAll(configIdArray(ToweletteConfig.COMMON.blacklistedFluidIds));
-		FLUID_MOD_ID_BLACKLIST.addAll(ToweletteConfig.COMMON.blacklistedFluidModIds.get());
+		DENIED_FLUID_IDS.addAll(configIdArray(ToweletteConfig.COMMON.deniedFluidIds));
+		DENIED_FLUID_MOD_IDS.addAll(ToweletteConfig.COMMON.deniedFluidModIds.get());
 		
 		FLUIDLOGGABLE_ADDITIONS.addAll(configIdArray(ToweletteConfig.COMMON.addedFluidloggableBlocks));
 		FLOWING_FLUIDLOGGABLE_ADDITIONS.addAll(configIdArray(ToweletteConfig.COMMON.addedFlowingFluidloggableBlocks));
@@ -227,7 +227,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		StateRefresher.INSTANCE.refreshBlockStates(
 			FluidProperties.FLUID,
 			Registry.FLUID.getIds().stream()
-			.filter(f -> filterFluid(Registry.FLUID.get(f), f, this::isFluidBlacklisted))
+			.filter(f -> filterFluid(Registry.FLUID.get(f), f, this::isFluidDenied))
 			.collect(ImmutableSet.toImmutableSet()),
 			ImmutableSet.of()
 		);
@@ -239,7 +239,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		RegistryEntryAddedCallback.event(Registry.FLUID).register((rawId, identifier, object) ->
 		{
-			if (filterFluid(object, identifier, this::isFluidBlacklisted))
+			if (filterFluid(object, identifier, this::isFluidDenied))
 			{
 				StateRefresher.INSTANCE.refreshBlockStates(FluidProperties.FLUID, ImmutableSet.of(identifier), ImmutableSet.of());
 			}
@@ -248,33 +248,33 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	
 	private static boolean filterFluid(final Fluid fluid, final Identifier id, final BiPredicate<Fluid, Identifier> defaultPredicate)
 	{
-		if (FLUID_MOD_ID_WHITELIST.contains(id.getNamespace()) || FLUID_ID_WHITELIST.contains(id))
+		if (ALLOWED_FLUID_MOD_IDS.contains(id.getNamespace()) || ALLOWED_FLUID_IDS.contains(id))
 		{
 			return !FluidUtils.propertyContains(id);
 		}
 		
-		if (ToweletteConfig.COMMON.onlyAllowWhitelistedFluids.get())
+		if (ToweletteConfig.COMMON.onlyAcceptAllowedFluids.get())
 		{
 			return false;
 		}
 		
-		return ToweletteConfig.COMMON.enableBlacklistAPI.get() ? ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidBlacklisted(fluid, id)) : defaultPredicate.test(fluid, id);
+		return ToweletteConfig.COMMON.enableDeniedFluidApi.get() ? ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidDenied(fluid, id)) : defaultPredicate.test(fluid, id);
 	}
 	
 	@Override
-	public boolean isFluidBlacklisted(Fluid fluid, Identifier id)
+	public boolean isFluidDenied(Fluid fluid, Identifier id)
 	{
-		if (FLUID_MOD_ID_WHITELIST.contains(id.getNamespace()) || FLUID_ID_WHITELIST.contains(id))
+		if (ALLOWED_FLUID_MOD_IDS.contains(id.getNamespace()) || ALLOWED_FLUID_IDS.contains(id))
 		{
 			return FluidUtils.propertyContains(id);
 		}
 		
-		if (ToweletteConfig.COMMON.onlyAllowWhitelistedFluids.get())
+		if (ToweletteConfig.COMMON.onlyAcceptAllowedFluids.get())
 		{
 			return true;
 		}
 		
-		return FLUID_MOD_ID_BLACKLIST.contains(id.getNamespace()) || FLUID_ID_BLACKLIST.contains(id) || FluidUtils.propertyContains(id) || (!ToweletteConfig.COMMON.flowingFluidlogging.get() && !((ToweletteFluidStateExtensions) (Object) fluid.getDefaultState()).towelette_isStill());
+		return DENIED_FLUID_MOD_IDS.contains(id.getNamespace()) || DENIED_FLUID_IDS.contains(id) || FluidUtils.propertyContains(id) || (!ToweletteConfig.COMMON.flowingFluidlogging.get() && !((ToweletteFluidStateExtensions) (Object) fluid.getDefaultState()).towelette_isStill());
 	}
 	
 	private static List<Identifier> configIdArray(Supplier<List<String>> config)

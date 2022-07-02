@@ -32,12 +32,12 @@ public class ToweletteConfig
 		public final Supplier<Boolean> accurateFlowBlocking;
 		public final Supplier<Boolean> automaticFluidlogging;
 		public final Supplier<Boolean> automaticWaterlogging;
-		public final Supplier<Boolean> onlyAllowWhitelistedFluids;
-		public final Supplier<List<String>> whitelistedFluidIds;
-		public final Supplier<List<String>> whitelistedFluidModIds;
-		public final Supplier<Boolean> enableBlacklistAPI;
-		public final Supplier<List<String>> blacklistedFluidIds;
-		public final Supplier<List<String>> blacklistedFluidModIds;
+		public final Supplier<Boolean> onlyAcceptAllowedFluids;
+		public final Supplier<List<String>> allowedFluidIds;
+		public final Supplier<List<String>> allowedFluidModIds;
+		public final Supplier<Boolean> enableDeniedFluidApi;
+		public final Supplier<List<String>> deniedFluidIds;
+		public final Supplier<List<String>> deniedFluidModIds;
 		public final Supplier<List<String>> addedFluidloggableBlocks;
 		public final Supplier<List<String>> addedFlowingFluidloggableBlocks;
 		public final Supplier<List<String>> addedWaterloggableBlocks;
@@ -68,15 +68,15 @@ public class ToweletteConfig
 			);
 			this.automaticWaterlogging = builder.booleanConfig("automaticWaterlogging", false);
 			
-			this.onlyAllowWhitelistedFluids = builder.booleanConfig("onlyAllowWhitelistedFluids", false);
+			this.onlyAcceptAllowedFluids = builder.booleanConfig("onlyAcceptAllowedFluids", false);
 			
-			this.whitelistedFluidIds = builder.stringListConfig("whitelistedFluidIds");
-			this.whitelistedFluidModIds = builder.stringListConfig("whitelistedFluidModIds");
+			this.allowedFluidIds = builder.stringListConfig("allowedFluidIds");
+			this.allowedFluidModIds = builder.stringListConfig("allowedFluidModIds");
 			
-			this.enableBlacklistAPI = builder.booleanConfig("enableBlacklistAPI", true);
+			this.enableDeniedFluidApi = builder.booleanConfig("enableDeniedFluidApi", true);
 			
-			this.blacklistedFluidIds = builder.stringListConfig("blacklistedFluidIds");
-			this.blacklistedFluidModIds = builder.stringListConfig("blacklistedFluidModIds");
+			this.deniedFluidIds = builder.stringListConfig("deniedFluidIds");
+			this.deniedFluidModIds = builder.stringListConfig("deniedFluidModIds");
 			this.addedFluidloggableBlocks = builder.stringListConfig("addedFluidloggableBlocks");
 			this.addedFlowingFluidloggableBlocks = builder.stringListConfig("addedFlowingFluidloggableBlocks");
 			this.addedWaterloggableBlocks = builder.stringListConfig("addedWaterloggableBlocks");
@@ -100,14 +100,6 @@ public class ToweletteConfig
 			
 		}
 	}
-	
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-	public static final Supplier<com.google.gson.JsonObject> HANDLER = BUILDER.config;
-	
-	@Deprecated
-	@ApiStatus.ScheduledForRemoval(inVersion = "5.0.0")
-	public static final com.google.gson.JsonObject DATA = BUILDER.config.get();
 	
 	private ToweletteConfig()
 	{
