@@ -18,21 +18,26 @@ public class ModContainerUtils
 	{
 		synchronized (USER_ADDED_IDS_CACHE)
 		{
+			if (USER_ADDED_IDS_CACHE.containsKey(modId))
+			{
+				return USER_ADDED_IDS_CACHE.getBoolean(modId);
+			}
+			
+			final ModContainer c = FabricLoader.getInstance().getModContainer(modId).get();
+			
+			if (c == null || c.getOrigin().getKind() == ModOrigin.Kind.NESTED)
+			{
+				USER_ADDED_IDS_CACHE.put(modId, false);
+				return false;
+			}
+			else if (c.getOrigin().getKind() == ModOrigin.Kind.PATH)
+			{
+				USER_ADDED_IDS_CACHE.put(modId, true);
+				return true;
+			}
+			
 			try
 			{
-				if (USER_ADDED_IDS_CACHE.containsKey(modId))
-				{
-					return USER_ADDED_IDS_CACHE.getBoolean(modId);
-				}
-				
-				final ModContainer c = FabricLoader.getInstance().getModContainer(modId).get();
-				
-				if (c == null || c.getOrigin().getKind() == ModOrigin.Kind.NESTED)
-				{
-					USER_ADDED_IDS_CACHE.put(modId, false);
-					return false;
-				}
-				
 				final Path gameDir = FabricLoader.getInstance().getGameDir().toRealPath();
 				final FileSystem gameFileSystem = gameDir.getFileSystem();
 				final boolean isDevEnv = FabricLoader.getInstance().isDevelopmentEnvironment();
