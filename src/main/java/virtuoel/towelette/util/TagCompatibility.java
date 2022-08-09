@@ -39,13 +39,11 @@ public class TagCompatibility
 		public static final Optional<Object> LAVA = getFluidTag(new Identifier("minecraft", "lava"));
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static Optional<Object> getBlockTag(Identifier id)
 	{
 		return Optional.of(invoke(() -> () -> TagKey.of(Registry.BLOCK_KEY, id), null, varArgs(id), f -> f.apply(TAG_FACTORY_CREATE, TAG_FACTORY_BLOCK), f -> f.apply(TAG_REGISTRY_BLOCK, null)));
 	}
 	
-	@SuppressWarnings("unchecked")
 	public static Optional<Object> getFluidTag(Identifier id)
 	{
 		return Optional.of(invoke(() -> () -> TagKey.of(Registry.FLUID_KEY, id), null, varArgs(id), f -> f.apply(TAG_FACTORY_CREATE, TAG_FACTORY_FLUID), f -> f.apply(TAG_REGISTRY_FLUID, null)));
@@ -72,6 +70,7 @@ public class TagCompatibility
 	}
 	
 	@SuppressWarnings("unchecked")
+	@SafeVarargs
 	public static <T> T invoke(Supplier<Supplier<T>> defaultInvocation, T orElse, Object[] args, Function<BiFunction<Optional<Method>, Object, Optional<T>>, Optional<T>>... fallbacks)
 	{
 		try
