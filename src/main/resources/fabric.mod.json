@@ -19,9 +19,9 @@
 	"environment": "*",
 	"depends":
 	{
-		"fabricloader": ">=0.14.9",
+		"fabricloader": ">=0.14.11",
 		"fabric-api-base": "*",
-		"statement": ">=4.2.4",
+		"statement": ">=4.2.5",
 		"fabric-registry-sync-v0": "*"
 	},
 	"entrypoints":
