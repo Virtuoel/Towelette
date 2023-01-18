@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
 
 import virtuoel.statement.util.VersionUtils;
+import virtuoel.towelette.util.BackwardsCompatibility;
 
 public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 {
@@ -63,7 +64,10 @@ public class ToweletteMixinConfigPlugin implements IMixinConfigPlugin
 	@Override
 	public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo)
 	{
-		
+		if (mixinClassName.equals(MIXIN_PACKAGE + ".towelette.compat.ToweletteConfigMixin"))
+		{
+			BackwardsCompatibility.addFieldsIfNeeded(targetClass);
+		}
 	}
 	
 	@Override

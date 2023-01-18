@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
 import virtuoel.kanos_config.api.JsonConfigBuilder;
+import virtuoel.towelette.util.BackwardsCompatibility;
 import virtuoel.towelette.util.ModContainerUtils;
 
 public class ToweletteConfig
@@ -104,5 +105,10 @@ public class ToweletteConfig
 	private ToweletteConfig()
 	{
 		
+	}
+	
+	static
+	{
+		BackwardsCompatibility.populateFieldsIfNeeded(BUILDER);
 	}
 }

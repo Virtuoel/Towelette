@@ -90,7 +90,8 @@
 		"fluidloggable.FluidloggableBlockMarkerMixin",
 		"fluidloggable.compat116plus.FluidloggableBlockMarkerMixin",
 		"fluidloggable.compat117plus.FluidloggableBlockMarkerMixin",
-		"fluidloggable.compat119plus.FluidloggableBlockMarkerMixin"
+		"fluidloggable.compat119plus.FluidloggableBlockMarkerMixin",
+		"towelette.compat.ToweletteConfigMixin"
 	],
 	"client":
 	[
