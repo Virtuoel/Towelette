@@ -13,6 +13,6 @@ public interface WorldAccessMixin extends ToweletteWorldAccessExtensions
 	@Override
 	default void towelette_scheduleFluidTick(BlockPos pos, Fluid fluid, int rate)
 	{
-		((WorldAccess) this).createAndScheduleFluidTick(pos, fluid, rate);
+		((WorldAccess) this).scheduleFluidTick(pos, fluid, rate);
 	}
 }

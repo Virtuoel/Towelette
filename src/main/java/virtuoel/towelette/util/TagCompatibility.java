@@ -12,9 +12,10 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
-import net.minecraft.tag.TagKey;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import virtuoel.statement.util.ReflectionUtils;
 
 public class TagCompatibility
@@ -39,14 +40,16 @@ public class TagCompatibility
 		public static final Optional<Object> LAVA = getFluidTag(new Identifier("minecraft", "lava"));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Optional<Object> getBlockTag(Identifier id)
 	{
-		return Optional.of(invoke(() -> () -> TagKey.of(Registry.BLOCK_KEY, id), null, varArgs(id), f -> f.apply(TAG_FACTORY_CREATE, TAG_FACTORY_BLOCK), f -> f.apply(TAG_REGISTRY_BLOCK, null)));
+		return Optional.of(invoke(() -> () -> TagKey.of((RegistryKey<Registry<Block>>) RegistryUtils.BLOCK_REGISTRY_KEY, id), null, varArgs(id), f -> f.apply(TAG_FACTORY_CREATE, TAG_FACTORY_BLOCK), f -> f.apply(TAG_REGISTRY_BLOCK, null)));
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static Optional<Object> getFluidTag(Identifier id)
 	{
-		return Optional.of(invoke(() -> () -> TagKey.of(Registry.FLUID_KEY, id), null, varArgs(id), f -> f.apply(TAG_FACTORY_CREATE, TAG_FACTORY_FLUID), f -> f.apply(TAG_REGISTRY_FLUID, null)));
+		return Optional.of(invoke(() -> () -> TagKey.of((RegistryKey<Registry<Fluid>>) RegistryUtils.FLUID_REGISTRY_KEY, id), null, varArgs(id), f -> f.apply(TAG_FACTORY_CREATE, TAG_FACTORY_FLUID), f -> f.apply(TAG_REGISTRY_FLUID, null)));
 	}
 	
 	@SuppressWarnings("unchecked")

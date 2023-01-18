@@ -23,7 +23,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.util.shape.SlicedVoxelShape;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
@@ -92,13 +91,13 @@ public class FluidUtils
 	
 	public static Identifier getFluidId(Fluid fluid)
 	{
-		final Identifier id = Registry.FLUID.getId(fluid);
-		return propertyContains(id) ? id : Registry.FLUID.getDefaultId();
+		final Identifier id = RegistryUtils.getId(RegistryUtils.FLUID_REGISTRY, fluid);
+		return propertyContains(id) ? id : RegistryUtils.getDefaultId(RegistryUtils.FLUID_REGISTRY);
 	}
 	
 	public static boolean propertyContains(Fluid fluid)
 	{
-		return propertyContains(Registry.FLUID.getId(fluid));
+		return propertyContains(RegistryUtils.getId(RegistryUtils.FLUID_REGISTRY, fluid));
 	}
 	
 	public static boolean propertyContains(Identifier id)
@@ -147,7 +146,7 @@ public class FluidUtils
 			
 			if (blockEntries.containsKey(FluidProperties.FLUID))
 			{
-				blockState = blockState.towelette_with(FluidProperties.FLUID, cannotFillWithFluid ? Registry.FLUID.getDefaultId() : getFluidId(fluidState.towelette_getFluid()));
+				blockState = blockState.towelette_with(FluidProperties.FLUID, cannotFillWithFluid ? RegistryUtils.getDefaultId(RegistryUtils.FLUID_REGISTRY) : getFluidId(fluidState.towelette_getFluid()));
 			}
 			
 			if (blockEntries.containsKey(FluidProperties.FALLING))
@@ -199,7 +198,7 @@ public class FluidUtils
 			
 			if (blockEntries.containsKey(FluidProperties.FLUID))
 			{
-				ret = Registry.FLUID.get(blockState.<Identifier>towelette_get(FluidProperties.FLUID));
+				ret = RegistryUtils.get(RegistryUtils.FLUID_REGISTRY, blockState.<Identifier>towelette_get(FluidProperties.FLUID));
 			}
 			
 			if (((ToweletteFluidStateExtensions) (Object) ret.getDefaultState()).towelette_isEmpty() && blockEntries.containsKey(Properties.WATERLOGGED) && blockState.<Boolean>towelette_get(Properties.WATERLOGGED))
@@ -360,7 +359,7 @@ public class FluidUtils
 			
 			if (blockEntries.containsKey(FluidProperties.FLUID))
 			{
-				blockState = blockState.towelette_with(FluidProperties.FLUID, Registry.FLUID.getDefaultId());
+				blockState = blockState.towelette_with(FluidProperties.FLUID, RegistryUtils.getDefaultId(RegistryUtils.FLUID_REGISTRY));
 			}
 			
 			if (blockEntries.containsKey(FluidProperties.FALLING))

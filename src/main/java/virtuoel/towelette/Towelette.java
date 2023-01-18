@@ -22,7 +22,6 @@ import net.minecraft.fluid.Fluid;
 import net.minecraft.state.property.Properties;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.IdList;
-import net.minecraft.util.registry.Registry;
 import virtuoel.statement.api.StateRefresher;
 import virtuoel.statement.api.StatementApi;
 import virtuoel.towelette.api.FluidProperties;
@@ -31,6 +30,7 @@ import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.util.AutomaticFluidloggableMarker;
 import virtuoel.towelette.util.AutomaticWaterloggableMarker;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.RegistryUtils;
 import virtuoel.towelette.util.TagCompatibility;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 import virtuoel.towelette.util.ToweletteFluidStateExtensions;
@@ -93,9 +93,9 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			final Collection<Block> fluidloggableDefaults = new LinkedList<>();
 			final Collection<Block> waterloggableDefaults = new LinkedList<>();
 			
-			for (final Identifier id : Registry.BLOCK.getIds())
+			for (final Identifier id : RegistryUtils.getIds(RegistryUtils.BLOCK_REGISTRY))
 			{
-				final Block block = Registry.BLOCK.get(id);
+				final Block block = RegistryUtils.get(RegistryUtils.BLOCK_REGISTRY, id);
 				
 				if (automaticFluidlogging && !FLUIDLOGGABLE_REMOVALS.contains(id))
 				{
@@ -129,12 +129,12 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		for (final Identifier id : FLUIDLOGGABLE_ADDITIONS)
 		{
-			Registry.BLOCK.getOrEmpty(id).ifPresent(block ->
+			RegistryUtils.getOrEmpty(RegistryUtils.BLOCK_REGISTRY, id).ifPresent(block ->
 			{
 				StateRefresher.INSTANCE.addBlockProperty(
 					block,
 					FluidProperties.FLUID,
-					Registry.FLUID.getDefaultId()
+					RegistryUtils.getDefaultId(RegistryUtils.FLUID_REGISTRY)
 				);
 				
 				changedStates[0] = true;
@@ -143,7 +143,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		for (final Identifier id : FLOWING_FLUIDLOGGABLE_ADDITIONS)
 		{
-			Registry.BLOCK.getOrEmpty(id).ifPresent(block ->
+			RegistryUtils.getOrEmpty(RegistryUtils.BLOCK_REGISTRY, id).ifPresent(block ->
 			{
 				addFluidProperties(block, true);
 				
@@ -153,7 +153,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		for (final Identifier id : FLUIDLOGGABLE_REMOVALS)
 		{
-			Registry.BLOCK.getOrEmpty(id).ifPresent(block ->
+			RegistryUtils.getOrEmpty(RegistryUtils.BLOCK_REGISTRY, id).ifPresent(block ->
 			{
 				changedStates[0] |= !StateRefresher.INSTANCE.removeBlockProperty(block, FluidProperties.FLUID).isEmpty();
 				changedStates[0] |= !StateRefresher.INSTANCE.removeBlockProperty(block, FluidProperties.LEVEL_1_8).isEmpty();
@@ -163,7 +163,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		for (final Identifier id : WATERLOGGABLE_ADDITIONS)
 		{
-			Registry.BLOCK.getOrEmpty(id).ifPresent(block ->
+			RegistryUtils.getOrEmpty(RegistryUtils.BLOCK_REGISTRY, id).ifPresent(block ->
 			{
 				StateRefresher.INSTANCE.addBlockProperty(block, Properties.WATERLOGGED, false);
 				
@@ -173,13 +173,13 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		for (final Identifier id : WATERLOGGABLE_REMOVALS)
 		{
-			Registry.BLOCK.getOrEmpty(id).ifPresent(block ->
+			RegistryUtils.getOrEmpty(RegistryUtils.BLOCK_REGISTRY, id).ifPresent(block ->
 			{
 				changedStates[0] |= !StateRefresher.INSTANCE.removeBlockProperty(block, Properties.WATERLOGGED).isEmpty();
 			});
 		}
 		
-		RegistryEntryAddedCallback.event(Registry.BLOCK).register((rawId, identifier, object) ->
+		RegistryEntryAddedCallback.event(RegistryUtils.BLOCK_REGISTRY).register((rawId, identifier, object) ->
 		{
 			boolean didChange = false;
 			
@@ -226,8 +226,8 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		StateRefresher.INSTANCE.refreshBlockStates(
 			FluidProperties.FLUID,
-			Registry.FLUID.getIds().stream()
-			.filter(f -> filterFluid(Registry.FLUID.get(f), f, this::isFluidDenied))
+			RegistryUtils.getIds(RegistryUtils.FLUID_REGISTRY).stream()
+			.filter(f -> filterFluid(RegistryUtils.get(RegistryUtils.FLUID_REGISTRY, f), f, this::isFluidDenied))
 			.collect(ImmutableSet.toImmutableSet()),
 			ImmutableSet.of()
 		);
@@ -237,7 +237,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			StateRefresher.INSTANCE.reorderBlockStates();
 		}
 		
-		RegistryEntryAddedCallback.event(Registry.FLUID).register((rawId, identifier, object) ->
+		RegistryEntryAddedCallback.event(RegistryUtils.FLUID_REGISTRY).register((rawId, identifier, object) ->
 		{
 			if (filterFluid(object, identifier, this::isFluidDenied))
 			{
@@ -287,7 +287,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		StateRefresher.INSTANCE.addBlockProperty(
 			block,
 			FluidProperties.FLUID,
-			Registry.FLUID.getDefaultId()
+			RegistryUtils.getDefaultId(RegistryUtils.FLUID_REGISTRY)
 		);
 		
 		if (flowing)
@@ -316,7 +316,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			
 			if (entries.containsKey(FluidProperties.FLUID))
 			{
-				return (!blockState.towelette_get(FluidProperties.FLUID).equals(Registry.FLUID.getDefaultId())) ||
+				return (!blockState.towelette_get(FluidProperties.FLUID).equals(RegistryUtils.getDefaultId(RegistryUtils.FLUID_REGISTRY))) ||
 					(entries.containsKey(FluidProperties.LEVEL_1_8) && blockState.<Integer>towelette_get(FluidProperties.LEVEL_1_8) != 8) ||
 					(entries.containsKey(FluidProperties.FALLING) && blockState.<Boolean>towelette_get(FluidProperties.FALLING));
 			}
