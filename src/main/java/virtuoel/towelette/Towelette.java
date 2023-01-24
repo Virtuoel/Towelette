@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -27,11 +26,11 @@ import virtuoel.statement.api.StatementApi;
 import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteApi;
 import virtuoel.towelette.api.ToweletteConfig;
+import virtuoel.towelette.init.TagRegistrar;
 import virtuoel.towelette.util.AutomaticFluidloggableMarker;
 import virtuoel.towelette.util.AutomaticWaterloggableMarker;
 import virtuoel.towelette.util.FluidUtils;
 import virtuoel.towelette.util.RegistryUtils;
-import virtuoel.towelette.util.TagCompatibility;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
@@ -40,9 +39,6 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	public static final String MOD_ID = ToweletteApi.MOD_ID;
 	
 	public static final ILogger LOGGER = MixinService.getService().getLogger(MOD_ID);
-	
-	public static final Optional<Object> DISPLACEABLE = TagCompatibility.getBlockTag(id("displaceable"));
-	public static final Optional<Object> UNDISPLACEABLE = TagCompatibility.getBlockTag(id("undisplaceable"));
 	
 	public static final Collection<Identifier> ALLOWED_FLUID_IDS = new HashSet<>();
 	public static final Collection<String> ALLOWED_FLUID_MOD_IDS = new HashSet<>();
@@ -63,6 +59,8 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	@Override
 	public void onInitialize()
 	{
+		TagRegistrar.DISPLACEABLE.getClass();
+		
 		ALLOWED_FLUID_IDS.addAll(configIdArray(ToweletteConfig.COMMON.allowedFluidIds));
 		ALLOWED_FLUID_MOD_IDS.addAll(ToweletteConfig.COMMON.allowedFluidModIds.get());
 		
