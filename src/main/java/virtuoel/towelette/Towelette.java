@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableSet;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.state.property.Properties;
@@ -54,6 +55,26 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	public Towelette()
 	{
 		ToweletteConfig.BUILDER.config.get();
+		
+		FabricLoader.getInstance().getObjectShare().putIfAbsent(
+			id("allowed_fluid_ids").toString(),
+			ALLOWED_FLUID_IDS
+		);
+		
+		FabricLoader.getInstance().getObjectShare().putIfAbsent(
+			id("allowed_fluid_mod_ids").toString(),
+			ALLOWED_FLUID_MOD_IDS
+		);
+		
+		FabricLoader.getInstance().getObjectShare().putIfAbsent(
+			id("denied_fluid_ids").toString(),
+			DENIED_FLUID_IDS
+		);
+		
+		FabricLoader.getInstance().getObjectShare().putIfAbsent(
+			id("denied_fluid_mod_ids").toString(),
+			DENIED_FLUID_MOD_IDS
+		);
 	}
 	
 	@Override
