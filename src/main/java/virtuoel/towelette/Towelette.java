@@ -9,8 +9,8 @@ import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.spongepowered.asm.logging.ILogger;
+import org.spongepowered.asm.service.MixinService;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
@@ -39,7 +39,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 {
 	public static final String MOD_ID = ToweletteApi.MOD_ID;
 	
-	public static final Logger LOGGER = LogManager.getLogger(MOD_ID);
+	public static final ILogger LOGGER = MixinService.getService().getLogger(MOD_ID);
 	
 	public static final Optional<Object> DISPLACEABLE = TagCompatibility.getBlockTag(id("displaceable"));
 	public static final Optional<Object> UNDISPLACEABLE = TagCompatibility.getBlockTag(id("undisplaceable"));

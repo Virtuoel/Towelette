@@ -1,9 +1,9 @@
 package virtuoel.towelette.util;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
+import org.spongepowered.asm.logging.ILogger;
+import org.spongepowered.asm.service.MixinService;
 
 import virtuoel.kanos_config.api.JsonConfigBuilder;
 import virtuoel.statement.util.VersionUtils;
@@ -12,7 +12,7 @@ import virtuoel.towelette.api.ToweletteConfig;
 
 public class BackwardsCompatibility
 {
-	public static final Logger LOGGER = LogManager.getLogger(ToweletteApi.MOD_ID);
+	public static final ILogger LOGGER = MixinService.getService().getLogger(ToweletteApi.MOD_ID);
 	
 	private static boolean APPLIED = false;
 	
