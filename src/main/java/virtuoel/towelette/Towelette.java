@@ -55,7 +55,11 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 	public Towelette()
 	{
 		ToweletteConfig.BUILDER.config.get();
-		
+	}
+	
+	@Override
+	public void onInitialize()
+	{
 		FabricLoader.getInstance().getObjectShare().putIfAbsent(
 			id("allowed_fluid_ids").toString(),
 			ALLOWED_FLUID_IDS
@@ -75,11 +79,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			id("denied_fluid_mod_ids").toString(),
 			DENIED_FLUID_MOD_IDS
 		);
-	}
-	
-	@Override
-	public void onInitialize()
-	{
+		
 		TagRegistrar.DISPLACEABLE.getClass();
 		
 		ALLOWED_FLUID_IDS.addAll(configIdArray(ToweletteConfig.COMMON.allowedFluidIds));
