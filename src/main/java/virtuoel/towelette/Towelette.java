@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -25,7 +24,6 @@ import net.minecraft.util.collection.IdList;
 import virtuoel.statement.api.StateRefresher;
 import virtuoel.statement.api.StatementApi;
 import virtuoel.towelette.api.FluidProperties;
-import virtuoel.towelette.api.ToweletteApi;
 import virtuoel.towelette.api.ToweletteConfig;
 import virtuoel.towelette.init.TagRegistrar;
 import virtuoel.towelette.util.AutomaticFluidloggableMarker;
@@ -35,9 +33,9 @@ import virtuoel.towelette.util.RegistryUtils;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
-public class Towelette implements ModInitializer, ToweletteApi, StatementApi
+public class Towelette implements ModInitializer, StatementApi
 {
-	public static final String MOD_ID = ToweletteApi.MOD_ID;
+	public static final String MOD_ID = "towelette";
 	
 	public static final ILogger LOGGER = MixinService.getService().getLogger(MOD_ID);
 	
@@ -246,7 +244,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		StateRefresher.INSTANCE.refreshBlockStates(
 			FluidProperties.FLUID,
 			RegistryUtils.getIds(RegistryUtils.FLUID_REGISTRY).stream()
-			.filter(f -> filterFluid(RegistryUtils.get(RegistryUtils.FLUID_REGISTRY, f), f, this::isFluidDenied))
+			.filter(f -> filterFluid(RegistryUtils.get(RegistryUtils.FLUID_REGISTRY, f), f))
 			.collect(ImmutableSet.toImmutableSet()),
 			ImmutableSet.of()
 		);
@@ -258,14 +256,14 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 		
 		RegistryEntryAddedCallback.event(RegistryUtils.FLUID_REGISTRY).register((rawId, identifier, object) ->
 		{
-			if (filterFluid(object, identifier, this::isFluidDenied))
+			if (filterFluid(object, identifier))
 			{
 				StateRefresher.INSTANCE.refreshBlockStates(FluidProperties.FLUID, ImmutableSet.of(identifier), ImmutableSet.of());
 			}
 		});
 	}
 	
-	private static boolean filterFluid(final Fluid fluid, final Identifier id, final BiPredicate<Fluid, Identifier> defaultPredicate)
+	private static boolean filterFluid(final Fluid fluid, final Identifier id)
 	{
 		if (ALLOWED_FLUID_MOD_IDS.contains(id.getNamespace()) || ALLOWED_FLUID_IDS.contains(id))
 		{
@@ -277,23 +275,7 @@ public class Towelette implements ModInitializer, ToweletteApi, StatementApi
 			return false;
 		}
 		
-		return ToweletteConfig.COMMON.enableDeniedFluidApi.get() ? ToweletteApi.ENTRYPOINTS.stream().noneMatch(api -> api.isFluidDenied(fluid, id)) : defaultPredicate.test(fluid, id);
-	}
-	
-	@Override
-	public boolean isFluidDenied(Fluid fluid, Identifier id)
-	{
-		if (ALLOWED_FLUID_MOD_IDS.contains(id.getNamespace()) || ALLOWED_FLUID_IDS.contains(id))
-		{
-			return FluidUtils.propertyContains(id);
-		}
-		
-		if (ToweletteConfig.COMMON.onlyAcceptAllowedFluids.get())
-		{
-			return true;
-		}
-		
-		return DENIED_FLUID_MOD_IDS.contains(id.getNamespace()) || DENIED_FLUID_IDS.contains(id) || FluidUtils.propertyContains(id) || (!ToweletteConfig.COMMON.flowingFluidlogging.get() && !((ToweletteFluidStateExtensions) (Object) fluid.getDefaultState()).towelette_isStill());
+		return !(DENIED_FLUID_MOD_IDS.contains(id.getNamespace()) || DENIED_FLUID_IDS.contains(id) || FluidUtils.propertyContains(id) || (!ToweletteConfig.COMMON.flowingFluidlogging.get() && !((ToweletteFluidStateExtensions) (Object) fluid.getDefaultState()).towelette_isStill()));
 	}
 	
 	private static List<Identifier> configIdArray(Supplier<List<String>> config)

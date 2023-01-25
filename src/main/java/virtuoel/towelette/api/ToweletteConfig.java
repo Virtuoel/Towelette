@@ -10,6 +10,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
 import virtuoel.kanos_config.api.JsonConfigBuilder;
+import virtuoel.towelette.Towelette;
 import virtuoel.towelette.util.BackwardsCompatibility;
 import virtuoel.towelette.util.ModContainerUtils;
 
@@ -17,7 +18,7 @@ public class ToweletteConfig
 {
 	@ApiStatus.Internal
 	public static final JsonConfigBuilder BUILDER = new JsonConfigBuilder(
-		ToweletteApi.MOD_ID,
+		Towelette.MOD_ID,
 		"config.json"
 	);
 	
@@ -36,7 +37,6 @@ public class ToweletteConfig
 		public final Supplier<Boolean> onlyAcceptAllowedFluids;
 		public final Supplier<List<String>> allowedFluidIds;
 		public final Supplier<List<String>> allowedFluidModIds;
-		public final Supplier<Boolean> enableDeniedFluidApi;
 		public final Supplier<List<String>> deniedFluidIds;
 		public final Supplier<List<String>> deniedFluidModIds;
 		public final Supplier<List<String>> addedFluidloggableBlocks;
@@ -56,7 +56,7 @@ public class ToweletteConfig
 				"automaticFluidlogging",
 				config -> v ->
 				{
-					if (ModContainerUtils.isModUserAdded(ToweletteApi.MOD_ID))
+					if (ModContainerUtils.isModUserAdded(Towelette.MOD_ID))
 					{
 						config.get().addProperty("automaticFluidlogging", v);
 					}
@@ -73,8 +73,6 @@ public class ToweletteConfig
 			
 			this.allowedFluidIds = builder.stringListConfig("allowedFluidIds");
 			this.allowedFluidModIds = builder.stringListConfig("allowedFluidModIds");
-			
-			this.enableDeniedFluidApi = builder.booleanConfig("enableDeniedFluidApi", true);
 			
 			this.deniedFluidIds = builder.stringListConfig("deniedFluidIds");
 			this.deniedFluidModIds = builder.stringListConfig("deniedFluidModIds");

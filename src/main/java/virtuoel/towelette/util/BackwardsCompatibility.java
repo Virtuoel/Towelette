@@ -7,12 +7,12 @@ import org.spongepowered.asm.service.MixinService;
 
 import virtuoel.kanos_config.api.JsonConfigBuilder;
 import virtuoel.statement.util.VersionUtils;
-import virtuoel.towelette.api.ToweletteApi;
+import virtuoel.towelette.Towelette;
 import virtuoel.towelette.api.ToweletteConfig;
 
 public class BackwardsCompatibility
 {
-	public static final ILogger LOGGER = MixinService.getService().getLogger(ToweletteApi.MOD_ID);
+	public static final ILogger LOGGER = MixinService.getService().getLogger(Towelette.MOD_ID);
 	
 	private static boolean APPLIED = false;
 	
