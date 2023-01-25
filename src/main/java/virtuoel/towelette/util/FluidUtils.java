@@ -316,7 +316,7 @@ public class FluidUtils
 				return true;
 			}
 			
-			return ToweletteConfig.COMMON.replaceableFluids.get();
+			return fluidState.towelette_getFluid() == fluid || ToweletteConfig.COMMON.replaceableFluids.get();
 		}
 		
 		return false;
@@ -335,9 +335,8 @@ public class FluidUtils
 				if (filled != blockState)
 				{
 					world.setBlockState(pos, filled, 3);
+					scheduleFluidTickImpl(fluid, world, pos);
 				}
-				
-				scheduleFluidTickImpl(fluid, world, pos);
 			}
 			
 			return true;
