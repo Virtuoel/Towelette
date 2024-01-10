@@ -41,7 +41,7 @@ public class MaterialUtils
 				mapped = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_3614", "method_15800", "()Z");
 				m.put(1, materialClass.getMethod(mapped));
 				
-				mapped = mappingResolver.mapMethodName("intermediary", VersionUtils.MINOR <= 15 ? "net.minecraft.class_2248" : "net.minecraft.class_4970.class_4971", VersionUtils.MINOR <= 15 ? "method_9597" : "method_26207", "()Lnet/minecraft/class_3614;");
+				mapped = mappingResolver.mapMethodName("intermediary", VersionUtils.MINOR <= 15 ? "net.minecraft.class_2248" : "net.minecraft.class_4970.class_4971", VersionUtils.MINOR <= 15 ? "method_11620" : "method_26207", "()Lnet/minecraft/class_3614;");
 				m.put(2, (VersionUtils.MINOR <= 15 ? BlockState.class : AbstractBlock.AbstractBlockState.class).getMethod(mapped));
 			}
 		}

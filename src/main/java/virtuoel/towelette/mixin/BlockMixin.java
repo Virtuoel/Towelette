@@ -12,7 +12,7 @@ import virtuoel.towelette.util.FluidUtils;
 @Mixin(Block.class)
 public abstract class BlockMixin
 {
-	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;setDefaultState(Lnet/minecraft/block/BlockState;)V"))
+	@ModifyArg(method = "<init>", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Block;setDefaultState(Lnet/minecraft/block/BlockState;)V", remap = true), remap = false)
 	private BlockState onConstructSetDefaultState(BlockState state)
 	{
 		return FluidUtils.getStateWithFluid(state, Fluids.EMPTY.getDefaultState());

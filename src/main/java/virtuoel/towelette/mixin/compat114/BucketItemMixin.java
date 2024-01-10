@@ -29,7 +29,7 @@ public class BucketItemMixin
 {
 	@Shadow @Final @Mutable Fluid fluid;
 	
-	@Redirect(method = "placeFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Material;isSolid()Z"))
+	@Redirect(method = "placeFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_3614;method_15799()Z", remap = false))
 	private boolean onPlaceFluidIsSolidProxy(@Coerce Object material, @Nullable PlayerEntity playerEntity, World world, BlockPos blockPos, @Nullable BlockHitResult blockHitResult)
 	{
 		final boolean solid = MaterialUtils.isSolid(material);
@@ -44,7 +44,7 @@ public class BucketItemMixin
 		return solid;
 	}
 	
-	@Redirect(method = "placeFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/block/Material;isReplaceable()Z"))
+	@Redirect(method = "placeFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_3614;method_15800()Z", remap = false))
 	private boolean onPlaceFluidIsReplaceableProxy(@Coerce Object material, @Nullable PlayerEntity playerEntity, World world, BlockPos blockPos, @Nullable BlockHitResult blockHitResult)
 	{
 		final boolean replaceable = MaterialUtils.isReplaceable(material);

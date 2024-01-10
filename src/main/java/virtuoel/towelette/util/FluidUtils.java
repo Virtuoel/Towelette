@@ -267,8 +267,8 @@ public class FluidUtils
 			
 			if (VersionUtils.MINOR <= 19)
 			{
-				mapped = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_2402", "method_10310", "(Lnet/minecraft/class_1922;Lnet/minecraft/class_2388;Lnet/minecraft/class_2680;Lnet/minecraft/class_3611;)Z");
-				m.put(1, FluidFillable.class.getMethod(mapped));
+				mapped = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_2402", "method_10310", "(Lnet/minecraft/class_1922;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_3611;)Z");
+				m.put(1, FluidFillable.class.getMethod(mapped, BlockView.class, BlockPos.class, BlockState.class, Fluid.class));
 			}
 		}
 		catch (NoSuchMethodException | SecurityException | IllegalArgumentException e)
