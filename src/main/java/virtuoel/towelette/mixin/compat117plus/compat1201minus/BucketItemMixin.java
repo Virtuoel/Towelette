@@ -1,4 +1,4 @@
-package virtuoel.towelette.mixin.compat117plus;
+package virtuoel.towelette.mixin.compat117plus.compat1201minus;
 
 import java.util.Optional;
 

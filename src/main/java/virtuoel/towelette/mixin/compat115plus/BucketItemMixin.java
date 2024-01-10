@@ -17,6 +17,7 @@ import net.minecraft.item.BucketItem;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import virtuoel.towelette.util.FluidUtils;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
 @Mixin(BucketItem.class)
@@ -28,6 +29,6 @@ public class BucketItemMixin
 	private Fluid onPlaceFluidFluidProxy(BucketItem this$0, @Nullable PlayerEntity playerEntity, World world, BlockPos blockPos, @Nullable BlockHitResult blockHitResult)
 	{
 		final BlockState state = world.getBlockState(blockPos);
-		return ((FluidFillable) ((ToweletteBlockStateExtensions) state).towelette_getBlock()).canFillWithFluid(world, blockPos, state, fluid) ? Fluids.WATER : Fluids.EMPTY;
+		return FluidUtils.canFillWithFluid(playerEntity, (FluidFillable) ((ToweletteBlockStateExtensions) state).towelette_getBlock(), world, blockPos, state, fluid) ? Fluids.WATER : Fluids.EMPTY;
 	}
 }

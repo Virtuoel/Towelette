@@ -15,6 +15,7 @@ import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import virtuoel.towelette.util.FluidUtils;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
 @Mixin(BucketItem.class)
@@ -27,6 +28,6 @@ public class BucketItemMixin
 	{
 		final BlockState state = world.getBlockState(obj);
 		final Block block = ((ToweletteBlockStateExtensions) state).towelette_getBlock();
-		return block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(world, obj, state, fluid) ? obj : obj.offset(side);
+		return block instanceof FluidFillable && FluidUtils.canFillWithFluid(playerEntity, (FluidFillable) block, world, obj, state, fluid) ? obj : obj.offset(side);
 	}
 }

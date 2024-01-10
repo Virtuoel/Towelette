@@ -1,4 +1,4 @@
-package virtuoel.towelette.mixin.compat117plus.towelette;
+package virtuoel.towelette.mixin.compat117plus.compat1201minus.towelette;
 
 import org.spongepowered.asm.mixin.Mixin;
 

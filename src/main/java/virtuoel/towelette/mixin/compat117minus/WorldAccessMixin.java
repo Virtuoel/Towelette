@@ -16,7 +16,7 @@ public interface WorldAccessMixin extends ToweletteWorldAccessExtensions
 	@Override
 	default void towelette_scheduleFluidTick(BlockPos pos, Fluid fluid, int rate)
 	{
-		final Object scheduler = FluidUtils.FLUID_TICK_SCHEDULER_GETTER.map(m -> m.apply(this)).orElse(null);
+		final Object scheduler = FluidUtils.getFluidTickScheduler((WorldAccess) this);
 		if (scheduler != null)
 		{
 			((ToweletteTickSchedulerExtensions<Fluid>) scheduler).towelette_schedule(pos, fluid, rate);

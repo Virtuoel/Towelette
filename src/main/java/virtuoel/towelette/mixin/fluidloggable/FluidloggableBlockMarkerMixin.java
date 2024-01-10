@@ -10,7 +10,7 @@ import net.minecraft.block.AbstractSkullBlock;
 import net.minecraft.block.AnvilBlock;
 import net.minecraft.block.AttachedStemBlock;
 import net.minecraft.block.BambooBlock;
-import net.minecraft.block.BambooSaplingBlock;
+import net.minecraft.block.BambooShootBlock;
 import net.minecraft.block.BedBlock;
 import net.minecraft.block.BeetrootsBlock;
 import net.minecraft.block.BellBlock;
@@ -36,7 +36,6 @@ import net.minecraft.block.EnchantingTableBlock;
 import net.minecraft.block.EndPortalFrameBlock;
 import net.minecraft.block.EnderChestBlock;
 import net.minecraft.block.FenceGateBlock;
-import net.minecraft.block.FernBlock;
 import net.minecraft.block.FlowerBlock;
 import net.minecraft.block.FlowerPotBlock;
 import net.minecraft.block.HopperBlock;
@@ -46,14 +45,12 @@ import net.minecraft.block.LanternBlock;
 import net.minecraft.block.LecternBlock;
 import net.minecraft.block.MushroomPlantBlock;
 import net.minecraft.block.NetherWartBlock;
-import net.minecraft.block.PistonBlock;
-import net.minecraft.block.PistonExtensionBlock;
-import net.minecraft.block.PistonHeadBlock;
 import net.minecraft.block.RedstoneWireBlock;
 import net.minecraft.block.RodBlock;
 import net.minecraft.block.SaplingBlock;
 import net.minecraft.block.ScaffoldingBlock;
 import net.minecraft.block.SeaPickleBlock;
+import net.minecraft.block.ShortPlantBlock;
 import net.minecraft.block.SignBlock;
 import net.minecraft.block.SlabBlock;
 import net.minecraft.block.SnowBlock;
@@ -78,7 +75,7 @@ import virtuoel.towelette.util.AutomaticWaterloggableMarker;
 	AbstractPressurePlateBlock.class,
 	AbstractRailBlock.class,
 	BambooBlock.class,
-	BambooSaplingBlock.class,
+	BambooShootBlock.class,
 	AbstractBannerBlock.class,
 	ChestBlock.class,
 	EnderChestBlock.class,
@@ -120,7 +117,7 @@ import virtuoel.towelette.util.AutomaticWaterloggableMarker;
 	CropBlock.class,
 	BeetrootsBlock.class,
 	DeadBushBlock.class,
-	FernBlock.class,
+	ShortPlantBlock.class,
 	FlowerBlock.class,
 	MushroomPlantBlock.class,
 	NetherWartBlock.class,

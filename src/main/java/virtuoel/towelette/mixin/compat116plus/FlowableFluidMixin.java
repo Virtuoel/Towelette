@@ -12,6 +12,7 @@ import net.minecraft.fluid.FluidState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.WorldAccess;
+import virtuoel.towelette.util.FluidUtils;
 
 @Mixin(FlowableFluid.class)
 public abstract class FlowableFluidMixin
@@ -20,7 +21,7 @@ public abstract class FlowableFluidMixin
 	private Block onFlowGetBlockProxy(BlockState obj, WorldAccess world, BlockPos pos, BlockState blockState, Direction direction, FluidState fluidState)
 	{
 		final Block block = obj.getBlock();
-		final boolean fillable = block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(world, pos, blockState, fluidState.getFluid());
+		final boolean fillable = block instanceof FluidFillable && FluidUtils.canFillWithFluid(null, (FluidFillable) block, world, pos, blockState, fluidState.getFluid());
 		return fillable ? block : null;
 	}
 }

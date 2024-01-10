@@ -35,6 +35,6 @@ public abstract class FallingBlockEntityMixin extends Entity
 	@ModifyArg(method = "tick", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/World;setBlockState(Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;I)Z"))
 	private BlockState tickSetBlockStateProxy(BlockPos pos, BlockState state, int flags)
 	{
-		return this.block = FluidUtils.getStateWithFluid(state, this.world, pos);
+		return this.block = FluidUtils.getStateWithFluid(state, this.getEntityWorld(), pos);
 	}
 }

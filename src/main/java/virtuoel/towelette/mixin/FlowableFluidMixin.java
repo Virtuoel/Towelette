@@ -62,7 +62,7 @@ public abstract class FlowableFluidMixin
 		
 		if (!info.getReturnValueZ())
 		{
-			if ((block instanceof FluidFillable && ((FluidFillable) block).canFillWithFluid(blockView, pos, blockState, fluid)) || (TagCompatibility.isIn(blockState, TagRegistrar.DISPLACEABLE) && !TagCompatibility.isIn(blockState, TagRegistrar.UNDISPLACEABLE) && ((ToweletteFluidStateExtensions) (Object) blockView.getFluidState(pos)).towelette_isEmpty()))
+			if ((block instanceof FluidFillable && FluidUtils.canFillWithFluid(null, (FluidFillable) block, blockView, pos, blockState, fluid)) || (TagCompatibility.isIn(blockState, TagRegistrar.DISPLACEABLE) && !TagCompatibility.isIn(blockState, TagRegistrar.UNDISPLACEABLE) && ((ToweletteFluidStateExtensions) (Object) blockView.getFluidState(pos)).towelette_isEmpty()))
 			{
 				info.setReturnValue(true);
 			}
