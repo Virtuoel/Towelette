@@ -24,6 +24,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import virtuoel.towelette.init.TagRegistrar;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.ReflectionUtils;
 import virtuoel.towelette.util.TagCompatibility;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 import virtuoel.towelette.util.ToweletteFluidStateExtensions;
@@ -62,7 +63,7 @@ public abstract class FlowableFluidMixin
 		
 		if (!info.getReturnValueZ())
 		{
-			if ((block instanceof FluidFillable && FluidUtils.canFillWithFluid(null, (FluidFillable) block, blockView, pos, blockState, fluid)) || (TagCompatibility.isIn(blockState, TagRegistrar.DISPLACEABLE) && !TagCompatibility.isIn(blockState, TagRegistrar.UNDISPLACEABLE) && ((ToweletteFluidStateExtensions) (Object) blockView.getFluidState(pos)).towelette_isEmpty()))
+			if ((block instanceof FluidFillable && ReflectionUtils.canFillWithFluid(null, (FluidFillable) block, blockView, pos, blockState, fluid)) || (TagCompatibility.isIn(blockState, TagRegistrar.DISPLACEABLE) && !TagCompatibility.isIn(blockState, TagRegistrar.UNDISPLACEABLE) && ((ToweletteFluidStateExtensions) (Object) blockView.getFluidState(pos)).towelette_isEmpty()))
 			{
 				info.setReturnValue(true);
 			}

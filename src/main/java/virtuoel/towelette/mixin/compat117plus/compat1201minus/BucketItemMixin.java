@@ -42,7 +42,7 @@ public class BucketItemMixin extends Item
 	
 	@Unique Optional<SoundEvent> sound = Optional.empty();
 	
-	@Inject(method = "use", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/block/FluidDrainable;tryDrainFluid(Lnet/minecraft/world/WorldAccess;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/block/BlockState;)Lnet/minecraft/item/ItemStack;"))
+	@Inject(method = "use", locals = LocalCapture.CAPTURE_FAILHARD, at = @At(value = "INVOKE", shift = Shift.BEFORE, target = "Lnet/minecraft/class_2263;method_9700(Lnet/minecraft/class_1936;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;)Lnet/minecraft/class_1799;", remap = false))
 	private void onUse(World world, PlayerEntity user, Hand hand, CallbackInfoReturnable<TypedActionResult<ItemStack>> info, ItemStack itemStack, BlockHitResult blockHitResult, BlockPos blockPos, Direction dir, BlockPos blockPos2, BlockState blockState, FluidDrainable fluidDrainable)
 	{
 		final FluidState looking = world.getFluidState(blockPos);

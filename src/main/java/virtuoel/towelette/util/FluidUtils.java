@@ -1,22 +1,13 @@
 package virtuoel.towelette.util;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
 import org.jetbrains.annotations.Nullable;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.math.DoubleMath;
 
-import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
-import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.MappingResolver;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.FluidFillable;
 import net.minecraft.block.enums.SlabType;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -31,8 +22,6 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.WorldAccess;
-import virtuoel.statement.util.VersionUtils;
-import virtuoel.towelette.Towelette;
 import virtuoel.towelette.api.FluidBlockingShapeProvider;
 import virtuoel.towelette.api.FluidProperties;
 import virtuoel.towelette.api.ToweletteConfig;
@@ -248,39 +237,6 @@ public class FluidUtils
 		((ToweletteWorldAccessExtensions) world).towelette_scheduleFluidTick(pos, fluid, rate);
 	}
 	
-	public static final Method GET_FLUID_TICK_SCHEDULER, CAN_FILL_WITH_FLUID;
-	
-	static
-	{
-		final MappingResolver mappingResolver = FabricLoader.getInstance().getMappingResolver();
-		final Int2ObjectMap<Method> m = new Int2ObjectArrayMap<Method>();
-		
-		String mapped = "unset";
-		
-		try
-		{
-			if (VersionUtils.MINOR <= 17)
-			{
-				mapped = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_1936", "method_8405", "()Lnet/minecraft/class_1951;");
-				m.put(0, WorldAccess.class.getMethod(mapped));
-			}
-			
-			if (VersionUtils.MINOR <= 19)
-			{
-				mapped = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_2402", "method_10310", "(Lnet/minecraft/class_1922;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_3611;)Z");
-				m.put(1, FluidFillable.class.getMethod(mapped, BlockView.class, BlockPos.class, BlockState.class, Fluid.class));
-			}
-		}
-		catch (NoSuchMethodException | SecurityException | IllegalArgumentException e)
-		{
-			Towelette.LOGGER.error("Current name lookup: {}", mapped);
-			Towelette.LOGGER.catching(e);
-		}
-		
-		GET_FLUID_TICK_SCHEDULER = m.get(0);
-		CAN_FILL_WITH_FLUID = m.get(1);
-	}
-	
 	private static boolean isFluidValidForState(BlockState state, Fluid fluid)
 	{
 		ToweletteBlockStateExtensions blockState = ((ToweletteBlockStateExtensions) state);
@@ -302,40 +258,6 @@ public class FluidUtils
 		}
 		
 		return false;
-	}
-	
-	public static Object getFluidTickScheduler(WorldAccess world)
-	{
-		if (GET_FLUID_TICK_SCHEDULER != null)
-		{
-			try
-			{
-				return GET_FLUID_TICK_SCHEDULER.invoke(world);
-			}
-			catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
-		
-		throw new IllegalStateException();
-	}
-	
-	public static boolean canFillWithFluid(@Nullable PlayerEntity playerEntity, FluidFillable block, BlockView world, BlockPos pos, BlockState state, Fluid fluid)
-	{
-		if (CAN_FILL_WITH_FLUID != null)
-		{
-			try
-			{
-				return (boolean) CAN_FILL_WITH_FLUID.invoke(block, world, pos, state, fluid);
-			}
-			catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e)
-			{
-				throw new RuntimeException(e);
-			}
-		}
-		
-		return block.canFillWithFluid(playerEntity, world, pos, state, fluid);
 	}
 	
 	public static boolean canFillWithFluid(BlockView world, BlockPos pos, BlockState state, Fluid fluid)

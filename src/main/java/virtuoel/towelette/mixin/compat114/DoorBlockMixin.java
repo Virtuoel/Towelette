@@ -13,7 +13,7 @@ import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
-import virtuoel.towelette.util.MaterialUtils;
+import virtuoel.towelette.util.ReflectionUtils;
 
 @Mixin(DoorBlock.class)
 public abstract class DoorBlockMixin
@@ -21,7 +21,7 @@ public abstract class DoorBlockMixin
 	@Inject(at = @At("HEAD"), method = "method_9534(Lnet/minecraft/class_2680;Lnet/minecraft/class_1937;Lnet/minecraft/class_2338;Lnet/minecraft/class_1657;Lnet/minecraft/class_1268;Lnet/minecraft/class_3965;)Z", remap = false)
 	private void onActivate(BlockState state, World world, BlockPos blockPos, PlayerEntity playerEntity, Hand hand, BlockHitResult blockHitResult, CallbackInfoReturnable<Boolean> info)
 	{
-		if (MaterialUtils.getMaterial(state) != MaterialUtils.METAL)
+		if (ReflectionUtils.getMaterial(state) != ReflectionUtils.METAL)
 		{
 			FluidUtils.scheduleFluidTick(state, world, blockPos);
 		}

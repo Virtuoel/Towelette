@@ -15,6 +15,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import virtuoel.towelette.util.FluidUtils;
+import virtuoel.towelette.util.ReflectionUtils;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 
 @Mixin(DoorBlock.class)
@@ -24,7 +25,7 @@ public abstract class DoorBlockMixin
 	private void onNeighborUpdate(BlockState blockState, World world, BlockPos blockPos, Block block, BlockPos otherPos, boolean unknown, CallbackInfo info)
 	{
 		final ToweletteBlockStateExtensions state = (ToweletteBlockStateExtensions) blockState;
-		final boolean powered = world.isReceivingRedstonePower(blockPos) || world.isReceivingRedstonePower(blockPos.offset(state.<DoubleBlockHalf>towelette_get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN));
+		final boolean powered = ReflectionUtils.isReceivingRedstonePower(world, blockPos) || ReflectionUtils.isReceivingRedstonePower(world, blockPos.offset(state.<DoubleBlockHalf>towelette_get(Properties.DOUBLE_BLOCK_HALF) == DoubleBlockHalf.LOWER ? Direction.UP : Direction.DOWN));
 		if (!world.isClient && powered != state.<Boolean>towelette_get(Properties.POWERED))
 		{
 			FluidUtils.scheduleFluidTick(blockState, world, blockPos);

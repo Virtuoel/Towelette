@@ -19,8 +19,7 @@ import net.minecraft.item.BucketItem;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import virtuoel.towelette.util.FluidUtils;
-import virtuoel.towelette.util.MaterialUtils;
+import virtuoel.towelette.util.ReflectionUtils;
 import virtuoel.towelette.util.ToweletteBlockStateExtensions;
 import virtuoel.towelette.util.ToweletteFluidStateExtensions;
 
@@ -32,13 +31,13 @@ public class BucketItemMixin
 	@Redirect(method = "placeFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_3614;method_15799()Z", remap = false))
 	private boolean onPlaceFluidIsSolidProxy(@Coerce Object material, @Nullable PlayerEntity playerEntity, World world, BlockPos blockPos, @Nullable BlockHitResult blockHitResult)
 	{
-		final boolean solid = MaterialUtils.isSolid(material);
+		final boolean solid = ReflectionUtils.isSolid(material);
 		final BlockState state = world.getBlockState(blockPos);
 		final Block block = ((ToweletteBlockStateExtensions) state).towelette_getBlock();
 		
 		if (block instanceof FluidFillable)
 		{
-			return FluidUtils.canFillWithFluid(playerEntity, (FluidFillable) block, world, blockPos, state, fluid) ? solid : true;
+			return ReflectionUtils.canFillWithFluid(playerEntity, (FluidFillable) block, world, blockPos, state, fluid) ? solid : true;
 		}
 		
 		return solid;
@@ -47,13 +46,13 @@ public class BucketItemMixin
 	@Redirect(method = "placeFluid", at = @At(value = "INVOKE", target = "Lnet/minecraft/class_3614;method_15800()Z", remap = false))
 	private boolean onPlaceFluidIsReplaceableProxy(@Coerce Object material, @Nullable PlayerEntity playerEntity, World world, BlockPos blockPos, @Nullable BlockHitResult blockHitResult)
 	{
-		final boolean replaceable = MaterialUtils.isReplaceable(material);
+		final boolean replaceable = ReflectionUtils.isReplaceable(material);
 		final BlockState state = world.getBlockState(blockPos);
 		final Block block = ((ToweletteBlockStateExtensions) state).towelette_getBlock();
 		
 		if (block instanceof FluidFillable)
 		{
-			return FluidUtils.canFillWithFluid(playerEntity, (FluidFillable) block, world, blockPos, state, fluid) || (((ToweletteFluidStateExtensions) (Object) world.getFluidState(blockPos)).towelette_isEmpty() && replaceable);
+			return ReflectionUtils.canFillWithFluid(playerEntity, (FluidFillable) block, world, blockPos, state, fluid) || (((ToweletteFluidStateExtensions) (Object) world.getFluidState(blockPos)).towelette_isEmpty() && replaceable);
 		}
 		
 		return replaceable;
@@ -63,6 +62,6 @@ public class BucketItemMixin
 	private Fluid onPlaceFluidFluidProxy(BucketItem this$0, @Nullable PlayerEntity playerEntity, World world, BlockPos blockPos, @Nullable BlockHitResult blockHitResult)
 	{
 		final BlockState state = world.getBlockState(blockPos);
-		return FluidUtils.canFillWithFluid(playerEntity, (FluidFillable) ((ToweletteBlockStateExtensions) state).towelette_getBlock(), world, blockPos, state, fluid) ? Fluids.WATER : Fluids.EMPTY;
+		return ReflectionUtils.canFillWithFluid(playerEntity, (FluidFillable) ((ToweletteBlockStateExtensions) state).towelette_getBlock(), world, blockPos, state, fluid) ? Fluids.WATER : Fluids.EMPTY;
 	}
 }
