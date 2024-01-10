@@ -55,7 +55,10 @@ public class ReflectionUtils
 				
 				mapped = mappingResolver.mapMethodName("intermediary", VersionUtils.MINOR <= 15 ? "net.minecraft.class_2248" : "net.minecraft.class_4970.class_4971", VersionUtils.MINOR <= 15 ? "method_11620" : "method_26207", "()Lnet/minecraft/class_3614;");
 				m.put(3, (VersionUtils.MINOR <= 15 ? BlockState.class : AbstractBlock.AbstractBlockState.class).getMethod(mapped));
-				
+			}
+			
+			if (VersionUtils.MINOR <= 19 || (VersionUtils.MINOR == 20 && VersionUtils.PATCH <= 1))
+			{
 				mapped = mappingResolver.mapMethodName("intermediary", "net.minecraft.class_2402", "method_10310", "(Lnet/minecraft/class_1922;Lnet/minecraft/class_2338;Lnet/minecraft/class_2680;Lnet/minecraft/class_3611;)Z");
 				m.put(4, FluidFillable.class.getMethod(mapped, BlockView.class, BlockPos.class, BlockState.class, Fluid.class));
 			}
