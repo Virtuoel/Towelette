@@ -33,10 +33,11 @@ bin
 .metadata
 .classpath
 .project
+.checkstyle
 
 # other
 
 .mixin.out
 libs
 *.kate-swp
-changelog.txt
+changelog*.txt
