@@ -19,7 +19,7 @@
 	"environment": "*",
 	"depends":
 	{
-		"fabricloader": ">=0.15.6",
+		"fabricloader": ">=0.15.3",
 		"fabric-api-base": "*",
 		"statement": ">=4.2.9",
 		"fabric-registry-sync-v0": "*"
