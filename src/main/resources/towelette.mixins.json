@@ -103,8 +103,10 @@
 		"fluidloggable.compat117plus.FluidloggableBlockMarkerMixin",
 		"fluidloggable.compat1193plus.FluidloggableBlockMarkerMixin",
 		"fluidloggable.compat1193plus.compat1201minus.UnderwaterPlantMixin",
-		"fluidloggable.compat1202plus.UnderwaterPlantMixin",
 		"fluidloggable.compat119plus.FluidloggableBlockMarkerMixin",
+		"fluidloggable.compat1202plus.UnderwaterPlantMixin",
+		"fluidloggable.compat1203plus.FluidloggableBlockMarkerMixin",
+		"fluidloggable.compat120plus.FluidloggableBlockMarkerMixin",
 		"towelette.compat.ToweletteConfigMixin"
 	],
 	"client":
