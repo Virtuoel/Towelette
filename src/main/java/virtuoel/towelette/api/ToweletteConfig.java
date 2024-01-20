@@ -9,6 +9,7 @@ import org.jetbrains.annotations.ApiStatus;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
 
+import net.fabricmc.loader.api.FabricLoader;
 import virtuoel.kanos_config.api.JsonConfigBuilder;
 import virtuoel.towelette.Towelette;
 import virtuoel.towelette.util.BackwardsCompatibility;
@@ -19,7 +20,7 @@ public class ToweletteConfig
 	@ApiStatus.Internal
 	public static final JsonConfigBuilder BUILDER = new JsonConfigBuilder(
 		Towelette.MOD_ID,
-		"config.json"
+		FabricLoader.getInstance().getConfigDir().resolve(Towelette.MOD_ID).resolve("config.json").normalize()
 	);
 	
 	public static final Client CLIENT = new Client(BUILDER);
